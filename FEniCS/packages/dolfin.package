@@ -1,0 +1,42 @@
+NAME=dolfin
+SOURCE=https://bitbucket.org/fenics-project/
+PACKING=git
+BUILDCHAIN=cmake
+
+CONFOPTS="-DCGAL_DISABLE_ROUNDING_MATH_CHECK:BOOL=ON"
+
+if [ -x "${SWIG_EXECUTABLE}" ]; then
+    CONFOPTS="${CONFOPTS} -D SWIG_EXECUTABLE:FILEPATH=${SWIG_EXECUTABLE}"
+fi
+
+if [ ! -z "${PYTHON_EXECUTABLE}" ]; then
+    CONFOPTS="${CONFOPTS} -D PYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}"
+fi
+
+if [ ! -z "${PYTHON_INCLUDE_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} -D PYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}"
+fi
+
+if [ ! -z "${PYTHON_LIBRARY}" ]; then
+    CONFOPTS="${CONFOPTS} -D PYTHON_LIBRARY:PATH=${PYTHON_LIBRARY}"
+fi
+
+if [ ! -z "${BOOST_USE_MULTITHREADED}" ]; then
+    CONFOPTS="${CONFOPTS} -D Boost_USE_MULTITHREADED:BOOL=${BOOST_USE_MULTITHREADED}"
+fi
+
+if [ ! -z "${BLAS_LIBRARIES}" ]; then
+    CONFOPTS="${CONFOPTS} -D BLAS_LIBRARIES:FILEPATH=\"${BLAS_LIBRARIES}\""
+fi
+
+if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+    CONFOPTS="${CONFOPTS}
+              -D LAPACK_LIBRARIES=${ATLAS_LIB_DIR}/liblapack.a
+              -D BLAS_LIBRARIES=\"${ATLAS_LIB_DIR}/libcblas.a;${ATLAS_LIB_DIR}/libf77blas.a;${ATLAS_LIB_DIR}/libatlas.a\""
+fi
+
+if [ ! -z "${HDF5_DIR}" ]; then
+    CONFOPTS="${CONFOPTS}
+              -D HDF5_INCLUDE_DIRS=${HDF5_DIR}/include"
+fi
+

@@ -1,0 +1,5 @@
+VERSION=0.19.2
+NAME=Cython-${VERSION}
+SOURCE=http://cython.org/release/
+PACKING=.tar.gz
+BUILDCHAIN=python

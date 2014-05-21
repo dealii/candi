@@ -1,0 +1,4 @@
+NAME=gccxml
+SOURCE=https://github.com/gccxml/
+PACKING=git
+BUILDCHAIN=cmake

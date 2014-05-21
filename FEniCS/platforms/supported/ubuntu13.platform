@@ -1,0 +1,40 @@
+# Ubuntu 13.10 (Saucy Salamander)
+
+# This build script assumes that you have several packages already
+# installed via Ubuntu's apt-get using the following commands:
+#
+# sudo apt-get install bzr bzrtools cmake flex g++ gfortran \
+# libarmadillo-dev libatlas-base-dev libboost-dev \
+# libboost-{filesystem,iostreams,mpi,program-options,thread,math,timer,chrono}-dev \
+# libcln-dev libcppunit-dev libginac-dev \
+# liblapack-dev libmpfr-dev libopenmpi-dev libptscotch-dev \
+# libsuitesparse-dev libxml2-dev openmpi-bin pkg-config \
+# python-dev python-numpy python-scientific python-vtk subversion swig \
+# wget bison libhwloc-dev python-ply libvtk5-dev python-netcdf \
+# libhdf5-openmpi-dev libeigen3-dev
+#
+# Also, if you have multiple MPI libraries installed, make sure
+# "sudo update-alternatives --config mpi" is set to openmpi.
+##
+
+# Platform specific variables
+default PETSC_ARCH=linux-gnu-cxx-opt
+default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
+
+# Define the packages this platform needs
+PACKAGES=(
+skip:FEniCS-prepare
+cgal
+parmetis
+trilinos
+petsc
+slepc
+fiat
+#ferari
+ufc
+ufl
+ffc
+instant
+dolfin
+skip:FEniCS
+)

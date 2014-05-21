@@ -1,0 +1,8 @@
+NAME=cppunit-1.12.1
+SOURCE=http://downloads.sourceforge.net/cppunit/
+PACKING=.tar.gz
+BUILDCHAIN=autotools
+
+package_specific_register () {
+    export CPPUNIT_DIR=${INSTALL_PATH}
+}

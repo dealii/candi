@@ -1,0 +1,36 @@
+NAME=trilinos-10.10.2-Source
+SOURCE=http://trilinos.sandia.gov/download/files/
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+
+MKLINCLUDE="/soft/intel/mkl/10.3.6.233/composer_xe_2011_sp1.6.233/mkl/include"
+COMPILERFLAGS="'-fPIC -DMPICH_IGNORE_CXX_SEEK -m64 -DMKL_ILP64 -lpthread'"
+MKLLIBS="\"-lmkl_rt\""
+
+CONFOPTS="-D CMAKE_CXX_COMPILER:FILEPATH='mpicxx'
+          -D CMAKE_C_COMPILER:FILEPATH='mpicc'
+          -D Trilinos_INSTALL_INCLUDE_DIR:PATH=include/trilinos
+          -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON
+          -D Trilinos_ENABLE_PyTrilinos:BOOL=ON
+          -D Trilinos_ENABLE_Fortran:BOOL=OFF
+          -D Trilinos_ENABLE_TESTS:BOOL=ON
+          -D Trilinos_ENABLE_EXAMPLES:BOOL=OFF
+          -D CMAKE_BUILD_TYPE:STRING=Release
+          -D BUILD_SHARED_LIBS:BOOL=ON
+          -D TPL_ENABLE_MPI:BOOL=ON
+	  -D CMAKE_CXX_FLAGS:STRING=${COMPILERFLAGS}
+	  -D CMAKE_C_FLAGS:STRING=${COMPILERFLAGS}
+	  -D CMAKE_SKIP_BUILD_RPATH:BOOL=ON
+          -D CMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=OFF
+	  -D BLAS_INCLUDE_DIRS:PATH=${MKLINCLUDE}
+	  -D LAPCK_INCLUDE_DIRS:PATH=${MKLINCLUDE}
+	  -D TPL_BLAS_LIBRARIES:STRING=${MKLLIBS}
+	  -D TPL_LAPACK_LIBRARIES:STRING=${MKLLIBS}"
+
+if [ -x "${SWIG_EXECUTABLE}" ]; then
+    CONFOPTS="${CONFOPTS} -D SWIG_EXECUTABLE:FILEPATH=${SWIG_EXECUTABLE}"
+fi
+
+package_specific_register () {
+    export TRILINOS_DIR=${INSTALL_PATH}
+}

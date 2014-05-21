@@ -1,0 +1,20 @@
+NAME=CGAL-4.3
+SOURCE=http://fenicsproject.org/pub/software/contrib/
+PACKING=.tar.gz
+CHECKSUM=3fa2d43adbf5c05d76c5ec01f5033cc9
+BUILDCHAIN=cmake
+
+CONFOPTS="-D CMAKE_BUILD_TYPE:STRING=Release
+          -D BUILD_SHARED_LIBS:BOOL=ON
+          -D WITH_CGAL_Core:BOOL=OFF
+          -D WITH_CGAL_ImageIO:BOOL=OFF
+          -D WITH_CGAL_Qt3:BOOL=OFF
+          -D WITH_CGAL_Qt4:BOOL=OFF"
+
+if [ ! -z "${BOOST_USE_MULTITHREADED}" ]; then
+    CONFOPTS="${CONFOPTS} -D Boost_USE_MULTITHREADED:BOOL=${BOOST_USE_MULTITHREADED}"
+fi
+
+package_specific_register () {
+    export CGAL_DIR=${INSTALL_PATH}
+}

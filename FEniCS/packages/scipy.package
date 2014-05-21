@@ -1,0 +1,34 @@
+NAME=scipy-0.12.0
+SOURCE=http://downloads.sourceforge.net/scipy/
+PACKING=.tar.gz
+BUILDCHAIN=python
+
+package_specific_setup () {
+    if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+	echo "
+[blas_opt]
+library_dirs = ${ATLAS_LIB_DIR}
+include_dirs = ${ATLAS_DIR}/include
+libraries = f77blas, cblas, atlas
+
+[lapack_opt]
+library_dirs = ${ATLAS_LIB_DIR}
+include_dirs = ${ATLAS_DIR}/include
+libraries = lapack, f77blas, cblas, atlas
+" >> site.cfg
+    fi
+
+    if [ ! -z "${UMFPACK_DIR}" ]; then
+	echo "
+[amd]
+library_dirs = ${UMFPACK_DIR}/lib
+include_dirs = ${UMFPACK_DIR}/include/suitesparse
+amd_libs = amd
+
+[umfpack]
+library_dirs = ${UMFPACK_DIR}/lib
+include_dirs = ${UMFPACK_DIR}/include/suitesparse
+umfpack_libs = umfpack
+" >> site.cfg
+    fi
+}

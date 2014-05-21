@@ -1,0 +1,20 @@
+NAME=numpy-1.6.1
+SOURCE=http://downloads.sourceforge.net/numpy/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+MKLLIB=/soft/intel/mkl/10.3.6.233/composer_xe_2011_sp1.6.233/mkl/lib/intel64
+MKLINCLUDE=/soft/intel/mkl/10.3.6.233/composer_xe_2011_sp1.6.233/mkl/include
+
+package_specific_build () {
+    echo "[mkl]" > site.cfg
+    echo "library_dirs = ${MKLLIB}" >> site.cfg
+    echo "include_dirs = ${MKLINCLUDE}" >> site.cfg
+    echo "mkl_libs = mkl_intel,mkl_intel_thread,mkl_core,mkl_rt" >> site.cfg
+    python setup.py config --compiler=intelem build_clib --compiler=intelem build_ext --compiler=intelem install --prefix=${INSTALL_PATH}
+}
+
+package_specific_register () {
+    ln -sf ${INSTALL_PATH}/lib/python${PYTHONVER}/site-packages/numpy/core/include/numpy ${INSTALL_PATH}/include/python${PYTHONVER}
+}
+

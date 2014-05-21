@@ -1,0 +1,4 @@
+NAME=zlib-1.2.7
+SOURCE=http://zlib.net/
+PACKING=.tar.gz
+BUILDCHAIN=autotools

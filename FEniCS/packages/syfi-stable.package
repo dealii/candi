@@ -1,0 +1,4 @@
+VERSION=1.0.0
+NAME=syfi-${VERSION}
+SOURCE=http://launchpad.net/fenics-syfi/1.0.x/${VERSION}/+download/
+PACKING=.tar.gz

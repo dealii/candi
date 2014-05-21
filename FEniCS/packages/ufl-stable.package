@@ -1,0 +1,5 @@
+VERSION=1.3.0
+NAME=ufl-${VERSION}
+SOURCE=https://bitbucket.org/fenics-project/ufl/downloads/
+PACKING=.tar.gz
+CHECKSUM=c57de98161c10bbbc0339ef2d1a4749d

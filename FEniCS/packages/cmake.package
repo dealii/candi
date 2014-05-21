@@ -1,0 +1,9 @@
+NAME=cmake-2.8.12.1
+SOURCE=http://www.cmake.org/files/v2.8/
+PACKING=.tar.gz
+BUILDCHAIN=autotools
+
+package_specific_setup () {
+    ./bootstrap --prefix=${INSTALL_PATH}
+    export CMAKE_LIBRARY_PATH=${INSTALL_PATH}
+}

@@ -1,0 +1,4 @@
+NAME=matplotlib-1.0.1
+SOURCE=http://sourceforge.net/projects/matplotlib/files/matplotlib/$NAME/
+PACKING=.tar.gz
+BUILDCHAIN=python

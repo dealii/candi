@@ -1,0 +1,26 @@
+NAME=swig-2.0.3
+SOURCE=http://downloads.sourceforge.net/swig/
+PACKING=.tar.gz
+CHECKSUM=e548ea3882b994c4907d6be86bef90f2
+BUILDCHAIN=autotools
+
+package_specific_setup () {
+    if [ ! -z ${SWIG_CC} ]; then
+	export TMP_SWIG_CC=${CC}
+	export CC=${SWIG_CC}
+    fi
+    if [ ! -z ${SWIG_CXX} ]; then
+	export TMP_SWIG_CXX=${CXX}
+	export CXX=${SWIG_CXX}
+    fi
+}
+
+package_specific_register () {
+    if [ ! -z ${TMP_SWIG_CC} ]; then
+	export CC=${TMP_SWIG_CC}
+    fi
+    if [ ! -z ${TMP_SWIG_CXX} ]; then
+	export CXX=${TMP_SWIG_CXX}
+    fi
+    export SWIG_EXECUTABLE=${INSTALL_PATH}/bin/swig
+}

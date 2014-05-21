@@ -1,0 +1,5 @@
+VERSION=1.4.1
+NAME=setuptools-${VERSION}
+SOURCE=https://pypi.python.org/packages/source/s/setuptools/
+PACKING=.tar.gz
+BUILDCHAIN=python

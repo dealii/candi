@@ -1,0 +1,6 @@
+VERSION=0.11
+NAME=ipython-${VERSION}
+SOURCE=http://archive.ipython.org/release/${VERSION}/
+PACKING=.tar.gz
+BUILDCHAIN=python
+

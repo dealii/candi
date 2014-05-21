@@ -1,0 +1,5 @@
+VERSION=1.0.0
+NAME=ferari-${VERSION}
+SOURCE=http://launchpad.net/ferari/trunk/${VERSION}/+download/
+PACKING=.tar.gz
+CHECKSUM=e41ed02517f0e8832f27d24e7755c0e2

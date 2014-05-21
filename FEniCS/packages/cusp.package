@@ -1,0 +1,9 @@
+NAME=cusp-v0.3.1
+SOURCE=http://cusp-library.googlecode.com/files/
+PACKING=.zip
+BUILDCHAIN=custom
+EXTRACTSTO=cusp
+
+package_specific_register () {
+    export CUSP_DIR=${DOWNLOAD_PATH}
+}

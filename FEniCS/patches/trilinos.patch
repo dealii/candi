@@ -1,0 +1,36 @@
+diff -Nru trilinos-11.0.3-Source.orig/cmake/TPLs/FindTPLUMFPACK.cmake trilinos-11.0.3-Source/cmake/TPLs/FindTPLUMFPACK.cmake
+--- trilinos-11.0.3-Source.orig/cmake/TPLs/FindTPLUMFPACK.cmake	2012-11-21 10:00:57.966984315 +0100
++++ trilinos-11.0.3-Source/cmake/TPLs/FindTPLUMFPACK.cmake	2012-11-21 10:08:21.946968616 +0100
+@@ -55,7 +55,14 @@
+ 
+ INCLUDE(TribitsTplDeclareLibraries)
+ 
+-TRIBITS_TPL_DECLARE_LIBRARIES( UMFPACK
+-  REQUIRED_HEADERS umfpack.h amd.h UFconfig.h
+-  REQUIRED_LIBS_NAMES umfpack amd
+-  )
++IF (APPLE)
++  TRIBITS_TPL_DECLARE_LIBRARIES( UMFPACK
++    REQUIRED_HEADERS umfpack.h amd.h UFconfig.h
++    REQUIRED_LIBS_NAMES umfpack amd SuiteSparse
++    )
++ELSE()
++  TRIBITS_TPL_DECLARE_LIBRARIES( UMFPACK
++    REQUIRED_HEADERS umfpack.h amd.h UFconfig.h
++    REQUIRED_LIBS_NAMES umfpack amd
++    )
++ENDIF()
+diff -Nru trilinos-11.0.3-Source.orig/packages/PyTrilinos/src/CMakeLists.txt trilinos-11.0.3-Source/packages/PyTrilinos/src/CMakeLists.txt
+--- trilinos-11.0.3-Source.orig/packages/PyTrilinos/src/CMakeLists.txt	2012-11-21 10:00:58.226984311 +0100
++++ trilinos-11.0.3-Source/packages/PyTrilinos/src/CMakeLists.txt	2012-11-21 10:09:24.498966402 +0100
+@@ -195,6 +195,10 @@
+   PROPERTIES LINK_FLAGS "${EXTRA_LINK_ARGS}"
+   )
+ 
++if (APPLE)
++  TARGET_LINK_LIBRARIES(pytrilinos ${PYTHON_LIBRARIES})
++endif()
++
+ #
+ # Define the PyTrilinos swig setup
+ SET(CMAKE_SWIG_FLAGS "")

@@ -1,0 +1,9 @@
+NAME=madlib-1.3.0
+SOURCE=http://sites.uclouvain.be/madlib/sources/
+PACKING=.tar.gz
+BUILDCHAIN=autotools
+CONFOPTS="--enable-ann --enable-gmsh --enable-petsc --enable-extendedAPI"
+
+package_specific_setup () {
+    patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/madlib.patch || true
+}

@@ -1,0 +1,4 @@
+VERSION=snapshot
+NAME=fiat-${VERSION}
+SOURCE=http://fenicsproject.org/pub/software/fiat/
+PACKING=.tar.gz

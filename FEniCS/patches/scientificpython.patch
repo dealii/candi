@@ -1,0 +1,28 @@
+diff -Nru ScientificPython-2.8.orig/setup.py ScientificPython-2.8/setup.py
+--- ScientificPython-2.8.orig/setup.py	2008-10-28 14:31:44.000000000 +0100
++++ ScientificPython-2.8/setup.py	2010-08-20 09:29:16.000000000 +0200
+@@ -40,13 +40,17 @@
+     extra_compile_args.append("-DNUMARRAY=1")
+ else :
+     extra_compile_args.append("-DNUMPY=1")
+-    if sys.platform == 'win32':
+-        arrayobject_h_include = [os.path.join(sys.prefix,
+-                                 "Lib/site-packages/numpy/core/include")]
+-    else:
+-        arrayobject_h_include = [os.path.join(sys.prefix,
+-                                "lib/python%s.%s/site-packages/numpy/core/include"
+-                                % sys.version_info [:2])]
++    try:
++        import numpy
++        arrayobject_h_include = [numpy.get_include()]
++    except ImportError:
++        if sys.platform == 'win32':
++            arrayobject_h_include = [os.path.join(sys.prefix,
++                                     "Lib/site-packages/numpy/core/include")]
++        else:
++            arrayobject_h_include = [os.path.join(sys.prefix,
++                                     "lib/python%s.%s/site-packages/numpy/core/include"
++                                     % sys.version_info [:2])]
+ 
+ math_libraries = []
+ if sys.platform != 'win32':

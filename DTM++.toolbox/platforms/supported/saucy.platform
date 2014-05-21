@@ -1,0 +1,22 @@
+# Fedora 20
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# su -c 'apt-get install build-essential automake autoconf gfortran \
+# libblas-dev liblapack-dev splint openmpi1.6 cmake git subversion'
+#
+# If you have multiple MPI libraries installed, make sure the
+# appropriate version is selected.
+##
+
+# Platform specific variables
+
+# Define the packages this platform needs
+PACKAGES=(
+once:hdf5
+once:p4est
+once:trilinos
+dealii
+skip:DTM++.toolbox
+)

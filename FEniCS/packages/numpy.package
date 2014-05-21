@@ -1,0 +1,33 @@
+NAME=numpy-1.6.2
+SOURCE=http://downloads.sourceforge.net/numpy/
+PACKING=.tar.gz
+BUILDCHAIN=python
+
+package_specific_setup () {
+    if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+	echo "
+[DEFAULT]
+library_dirs = ${ATLAS_LIB_DIR}
+include_dirs = ${ATLAS_DIR}/include
+
+[blas_opt]
+libraries = f77blas, cblas, atlas
+
+[lapack_opt]
+libraries = lapack, f77blas, cblas, atlas
+" > site.cfg
+
+    elif [ ! -z "${LAPACKANDBLAS_DIR}" ]; then
+	echo "
+[atlas]
+library_dirs = ${LAPACKANDBLAS_DIR}
+atlas_libs = lapack, blas
+" > site.cfg
+    fi
+
+    python setup.py build --fcompiler=gnu95
+}
+
+package_specific_register () {
+    ln -sf ${INSTALL_PATH}/lib/python${PYTHONVER}/site-packages/numpy/core/include/numpy ${INSTALL_PATH}/include/python${PYTHONVER}
+}

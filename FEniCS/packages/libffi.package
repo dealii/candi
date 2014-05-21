@@ -1,0 +1,4 @@
+NAME=libffi-3.0.11
+SOURCE=ftp://sourceware.org/pub/libffi/
+PACKING=.tar.gz
+BUILDCHAIN=autotools

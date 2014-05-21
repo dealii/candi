@@ -1,0 +1,18 @@
+# RHEL 6
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# su -c 'yum install -y \
+# @development-tools gcc-c++ \
+# glibc glibc-devel glibc.i686 glibc-devel.i686 \
+# libmpc libmpc-devel mpfr mpfr-devel gmp gmp-devel \
+# gzip bzip2 '
+#
+##
+
+# Define the packages this platform needs
+PACKAGES=(
+once:gcc
+)
+

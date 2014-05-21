@@ -1,0 +1,20 @@
+NAME=gtest-1.6.0
+SOURCE=http://googletest.googlecode.com/files/
+PACKING=.zip
+BUILDCHAIN=custom
+
+package_specific_build () {
+    mkdir -p build
+    cd build
+    cmake -DBUILD_SHARED_LIBS:BOOL=ON ..
+    make
+}
+
+package_specific_install () {
+    cp -rf include/gtest ${INSTALL_PATH}/include/
+    cp -f build/libgtest*.* ${INSTALL_PATH}/lib/
+}
+
+package_specific_register () {
+    export GTEST_DIR=${INSTALL_PATH}
+}

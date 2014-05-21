@@ -1,0 +1,35 @@
+# RHEL 6
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# su -c 'yum install -y svn \
+# @development-tools gcc-c++ openmpi-devel cmake \
+# blas blas-devel lapack lapack-devel \
+# boost boost-devel boost-python boost-openmpi boost-openmpi-devel boost-openmpi-python \
+# doxygen graphviz graphviz-devel splint qt-devel'
+#
+# If you have multiple MPI libraries installed, make sure the
+# appropriate version is selected.
+# 
+# Check available and loaded modules:
+# 
+# module avial
+# module list
+# 
+# and load an appropriate module, e.g.:
+#
+# module load openmpi-x86_64
+##
+
+# Platform specific variables
+default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
+
+# Define the packages this platform needs
+PACKAGES=(
+once:hdf5
+once:p4est
+once:trilinos
+dealii
+skip:DTM++.toolbox
+)

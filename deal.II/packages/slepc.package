@@ -1,0 +1,19 @@
+VERSION=3.4.4
+NAME=slepc-${VERSION}
+SOURCE=http://www.grycap.upv.es/slepc/download/download.php?filename=
+PACKING=.tar.gz
+CHECKSUM=329179c5139027c7b293dd5ab0bc112c
+BUILDCHAIN=custom
+
+package_specific_setup () {
+    cd ${BUILDDIR}
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+    
+    ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS}
+    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} PETSC_ARCH=arch-installed-petsc all test install
+}
+
+package_specific_register () {
+    export SLEPC_DIR=${INSTALL_PATH}/${NAME}
+}
+

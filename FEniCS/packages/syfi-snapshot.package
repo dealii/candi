@@ -1,0 +1,4 @@
+VERSION=snapshot
+NAME=syfi-${VERSION}
+SOURCE=http://fenicsproject.org/pub/software/syfi/
+PACKING=.tar.gz

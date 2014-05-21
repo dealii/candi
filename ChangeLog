@@ -1,0 +1,379 @@
+2011-12 Garth N. Wells <gnw20@cam.ac.uk>
+	* Added initial support for opensuse12.1
+2011-12 Johannes Ring <johannr@simula.no>
+	* Updated to 1.0.0 versions all fenics packages
+	* Polished support for squeeze, sid, lucid, maverick and snow
+          leopard
+	* Polished petsc package
+	* Polished support for all fedora platforms
+2011-12 Harish Narayanan <hnarayanan@gmail.com>
+	* Updated to recent versions of peripheral packages
+	* Mirrored cgal and scotch locally because upstream server is
+          flaky
+	* Polished support for lion
+	* Polished support for all fedora platforms
+	* Build full petsc on lion
+	* Updated trilinos package
+2011-12 Joachim B Haga <jobh@simula.no>
+	* Added ability to install dependencies 'once:'
+2011-11 Harish Narayanan <hnarayanan@gmail.com>
+	* Polished support for snow leopard and lion
+	* Polished support for oneiric
+	* Removed troublesome pastix from petsc package
+	* Stopped supporting gentoo
+2011-11 Johan Hake <hake@simula.no>
+	* Refined trilinos package
+2011-11 Johannes Ring <johannr@simula.no>
+	* Added bison packages for debian-based platforms
+	* Updated to recent versions of all fenics packages
+	* Added libboost-math-dev to some platforms
+	* Fixed trilinos and scipy packages not finding umfpack on some
+          platforms
+2011-10 Fredrik Valdmanis <fredva@ifi.uio.no>
+	* Added patch for petsc/slepc 3.2
+2011-10 Douglas N. Arnold <arnold@umn.edu>
+	* Polished support for rhel6
+2011-10 Johannes Ring <johannr@simula.no>
+	* Added libboost-mpi-dev to newer ubuntu and debian platforms
+2011-10 Andre Massing <massing@simula.no>
+	* Updated cgal package
+2011-10 Joachim B Haga <jobh@simula.no>
+	* Polish logging of individual package configure
+	* Updated syfi package
+2011-10 Harish Narayanan <hnarayanan@gmail.com>
+	* Added logging of individual package configure
+	* Updated to recent versions of all fenics packages
+	* Updated petsc and slepc to 3.2
+	* Updated dolfin download path to reflect new branching policy
+2011-10 Garth N. Wells <gnw20@cam.ac.uk>
+	* Updated trilinos package
+	* Polished support for oneiric
+	* Updated scotch package
+2011-09 Johannes Ring <johannr@simula.no>
+	* Added mpi support to boost package
+	* Fixed boost mpi support on older ubuntu and debian platforms
+	* Updated cgal package to cmake
+2011-09 Michele Marcionelli <michele.marcionelli@math.ethz.ch>
+	* Added initial support for fedora15
+	* Added patch to help trilinos compilation
+2011-09 Andre Massing <massing@simula.no>
+	* Added initial support for opensuse11.4
+2011-09 Harish Narayanan <hnarayanan@gmail.com>
+	* Incorporated Richard Katz's suggested port_select syntax change
+	* Added patch to compile petsc as a shared library on lion
+	* Polished support for lion
+	* Updated vtk package
+	* Added boost mpi to lion add snowleopard
+2011-09 Fredrik Valdmanis <fredva@ifi.uio.no>
+	* Added initial support for lion
+2011-08 Garth N. Wells <gnw20@cam.ac.uk>
+	* Added initial support for oneiric
+2011-08 Harish Narayanan <hnarayanan@gmail.com>
+	* Updated to recent versions of peripheral packages
+	* Cached recent MTL4 source on fenicsproject.org
+2011-08 Benjamin Kehlet <benjamik@simula.no>
+	* Reported bugs in few packages
+2011-08 Johannes Ring <johannr@simula.no>
+	* Updated to recent versions of all fenics packages
+	* Polished support for rhel6
+	* Allowed vtk to build without human interaction
+	* Fixed parmetis download link
+	* Fixed bug in mtl package
+2011-07 Harish Narayanan <hnarayanan@gmail.com>
+	* Fixed bug in numpy package
+	* Added boost iostream to all debian and ubuntu platforms
+	* Fixed parmetis download link
+	* Fixed swig support by building it manually on some platforms
+2011-07 Benjamin Kehlet <benjamik@simula.no>
+	* Added pcre package
+2011-06 Johan Hake <hake@simula.no>
+	* Polished support for rhel5
+2011-06 Johannes Ring <johannr@simula.no>
+	* Fixed bug in suitesparse with metis package
+	* Debugged swig support on different platforms
+	* Updated syfi to build with cmake instead of scons
+2011-05 Harish Narayanan <hnarayanan@gmail.com>
+	* Changed distribution license to GNU Lesser General Public
+	  Licence Version 3
+	* Incorporated Johannes' madlib build instructions
+	* Generalised paths to easier allow for different projects
+	* Removed unnecessary additions introduced by femdk support
+	* Polished support for natty
+2011-05 Garth N. Wells <gnw20@cam.ac.uk>
+	* Updated to recent versions of all packages
+	* Fixed scotch package
+2011-05 Anders Logg <logg@simula.no>
+	* Added support for natty
+2011-04 Harish Narayanan <hnarayanan@gmail.com>
+	* Added Andre's suggested fix for Mac OS X gfortran petsc
+	compilation error
+2011-03 Harish Narayanan <hnarayanan@gmail.com>
+	* Removed unused slepc patch
+	* Removed support for femdk
+2011-02 Anders Logg <logg@simula.no>
+	* Polished support for bigblue
+2011-02 Johannes Ring <johannr@simula.no>
+	* Made maverick similar to lucid
+	* Fixed link to stable ufc
+2011-02 Harish Narayanan <hnarayanan@gmail.com>
+	* Updated swig version
+	* Polished support for sid and squeeze
+	* Made fedora13 and fedora14 identical
+	* Updated to recent versions of peripheral packages
+	* Simplified stable fenics packages
+	* Polished support for snowleopard
+	* Updated to recent versions of all fenics packages
+2011-01 Johannes Ring <johannr@simula.no>
+	* Fixed scotch package on debian and snowleopard
+	* Made sid and squeeze identical
+2011-01 Joachim B Haga <jobh@simula.no>
+	* Converted petsc, slepc and trilinos to standard build chains
+	* Added support for separate dorsal_configure and dorsal_build
+	  output
+	* Polished ML support in petsc
+	* Added support for running dolfin in valgrind
+2011-01 Harish Narayanan <hnarayanan@gmail.com>
+	* Moved snowleopard to python27
+2011-01 Johan Hake <hake@simula.no>
+	* Added ml support to petsc package
+2011-01 Garth N. Wells <gnw20@cam.ac.uk>
+	* Added support for rhel6 (and scientificlinux6)
+	* Updated petsc, scotch, boost, cmake and cgal packages
+2010-12 Johannes Ring <johannr@simula.no>
+	* Removed run time path information from dolfin build
+2010-12 Harish Narayanan <hnarayanan@gmail.com>
+	* Fixed bugs in  petsc and mtl4 packages
+	* Made wget smarter about downloading files from flaky URLs
+	* Added generic cmake build option
+2010-12 Gerd Wachsmuth <gerd.wachsmuth@mathematik.tu-chemnitz.de>
+	* Install actual files instead of making symlinks
+2010-12 Garth N. Wells <gnw20@cam.ac.uk>
+	* Added support for fedora14
+	* Enabled trilinos for all supported platforms
+	* Updated petsc and trilinos versions
+2010-11 Garth N. Wells <gnw20@cam.ac.uk>
+	* Added pastix (multi-threaded LU) support to petsc
+	* Updated petsc and trilinos versions
+2010-10 Harish Narayanan <hnarayanan@gmail.com>
+	* Updated fenics.org to fenicsproject.org to reflect move
+	* Updated slepc version
+2010-09 Anders Logg <logg@simula.no>
+	* Polished support for snowleopard
+	* Updated to recent versions of all fenics packages
+2010-09 Garth N. Wells <gnw20@cam.ac.uk>
+	* Updated to slepc 3.1-p2
+2010-09 Harish Narayanan <hnarayanan@gmail.com>
+	* Updated documentation to reflect new directory structure
+	* Updated the "one-click" installer
+	* Polished support for snowleopard
+	* Updated cmake builds to respect CONFOPTS
+2010-08 Garth N. Wells <gnw20@cam.ac.uk>
+	* Moved lenny to deprecated
+	* Moved sid to supported
+2010-08 Marie E. Rognes <meg@simula.no>
+	* Polished support for gentoo
+2010-08 Harish Narayanan <hnarayanan@gmail.com>
+	* Polished support for snowleopard
+	* Added support for fedora machines without redhat-lsb
+	* Added scripts for auto-generating author lists and listing
+	  unused packages and patches
+	* Removed several unused packages
+	* Fixed bugs related to new platform file placements
+	* Added support for 32/64-bit architecture-independent builds
+	* Fixed python crashing bug introduced by cmake on darwin
+	* Fixed breakages introduced in snowleopard
+	* Removed (nonexistent) support for xp
+	* Updated documentation to reflect new directory structure
+	* Updated the "one-click" installer
+2010-08 Johannes Ring <johannr@simula.no>
+	* Added patch for scientificpython to help it detect numpy
+	* Modified trilinos package to account for the new cmake-based
+	  install of its 10.x branch
+2010-08 Anders Logg <logg@simula.no>
+	* Fixed bugs introduced by move to petsc/slepc 3.1x
+	* Broke many things through several hasty changes
+	* Fixed breakages introduced in snowleopard
+	* Fixed missing malloc.h bug in parmetis
+	* Modified dolfin package to account for new cmake-based install
+	* Split platform files into supported, contributed and deprecated
+	* Fixed breakages introduced in ubuntu platforms
+	* Resumed mirroring files hosted on unstable servers
+	* Polished support for maverick
+	* Tested and corrected breakages in different platforms
+	* Updated to recent versions of all fenics packages
+2010-08 Garth N. Wells <gnw20@cam.ac.uk>
+	* Updated to petsc/slepc 3.1x
+	* Broke many things through several hasty changes
+	* Added initial support for maverick
+	* Added initial support for opensuse11.3
+	* Added lib64 to library search path on 64bit machines
+	* Added out-of-source build support to cmake
+	* Fixed breakages introduced in fedora13
+	* Fixed architecture-sniffing in scotch platform
+	* Polished support for opensuse11.3
+	* Removed scons requirement from supported platform files
+	* Added initial support for squeeze
+	* Tested and corrected breakages in different platforms
+2010-07 Douglas N. Arnold <arnold@umn.edu>
+	* Added initial support for fedora13
+2010-07 Patrick Riesen <priesen@student.ethz.ch>
+	* Fixed armadillo package on 64-bit machines
+2010-06 Harish Narayanan <harish@simula.no>
+	* Updated to recent versions of all packages
+        * Updated documentation
+2010-06 Alexander Jarosch <alex@alexj.at>
+	* Polished support for gentoo/sabayon
+        * Added initial support for gentoo/sabayon
+2010-05 Harish Narayanan <harish@simula.no>
+	* Added package for armadillo
+	* Removed ssl certificate checking
+2010-05 Anders Logg <logg@simula.no>
+	* Fixed bugs introduced by new directory structure
+2010-04 Roman Putanowicz <putanowr@l5.pk.edu.pl>
+	* Generalised dorsal to handle projects other than FEniCS
+	* Added support for separate build directories
+2010-04 Harish Narayanan <harish@simula.no>
+	* Added initial support for fedora12
+	* Polished support for fedora11
+2010-04 Joachim B Haga <jobh@simula.no>
+	* Added initial support for lucid
+	* Polished platform sniffing
+2010-03 Harish Narayanan <harish@simula.no>
+	* Updated to recent versions of all packages
+2010-03 Krishna S. Rudraraju <rudraa@umich.edu>
+	* Fixed numpy link
+2010-03 Dimitris Tsarouchas <dt335@cam.ac.uk>
+	* Polished parallel support on karmic
+2010-03 Douglas N. Arnold <arnold@umn.edu>
+	* Polished support for fedora11
+	* Fixed gforge links
+2010-03 Aron Wahlberg <aron@simula.no>
+	* Fixed vtk on snowleopard
+2010-02 Harish Narayanan <harish@simula.no>
+	* Removed support for gts
+	* Modified the default installation location to be more elegant
+	* Added the ability to install single packages
+	* Enabled a parallel version of scotch
+	* Polished support for snowleopard
+	* Added package for MAdLib
+	* Updated to recent versions of all packages
+	* Added scientific python support to all platforms
+2010-01 Harish Narayanan <harish@simula.no>
+	* Fixed cgal error on leopard
+2009-12 Anders Logg <logg@simula.no>
+	* Added zenity support to the "one-click" installer
+2009-12 Harish Narayanan <harish@simula.no>
+	* Vastly improved documentation with the introduction of a small
+	  usage manual
+	* Added initial version of the "one-click" installer
+	* Polished cgal package and added it to all platforms
+	* Added initial support for opensuse11.2
+	* Added skip-based platform example
+	* Updated to recent versions of all packages
+2009-11 Andre Massing <massing@simula.no>
+	* Added initial support for cgal
+2009-11 Harish Narayanan <harish@simula.no>
+	* Polished support for fedora11
+	* Added support for bzr repositories
+	* Reflected recent move of fenics projects to launchpad
+	* Removed default building of syfi and its dependencies
+2009-11 Douglas N. Arnold <arnold@umn.edu>
+	* Added initial support for fedora11
+2009-10 Harish Narayanan <harish@simula.no>
+	* Polished support for bigblue
+	* Streamlined the main build script
+	* Improved support for snowleopard (and moved to MacPorts)
+	* Improved support for rhel5
+	* Added ability to skip building of specific packages
+2009-10 Garth N. Wells <gnw20@cam.ac.uk>
+	* Improved support for rhel5
+2009-09 Joachim B Haga <jobh@simula.no>
+	* Prettified display of home directory in output
+2009-09 Harish Narayanan <harish@simula.no>
+	* Started experimenting with mumps support (in petsc)
+	* Added initial support for snowleopard
+	* Updated to recent versions of all packages
+2009-09 Harish Narayanan <harish@simula.no>
+	* Started mirroring files hosted on unstable servers
+	* Removed support for gutsy
+2009-08 Anders Logg <logg@simula.no>
+	* Added initial support for karmic
+2009-07 Harish Narayanan <harish@simula.no>
+	* Updated to recent versions of all packages
+	* Matched FEniCS package versions to Automatic Augustin
+2009-06 Harish Narayanan <harish@simula.no>
+	* Moved to the new DOLFIN build sequence
+2009-05 Joachim B Haga <jobh@simula.no>
+	* Fixed patching sequence to ensure patches don't fail after the
+	  first application
+2009-05 Harish Narayanan <harish@simula.no>
+	* Introduced a simple patching schema
+2009-04 Anders Logg <logg@simula.no>
+	* Added support for jaunty
+2009-04 Harish Narayanan <harish@simula.no>
+	* Updated to recent versions of all packages
+	* Worked around Trilinos bug with repeated installs
+	* Added support for git repositories
+	* Added package for swiginac
+2009-03 Aron Wahlberg <aron.wahlberg@gmail.com>
+	* Improved support for tiger
+2009-03 Peter-Jan Randewijk <pjrandew@sun.ac.za>
+	* Added initial support for opensuse11.1
+2009-02 Harish Narayanan <harish@simula.no>
+	* Added support for lenny
+	* Modified ufc package to account for new scons-based install
+	* Generalised petsc/slepc packages to handle slight differences in
+	  2x and 3x versions of the software
+	* Updated to recent versions of all packages
+2009-01 Harish Narayanan <harish@simula.no>
+	* Added support for fedora10
+	* Added preliminary support for tiger
+	* Added support for etch
+	* Improved functionality of rhel4/rhel5
+	* Introduced a mechanism for installing stable
+	  versions of FEniCS packages
+	* Updated to recent versions of all packages
+2008-11 Joachim B Haga <jobh@simula.no>
+	* Introduced the function 'default' instead of
+	  'export' to prevent clobbering existing variables
+2008-11 Harish Narayanan <harish@simula.no>
+	* Modularised DOLFIN package file and added remaining
+	  dependencies
+	* Updated to recent versions of all packages
+2008-10 Joachim B Haga <jobh@simula.no>
+	* Automatically guess the platform
+	* Create build log and rebuild script for individual
+	  packages
+	* Support for parallel make/scons
+	* Improved slepc/petsc packages to avoid the need
+	  for manually setting LD_LIBRARY_PATH
+	* Display platfom-specific instructions as part of
+	  the build process
+2008-10 Harish Narayanan <harish@simula.no>
+	* Automatically probe for system python version
+	* Added preliminary support for xp
+2008-09 Luk ShunTim <shuntim.luk@polyu.edu.hk>
+	* Added support for sid
+2008-09 Harish Narayanan <harish@simula.no>
+	* Added support for leopard
+	* Removed the need for gfortran (in mpi, petsc,
+	  suitesparse)
+	* Added support for custom configuration options
+	* Added colour progress/error reporting
+	* Updated to recent versions of all packages
+2008-09 Ilmar Wilbers <ilmarw@simula.no>
+	* Added support for intrepid
+	* Added support for gutsy
+2008-08 Harish Narayanan <harish@simula.no>
+	* Changed distribution license to GPL version 3
+	* Complete rewrite; modularised the scripts
+	* Created a framework for easy addition of additional
+	  platforms
+	* Added support for rhel5
+2008-07 Ilmar Wilbers <ilmarw@simula.no>
+	* Added basic error reporting
+	* Replaced autotools-based builds (for dolfin, syfi)
+	  with scons
+	* Added support for hardy
+2007-06 Harish Narayanan <hnarayan@umich.edu>
+	* Initial release for rhel4

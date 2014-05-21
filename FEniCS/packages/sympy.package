@@ -1,0 +1,4 @@
+NAME=sympy-0.7.1
+SOURCE=http://pypi.python.org/packages/source/s/sympy/
+PACKING=.tar.gz
+BUILDCHAIN=python

@@ -1,0 +1,15 @@
+VERSION=3.1.2
+NAME=mpfr-${VERSION}
+SOURCE=http://www.mpfr.org/mpfr-3.1.2/
+PACKING=.tar.bz2
+BUILDCHAIN=custom
+
+package_specific_build () {
+    ./configure --prefix=${INSTALL_PATH} --enable-shared=yes --with-gmp=${GMP_DIR}
+    make -j ${PROCS}
+    make install
+}
+
+package_specific_register () {
+    export MPFR_DIR=${INSTALL_PATH}
+}

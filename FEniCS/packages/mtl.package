@@ -1,0 +1,13 @@
+NAME=MTL-4.0.8447-Linux
+SOURCE=http://fenicsproject.org/pub/software/contrib/
+PACKING=.tar.bz2
+CHECKSUM=ff08fecd44e6e9bccc41bdd6f147952e
+BUILDCHAIN=custom
+
+package_specific_build () {
+    cp -r ${UNPACK_PATH}/${EXTRACTSTO}/usr/* ${INSTALL_PATH}
+}
+
+package_specific_register () {
+    export MTL4_DIR=${INSTALL_PATH}
+}

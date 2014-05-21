@@ -1,0 +1,4 @@
+NAME=uflacs
+SOURCE=https://bitbucket.org/fenics-project/
+PACKING=git
+BUILDCHAIN=python

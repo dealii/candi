@@ -1,0 +1,4 @@
+VERSION=snapshot
+NAME=instant-${VERSION}
+SOURCE=http://fenicsproject.org/pub/software/instant/
+PACKING=.tar.gz

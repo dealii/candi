@@ -1,0 +1,26 @@
+* Introduce automatic dependency resolution.
+  Difficulty: High      Urgency: Low
+
+* Test Dorsal on supported platforms and correct the package lists if
+  necessary. Feel free to contribute information for other platforms
+  as well.
+  Difficulty: Low       Urgency: High
+
+* Add (MD5/SHA1) check summing mechanism to the downloading routine
+  (and corresponding hashes to the package files) to verify if
+  downloaded files are sane.
+  Difficulty: Moderate  Urgency: Moderate
+
+* Sniff out 32/64 bit-ness of machines automatically to suitably set
+  GMP_ARCH, SCOTCH_ARCH etc.
+  Difficulty: Moderate	Urgency: High
+
+* Insert download links somewhere in the documentation.
+  Difficulty: Trivial   Urgency: Moderate
+
+* Introduce mechanism to update package lists.
+  Difficulty: Moderate	Urgency: Low
+
+* Add the ability to "clean" a build. This could be as simple as
+  cleaning the dorsal_build folder, or something more complex.
+  Difficulty: Moderate	Urgency: Low

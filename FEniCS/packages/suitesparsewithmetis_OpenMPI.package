@@ -1,0 +1,45 @@
+VERSION=3.4.0
+NAME=SuiteSparse-${VERSION}
+SOURCE=http://www.cise.ufl.edu/research/sparse/SuiteSparse/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+EXTRACTSTO=SuiteSparse
+
+package_specific_build () {
+    sed -i 's/CFLAGS = -O/CFLAGS = -fPIC -O/g' UFconfig/UFconfig.mk
+    sed -i 's/CC = cc/CC = mpicc/g' UFconfig/UFconfig.mk
+    sed -i 's/CPLUSPLUS = g++/CPLUSPLUS = mpiCC/g' UFconfig/UFconfig.mk
+    sed -i 's/F77 = f77/F77 = mpif90/g' UFconfig/UFconfig.mk
+    sed -i 's/-lg2c//g' UFconfig/UFconfig.mk
+    sed -i 's,-lblas,-L${INSTALL_PATH}/lib/ -lblas,g' UFconfig/UFconfig.mk
+    sed -i 's,begin,,g' UFconfig/UFconfig.mk
+    sed -i 's,-llapack,-L${INSTALL_PATH}/lib/ -llapack,g' UFconfig/UFconfig.mk
+    sed -i 's,XERBLA =,# XERBLA =,g' UFconfig/UFconfig.mk
+    sed -i 's,# # XERBLA = ../../UFconfig/xerbla/libxerbla.a, XERBLA = ../../UFconfig/xerbla/libxerbla.a,' UFconfig/UFconfig.mk
+    sed -i 's,-fexceptions, -fexceptions,g' UFconfig/UFconfig.mk
+
+    if [ ! -e metis-4.0.3.tar.gz ]
+    then
+	wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-4.0.3.tar.gz
+    fi
+    tar -xzf metis-4.0.3.tar.gz
+    ln -sf metis-4.0.3 metis-4.0
+    cd metis-4.0
+    perl -pi -e 's/COPTIONS =/COPTIONS = -fPIC/g' Makefile
+    make -j
+    cd ..
+    cd UFconfig/xerbla/
+    make all
+    cd ../../
+    make 
+}
+
+package_specific_install () {
+    mkdir -p ${INSTALL_PATH}/include/suitesparse
+    ln -sf `find ${PWD} -name '*.h' | grep -vi demo | xargs` ${INSTALL_PATH}/include/suitesparse
+    ln -sf `find ${PWD} -name 'lib*.a' | xargs` ${INSTALL_PATH}/lib
+}
+
+package_specific_register () {
+    export UMFPACK_DIR=${INSTALL_PATH}
+}

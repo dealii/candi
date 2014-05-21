@@ -1,0 +1,12 @@
+NAME=openmpi-1.6.2
+SOURCE=http://www.open-mpi.org/software/ompi/v1.6/downloads/
+PACKING=.tar.bz2
+BUILDCHAIN=autotools
+
+CONFOPTS="--enable-mpi-thread-multiple
+          --enable-opal-multi-threads
+          --with-threads=posix
+          --disable-mpi-profile"
+
+# FIXME: This must be used on OS X:
+#CONFOPTS="${CONFOPTS} --disable-mpi-f90"

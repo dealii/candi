@@ -1,0 +1,5 @@
+VERSION=1.4.17
+NAME=glproto-${VERSION}
+SOURCE=http://ftp.x.org/pub/individual/proto/
+PACKING=.tar.gz
+BUILDCHAIN=autotools

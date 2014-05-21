@@ -1,0 +1,26 @@
+NAME=vtk-5.10.1
+SOURCE=http://www.vtk.org/files/release/5.10/
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+EXTRACTSTO=VTK5.10.1
+
+CONFOPTS="-D CMAKE_BUILD_TYPE:STRING=Release
+          -D BUILD_TESTING:BOOL=OFF
+          -D BUILD_SHARED_LIBS:BOOL=ON
+          -D VTK_WRAP_PYTHON:BOOL=ON
+          -D VTK_USE_TK:BOOL=ON
+          -D VTK_USE_GL2PS:BOOL=ON
+          -D VTK_USE_QT=ON"
+
+if [ -d "${VTK_DATA_ROOT}" ]; then
+    CONFOPTS="${CONFOPTS} -D VTK_DATA_ROOT:PATH=${VTK_DATA_ROOT}"
+fi
+
+package_specific_setup () {
+#    chmod 600 Utilities/vtktiff/tif_fax3sm.c
+}
+
+package_specific_register () {
+    export LD_LIBRARY_PATH=${INSTALL_PATH}/lib/vtk-5.8:${LD_LIBRARY_PATH}
+    export DYLD_LIBRARY_PATH=${INSTALL_PATH}/lib/vtk-5.8:${DYLD_LIBRARY_PATH}
+}

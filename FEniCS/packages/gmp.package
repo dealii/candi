@@ -1,0 +1,9 @@
+NAME=gmp-5.0.5
+SOURCE=ftp://ftp.gnu.org/gnu/gmp/
+PACKING=.tar.bz2
+BUILDCHAIN=autotools
+CONFOPTS="--enable-cxx"
+
+package_specific_register () {
+    export GMP_DIR=${INSTALL_PATH}
+}

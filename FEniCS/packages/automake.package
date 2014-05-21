@@ -1,0 +1,6 @@
+VERSION=1.14
+NAME=automake-${VERSION}
+SOURCE=http://ftp.gnu.org/gnu/automake/
+PACKING=.tar.gz
+BUILDCHAIN=autotools
+#EXTRACTSTO=Mesa-${VERSION}

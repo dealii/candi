@@ -1,0 +1,28 @@
+NAME=foo-x.y.z
+SOURCE=http://foo.org/downloads/foo/
+PACKING=[.tar.gz|.tar.bz2|.tbz2|.tgz|.zip|hg|svn|git|bzr]
+BUILDCHAIN=[autotools|python|scons|cmake|custom]
+EXTRACTSTO=barnotfoo
+CONFOPTS=""
+SCONSOPTS=""
+TARGETS=('' install)
+
+package_specific_setup () {
+    # Any non-standard configuration and pre-build instructions go
+    # here.
+}
+
+package_specific_build () {
+    # Any custom build instructions go here. This function is only
+    # used if the 'custom' buildchain is defined.
+}
+
+package_specific_install () {
+    # Any non-standard installation and post-build instructions go
+    # here.
+}
+
+package_specific_register () {
+    # Any environment variables defined by this package that are
+    # required by other packages go here.
+}

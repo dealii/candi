@@ -1,0 +1,5 @@
+VERSION=1.3.0
+NAME=ffc-${VERSION}
+SOURCE=http://launchpad.net/ffc/1.3.x/${VERSION}/+download/
+PACKING=.tar.gz
+BUILDCHAIN=python

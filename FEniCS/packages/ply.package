@@ -1,0 +1,5 @@
+VERSION=3.4
+NAME=ply-${VERSION}
+SOURCE=http://www.dabeaz.com/ply/
+PACKING=.tar.gz
+BUILDCHAIN=python

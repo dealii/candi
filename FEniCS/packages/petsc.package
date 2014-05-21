@@ -1,0 +1,37 @@
+NAME=petsc-3.4.2
+SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
+PACKING=.tar.gz
+CHECKSUM=449e27f3c9a37d0bd9d7941cc79a09a9
+BUILDCHAIN=custom
+
+CONFOPTS="COPTFLAGS=-O2
+          --with-debugging=0 --with-shared-libraries=1
+          --with-clanguage=cxx --with-c-support=1"
+
+for external_pkg in umfpack hypre mumps scalapack blacs ptscotch scotch metis parmetis ${PETSC_EXTRA_PACKAGES}; do
+    CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
+done
+
+if [ "${TRILINOS_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} --with-ml=1
+              --with-ml-lib=${TRILINOS_DIR}/lib/libml.so
+              --with-ml-include=${TRILINOS_DIR}/include"
+fi
+
+if [ "${CUDA_DIR}" ] && [ "${CUSP_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} --with-cuda=1 --with-cuda-dir=${CUDA_DIR}
+    --with-cusp=1 --with-cusp-dir=${CUSP_DIR}
+    --with-thrust=1 --with-thrust-dir=${CUDA_DIR}/include"
+fi
+
+package_specific_build () {
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+    ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    make PETSC_DIR=${PWD} PETSC_ARCH=${PETSC_ARCH} all
+    make PETSC_DIR=${PWD} PETSC_ARCH=${PETSC_ARCH} install
+}
+
+package_specific_register () {
+    export PETSC_DIR=${INSTALL_PATH}
+    unset PETSC_ARCH
+}

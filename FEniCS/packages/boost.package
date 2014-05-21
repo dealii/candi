@@ -1,0 +1,27 @@
+NAME=boost_1_55_0
+SOURCE=http://downloads.sourceforge.net/boost/
+PACKING=.tar.bz2
+CHECKSUM=d6eef4b4cacb2183f2bf265a5a03a354
+BUILDCHAIN=custom
+
+if [ ! -z "${BZIP2_DIR}" ]; then
+    CONFOPTS="${CONFOPTS}
+              -sNO_BZIP2=0
+              -sBZIP2_BINARY=bz2
+              -sBZIP2_INCLUDE=${BZIP2_DIR}/include
+              -sBZIP2_LIBPATH=${BZIP2_DIR}/lib"
+fi
+
+package_specific_build () {
+    cp -rf ${UNPACK_PATH}/${NAME}/* .
+    ./bootstrap.sh --prefix=${INSTALL_PATH}
+    echo "using mpi ;" > user-config.jam
+    ./b2 -j ${PROCS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
+}
+
+package_specific_register () {
+    export BOOST_ROOT=${INSTALL_PATH}
+    export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
+    export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
+    export BOOST_USE_MULTITHREADED=OFF
+}

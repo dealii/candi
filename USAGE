@@ -1,0 +1,309 @@
+Using, troubleshooting and extending Dorsal
+
+ This document contains instructions for compiling and installing the
+ FEniCS Project with the help of Dorsal. It contains the following
+ sections, which catalogue common use cases, provide information on
+ troubleshooting common problems, and present a brief look at the
+ design of Dorsal, should you want to extend it.
+
+  Basic usage
+  Repeated builds
+  Coexisting stable and development builds
+  Mixed stable and development builds
+  Troubleshooting and getting help
+  Elements of Dorsal's design
+
+
+ Basic usage
+
+  The simplest scenario is setting up everything for the first time on
+  a supported platform. In order to do this, you:
+
+   1. First tweak dorsal.cfg to your liking. This file lets you
+      specify some key information to Dorsal, including where you'd
+      like to download and install the FEniCS Project components, and
+      whether you'd like to install stable releases or (potentially
+      unstable) development versions of projects.
+
+   2. Invoke the build script by running:
+
+      ./dorsal.sh
+
+   3. At this point, Dorsal attempts to guess your operating
+      environment (platform) and provides a list of instructions to
+      ensure your system is ready for installing FEniCS. Go through
+      these carefully, and copy and paste appropriate commands into
+      another terminal window to prepare your system.
+
+      If Dorsal fails to recognise your platform, or you want to
+      specify a known platform you are interested in (myplatform),
+      invoke Dorsal via:
+
+      ./dorsal.sh FEniCS/platforms/supported/myplatform.platform
+
+   4. Once you've completed these steps, hit enter to begin the
+      installation!
+
+  If all goes according to plan, you should see a lot of
+  compilation-related text scroll past your screen and eventually end
+  up with a complete, up-to-date installation of various FEniCS
+  projects and their corresponding dependencies.
+
+  Don't forget to follow any post-build instructions before rushing
+  off to try the demos!
+
+
+ Repeated builds
+
+  The FEniCS Project is under active development. If you are
+  interested in keeping up with the development versions of its
+  components, you will want to frequently rerun dorsal.sh (with
+  STABLE_BUILD set to false in dorsal.cfg).
+
+  Unfortunately, Dorsal is not currently smart enough to automatically
+  figure out what it has previously installed. It will insist on
+  rebuilding all projects and their dependencies, even though you are
+  probably only interested in tracking a few fast-changing FEniCS
+  Project components.
+
+  In order to get around this limitation, Dorsal has a package
+  skipping mechanism which you can use to manually specify packages
+  you would like it to skip on subsequent rebuilds. The following
+  steps describe how you use this mechanism to rebuild just the
+  projects you want to track.
+
+   1. Ensure that STABLE_BUILD set to false in dorsal.cfg. This makes
+      sure Dorsal knows to fetch and build development versions of
+      projects.
+
+   2. Create a new copy of your system's platform file
+      (system.platform) in the platforms folder. Call it, say,
+      myplatform.platform.
+
+      cd FEniCS/platforms/supported
+      cp system.platform myplatform.platform
+
+   3. Open myplatform.platform in your favourite text editor, and
+      prepend the string `skip:' (without the quotes) before every
+      package on the list PACKAGES you would like Dorsal to skip on
+      subsequent builds. So now, your list might look something like
+      the following:
+
+      PACKAGES=(
+      skip:parmetis
+      skip:petsc
+      skip:slepc
+      skip:gmp
+      skip:mtl
+      skip:trilinos
+      skip:scotch
+      fiat
+      ferari
+      ufc
+      ufl
+      ffc
+      viper
+      instant
+      dolfin
+      )
+
+      See the file fenics.platform for an example of what I use on my
+      (Mac OS X Snow Leopard) machine. Notice that this file is
+      identical to snowleopard.platform, with a few packages 'skip:'ped.
+
+   4. Now, every time you wish to rebuild just the few packages you
+      want to track, invoke Dorsal via:
+
+      ./dorsal.sh FEniCS/platforms/supported/myplatform.platform
+
+  Using Dorsal in this manner should save you a lot of time if you
+  need to rebuild FEniCS often.
+
+
+ Coexisting stable and development builds
+
+  Another common requirement is tracking both stable releases (to get
+  actual work done!) and development versions (to check out and
+  contribute to new functionality) of FEniCS Project components.
+
+  In order to achieve this, you:
+
+   1. Modify the variables in dorsal.cfg to build stable releases of
+      FEniCS Project components and install them in some convenient
+      location. e.g.,
+
+      DOWNLOAD_PATH=${HOME}/Work/FEniCS/stable/src
+      INSTALL_PATH=${HOME}/Work/FEniCS/stable
+      STABLE_BUILD=true
+
+   2. Invoke the build script by running:
+
+      ./dorsal.sh
+
+   3. Modify the variables in dorsal.cfg to build development versions
+      of FEniCS Project components and install them in another
+      location. e.g.,
+
+      DOWNLOAD_PATH=${HOME}/Work/FEniCS/unstable/src
+      INSTALL_PATH=${HOME}/Work/FEniCS/unstable
+      STABLE_BUILD=false
+
+   4. Invoke the build script once more by running:
+
+      ./dorsal.sh
+
+
+ Mixed stable and development builds
+
+  A final use case is tracking an arbitrary mix of stable releases and
+  development versions of FEniCS Project components. It is sometimes
+  necessary to do this when you want to follow bleeding edge versions
+  of some FEniCS projects, but some others are simultaneously broken.
+
+  In order to achieve this, you:
+
+   1. Ensure STABLE_BUILD=false in dorsal.cfg to make sure Dorsal
+      knows to go and fetch development versions of packages by
+      default.
+
+   2. Create a new copy of your system's platform file
+      (system.platform) in the platforms folder. Call it, say,
+      myplatform.platform.
+
+      cd platforms
+      cp system.platform myplatform.platform
+
+   3. Open myplatform.platform in your favourite text editor, and
+      append the string `-stable' to all the packages you want stable
+      versions of. So now, your list might look something like the
+      following:
+
+      PACKAGES=(
+      ...
+      fiat
+      ferari
+      ufc-stable
+      ufl
+      ffc-stable
+      viper
+      instant
+      dolfin
+      )
+
+   4. Now, invoke Dorsal via:
+
+      ./dorsal.sh FEniCS/platforms/supported/myplatform.platform
+
+ Installing FEniCS with CUDA support
+
+  Dorsal can build PETSc with support for CUDA, using the Cusp and Thrust
+  libraries. This enables DOLFIN to use PETSc's interfacing to Cusp for GPU
+  acceleration of the solution of linear systems. Before builing with Dorsal, 
+  you must manually install CUDA and verify the installation. Instructions
+  are provided at NVIDIA's webpages: www.nvidia.com.
+  
+  After instaling CUDA, do the following to have Dorsal build PETSc
+  with CUDA support:
+
+   1. Set the variable CUDA_DIR, either in your environment:
+
+       export CUDA_DIR=<path to cuda install> (default /usr/local/cuda)
+
+      or in the .platform file corresponding to your system:
+     
+       default CUDA_DIR=<path to cuda install>
+
+   2. Add "cusp" to the list of packages to install in your the .platform-file
+      corresponding to your system. It's important to add "cusp" before "petsc",
+      like this:
+
+      PACKAGES=(
+      cusp
+      ...
+      petsc
+      ...
+      dolfin
+      )
+
+   3. Invoke dorsal.sh as usual.
+
+
+ Troubleshooting and getting help
+
+  If you run into any problems, ensure that you've installed all the
+  preliminary dependencies for your platform (usually from the system
+  package manager) that Dorsal assumes you already have. An incomplete
+  list of this is provided in the .platform file for each platform,
+  along with platform-specific tips. In most cases, these should solve
+  your problem.
+
+  If you know Dorsal supports your platform but it fails to
+  automatically recognise it, try invoking Dorsal by specifying your
+  platform manually:
+
+  ./dorsal.sh FEniCS/platforms/supported/myplatform.platform
+
+  If you're having further difficulty, please see
+  http://fenicsproject.org/support for contact information. We will
+  try to help.
+
+
+ Elements of Dorsal's design
+
+  Dorsal is written in bash and its design is based on a simplified
+  version of the FreeBSD Ports system. The main Dorsal script
+  (dorsal.sh) can be a bit magic in a few places (mostly thanks to ace
+  bash hacker Joachim Berdal Haga), but at the level a user interacts
+  with it, Dorsal is pretty uncomplicated.
+
+  Here is the entire story.
+
+  Platform files are files specific to a given platform. These files
+  live in the `platforms' folder and have the suffix
+  `.platform'. These files contain any system specific variables,
+  build instructions, and contains a list of packages that Dorsal
+  needs to build. Usually, the more packages that your system package
+  manager can handle, the smaller this list will be.
+
+  If you are interested in adding support for a new platform, you
+  should look for an existing platform that is similar to yours, make
+  a copy of it, and try to modify it to suit your needs.
+
+  In order to inform Dorsal how to build each package, we introduce
+  package files. Not surprisingly, package files have the suffix
+  `.package' and live in the `packages' folder. These files specify
+  several package details, including where the package should be
+  downloaded from, how it is packed, what buildchain it uses, any
+  package-specific build instructions if needed, etc. A superset of
+  these attributes are documented in packages/template.package.
+
+  If you are interested in adding support for a new package, take a
+  look at packages/template.package, as well as other related packages
+  for ideas.
+
+  A majority of the package files are only 3--4 lines long, but some
+  highly-specialised ones (e.g. dolfin.package) are significantly
+  bigger. Through needing to support a large number of varied
+  packages, Dorsal has evolved a fairly flexible package definition
+  structure. In my opinion, this is what gives Dorsal its
+  versatility.
+
+  When you invoke Dorsal via:
+
+  ./dorsal.sh FEniCS/platforms/supported/myplatform.platform
+
+  the build script sets any platform specific variables defined in
+  myplatform.platform, and attempts to build and install each package
+  in the list PACKAGES. For each package in the list, it looks at the
+  corresponding package file for hints on how to treat the package.
+
+  Furthermore, when Dorsal is invoked without any arguments:
+
+  ./dorsal.sh
+
+  it tries to do an additional step. Dorsal first tries to guess an
+  appropriate platform file for your system (by probing your operating
+  system for something specific to it), and then proceeds to work on
+  that platform file.
+
+  That completes the story.

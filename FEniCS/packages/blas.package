@@ -1,0 +1,21 @@
+NAME=blas
+SOURCE=http://netlib.org/blas/
+PACKING=.tgz
+BUILDCHAIN=custom
+EXTRACTSTO=BLAS
+
+package_specific_build () {
+    sed -i 's/gfortran/mpif90/g' make.inc
+    sed -i 's/-O3/-O3 -fPIC/g' make.inc
+    sed -i 's/blas$(PLAT).a/libblas.a/g' make.inc
+    make -j ${PROCS}
+}
+
+package_specific_install () {
+    cp *.a ${INSTALL_PATH}/lib/
+}
+
+package_specific_register () {
+    export BLAS_DIR=${INSTALL_PATH}
+    export LAPACKANDBLAS_DIR=${INSTALL_PATH}
+}

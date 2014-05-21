@@ -1,0 +1,54 @@
+NAME=SuiteSparse-4.0.2
+SOURCE=http://www.cise.ufl.edu/research/sparse/SuiteSparse/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+EXTRACTSTO=SuiteSparse
+
+package_specific_build () {
+    mkdir -p ${INSTALL_PATH}/include/suitesparse
+    cat > SuiteSparse_config/SuiteSparse_config.mk << EOF
+#CF = \$(CFLAGS) \$(CPPFLAGS) \$(TARGET_ARCH) -O3 -fexceptions -fPIC
+CF = \$(CFLAGS) \$(CPPFLAGS) \$(TARGET_ARCH) -O3 -fexceptions -fPIC -DNTIMER
+RANLIB = ranlib
+ARCHIVE = \$(AR) \$(ARFLAGS)
+CP = cp -f
+MV = mv -f
+F77 = gfortran
+F77FLAGS = \$(FFLAGS) -O
+F77LIB =
+#LIB = -lm -lrt
+LIB = -lm
+INSTALL_LIB = ${INSTALL_PATH}/lib
+INSTALL_INCLUDE = ${INSTALL_PATH}/include/suitesparse
+XERBLA =
+GPU_BLAS_PATH =
+GPU_CONFIG =
+UMFPACK_CONFIG =
+CHOLMOD_CONFIG = \$(GPU_CONFIG) -DNPARTITION
+SPQR_CONFIG =
+TBB =
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d *.gcda *.gcno
+EOF
+
+    if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+        cat >> SuiteSparse_config/SuiteSparse_config.mk << EOF
+BLAS = -L${ATLAS_LIB_DIR} -lcblas -lf77blas -latlas
+LAPACK = -L${ATLAS_LIB_DIR} -llapack
+EOF
+    else
+        cat >> SuiteSparse_config/SuiteSparse_config.mk << EOF
+BLAS = -lblas -lgfortran
+LAPACK = -llapack
+EOF
+    fi
+
+    make
+}
+
+package_specific_install () {
+    make install
+}
+
+package_specific_register () {
+    export UMFPACK_DIR=${INSTALL_PATH}
+}

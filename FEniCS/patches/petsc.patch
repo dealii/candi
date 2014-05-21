@@ -1,0 +1,56 @@
+diff -Nru petsc-3.2-p6.orig/src/mat/impls/aij//mpi/mpicusp/mpiaijAssemble.cu petsc-3.2-p6/src/mat/impls/aij//mpi/mpicusp/mpiaijAssemble.cu
+--- petsc-3.2-p6.orig/src/mat/impls/aij//mpi/mpicusp/mpiaijAssemble.cu	2012-02-09 14:29:16.530465405 +0100
++++ petsc-3.2-p6/src/mat/impls/aij//mpi/mpicusp/mpiaijAssemble.cu	2012-02-09 14:51:53.720465807 +0100
+@@ -15,7 +15,7 @@
+ #include <cusp/array1d.h>
+ #include <cusp/print.h>
+ #include <cusp/coo_matrix.h>
+-#include <cusp/detail/device/reduce_by_key.h>
++//#include <cusp/detail/device/reduce_by_key.h>
+ 
+ #include <cusp/io/matrix_market.h>
+ 
+@@ -430,7 +430,8 @@
+   //     the Cusp one is 2x faster, but still not optimal
+   // This could possibly be done in-place
+   ierr = PetscInfo(J, "Compressing matrices\n");CHKERRQ(ierr);
+-  cusp::detail::device::reduce_by_key
++  //cusp::detail::device::reduce_by_key
++  thrust::reduce_by_key
+     (thrust::make_zip_iterator(thrust::make_tuple(diagCOO.row_indices.begin(), diagCOO.column_indices.begin())) + diagonalOffset,
+      thrust::make_zip_iterator(thrust::make_tuple(diagCOO.row_indices.end(),   diagCOO.column_indices.end())),
+      diagCOO.values.begin() + diagonalOffset,
+@@ -438,7 +439,8 @@
+      A.values.begin(),
+      thrust::equal_to< thrust::tuple<IndexType,IndexType> >(),
+      thrust::plus<ValueType>());
+-  cusp::detail::device::reduce_by_key
++  //cusp::detail::device::reduce_by_key
++  thrust::reduce_by_key
+     (thrust::make_zip_iterator(thrust::make_tuple(offdiagCOO.row_indices.begin(), offdiagCOO.column_indices.begin())) + offdiagonalOffset,
+      thrust::make_zip_iterator(thrust::make_tuple(offdiagCOO.row_indices.end(),   offdiagCOO.column_indices.end())),
+      offdiagCOO.values.begin() + offdiagonalOffset,
+diff -Nru petsc-3.2-p6.orig/src/mat/impls/aij//seq/seqcusp/aijAssemble.cu petsc-3.2-p6/src/mat/impls/aij//seq/seqcusp/aijAssemble.cu
+--- petsc-3.2-p6.orig/src/mat/impls/aij//seq/seqcusp/aijAssemble.cu	2012-02-09 14:30:01.830465419 +0100
++++ petsc-3.2-p6/src/mat/impls/aij//seq/seqcusp/aijAssemble.cu	2012-02-09 14:51:55.470465809 +0100
+@@ -14,7 +14,7 @@
+ #include <cusp/array1d.h>
+ #include <cusp/print.h>
+ #include <cusp/coo_matrix.h>
+-#include <cusp/detail/device/reduce_by_key.h>
++//#include <cusp/detail/device/reduce_by_key.h>
+ 
+ #include <cusp/io/matrix_market.h>
+ 
+@@ -258,9 +258,10 @@
+   // sum values with the same (i,j) index
+   // XXX thrust::reduce_by_key is unoptimized right now, so we provide a SpMV-based one in cusp::detail
+   //     the Cusp one is 2x faster, but still not optimal
++  // FEniCS patch: reduce_by_key is removed in Cusp 0.3, so we use the Thrust version to ensure compatiblity
+   // This could possibly be done in-place
+   ierr = PetscInfo(J, "Compressing matrix\n");CHKERRQ(ierr);
+-#if 1
++#if 0
+   cusp::detail::device::reduce_by_key
+     (thrust::make_zip_iterator(thrust::make_tuple(COO.row_indices.begin(), COO.column_indices.begin())),
+      thrust::make_zip_iterator(thrust::make_tuple(COO.row_indices.end(),   COO.column_indices.end())),

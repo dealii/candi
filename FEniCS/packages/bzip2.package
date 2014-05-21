@@ -1,0 +1,14 @@
+NAME=bzip2-1.0.6
+SOURCE=http://bzip.org/1.0.6/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build () {
+    sed -i 's/^CFLAGS=-Wall/CFLAGS=-fPIC -Wall/g' Makefile
+    make
+    make install PREFIX=${INSTALL_PATH}
+}
+
+package_specific_register () {
+    export BZIP2_DIR=${INSTALL_PATH}
+}

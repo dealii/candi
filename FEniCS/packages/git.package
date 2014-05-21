@@ -1,0 +1,6 @@
+VERSION=1.8.0.2
+NAME=git-${VERSION}
+SOURCE=http://git-core.googlecode.com/files/
+PACKING=.tar.gz
+BUILDCHAIN=autotools
+TARGETS=('' 'install prefix=${INSTALL_PATH}')

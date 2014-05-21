@@ -1,0 +1,13 @@
+VERSION=2.2.0
+NAME=h5py-${VERSION}
+SOURCE=http://h5py.googlecode.com/files/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build () {
+    if [ ! -z "${HDF5_DIR}" ]; then
+	python setup.py build --hdf5=${HDF5_DIR} --mpi=yes
+    fi
+
+    python setup.py install --prefix=${INSTALL_PATH}
+}

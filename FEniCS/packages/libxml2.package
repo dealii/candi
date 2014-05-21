@@ -1,0 +1,11 @@
+VERSION=2.6.2
+NAME=libxml2-${VERSION}
+SOURCE=ftp://xmlsoft.org/libxml2/old/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build () {
+    ./configure --prefix=${INSTALL_PATH}
+    make -j ${PROCS}
+    make install
+}

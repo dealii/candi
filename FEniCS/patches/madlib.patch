@@ -1,0 +1,46 @@
+diff -Nru madlib-1.3.0.orig/Benchmarks/moveIt/Parameters.h madlib-1.3.0/Benchmarks/moveIt/Parameters.h
+--- madlib-1.3.0.orig/Benchmarks/moveIt/Parameters.h	2010-11-12 15:00:57.000000000 +0100
++++ madlib-1.3.0/Benchmarks/moveIt/Parameters.h	2010-11-12 15:00:57.000000000 +0100
+@@ -18,6 +18,7 @@
+ #include "SizeFieldBase.h"
+ #include "LocalSizeField.h"
+ 
++#include <math.h>
+ #include <string.h>
+ using std::string;
+ #include <list>
+diff -Nru madlib-1.3.0.orig/configure madlib-1.3.0/configure
+--- madlib-1.3.0.orig/configure	2010-11-12 15:00:57.000000000 +0100
++++ madlib-1.3.0/configure	2010-11-17 15:58:05.000000000 +0100
+@@ -18697,7 +18697,7 @@
+ 
+ 
+ includedir="${prefix}/include/MAdLib"
+-allincludedir="${prefix}/include_all/MAdLib"
++allincludedir="${prefix}/include/MAdLib"
+ 
+ 
+ 
+diff -Nru madlib-1.3.0.orig/configure.ac madlib-1.3.0/configure.ac
+--- madlib-1.3.0.orig/configure.ac	2010-11-12 15:00:57.000000000 +0100
++++ madlib-1.3.0/configure.ac	2010-11-17 15:58:14.000000000 +0100
+@@ -724,7 +724,7 @@
+ AC_CONFIG_MACRO_DIR([m4])
+ 
+ includedir="${prefix}/include/MAdLib"
+-allincludedir="${prefix}/include_all/MAdLib"
++allincludedir="${prefix}/include/MAdLib"
+ 
+ dnl Write output
+ AC_SUBST(UNAME)
+diff -Nru madlib-1.3.0.orig/Mesh/MshTags.h madlib-1.3.0/Mesh/MshTags.h
+--- madlib-1.3.0.orig/Mesh/MshTags.h	2010-11-12 15:00:57.000000000 +0100
++++ madlib-1.3.0/Mesh/MshTags.h	2010-11-12 15:00:57.000000000 +0100
+@@ -14,6 +14,7 @@
+ #ifndef MSHTAGS__H
+ #define MSHTAGS__H
+ 
++#include <cstdio>
+ #include <string>
+ #include <sstream>
+ 

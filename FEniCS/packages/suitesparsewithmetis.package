@@ -1,0 +1,31 @@
+NAME=SuiteSparse
+SOURCE=http://www.cise.ufl.edu/research/sparse/SuiteSparse/current/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build () {
+    perl -pi -e 's/^CFLAGS = -O/CFLAGS = -fPIC -O/g' UFconfig/UFconfig.mk
+    perl -pi -e 's/-lgfortran.*n//g' UFconfig/UFconfig.mk
+    perl -pi -e 's/-lg2c//g' UFconfig/UFconfig.mk
+    if [ ! -e metis-4.0.3.tar.gz ]
+    then
+	wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-4.0.3.tar.gz
+    fi
+    tar -xzf metis-4.0.3.tar.gz
+    ln -sf metis-4.0.3 metis-4.0
+    cd metis-4.0
+    perl -pi -e 's/COPTIONS =/COPTIONS = -fPIC/g' Makefile.in
+    make
+    cd ..
+    make
+}
+
+package_specific_install () {
+    mkdir -p ${INSTALL_PATH}/include/suitesparse
+    ln -sf `find ${PWD} -name '*.h' | grep -vi demo | xargs` ${INSTALL_PATH}/include/suitesparse
+    ln -sf `find ${PWD} -name 'lib*.a' | xargs` ${INSTALL_PATH}/lib
+}
+
+package_specific_register () {
+    export UMFPACK_DIR=${INSTALL_PATH}
+}

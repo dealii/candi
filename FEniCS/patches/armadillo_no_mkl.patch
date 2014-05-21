@@ -1,0 +1,16 @@
+Hack to prevent Armadillo from picking up MKL when we want to build with ATLAS.
+--- armadillo-3.2.3.orig/CMakeLists.txt	2012-12-13 11:18:32.399393689 +0100
++++ armadillo-3.2.3/CMakeLists.txt	2012-12-13 11:18:43.595393294 +0100
+@@ -72,9 +72,9 @@
+ else()
+   set(ARMA_OS unix)
+   
+-  include(ARMA_FindMKL)
+-  include(ARMA_FindACMLMP)
+-  include(ARMA_FindACML)
++  #include(ARMA_FindMKL)
++  #include(ARMA_FindACMLMP)
++  #include(ARMA_FindACML)
+   
+   message(STATUS "MKL_FOUND     = ${MKL_FOUND}")
+   message(STATUS "ACMLMP_FOUND  = ${ACMLMP_FOUND}")

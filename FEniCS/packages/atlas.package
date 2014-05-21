@@ -1,0 +1,70 @@
+# ATLAS package. This package also provides LAPACK.
+
+NAME=atlas3.10.0-with-lapack-3.4.2
+SOURCE=http://fenicsproject.org/pub/software/contrib/
+PACKING=.tar.bz2
+BUILDCHAIN=custom
+EXTRACTSTO=ATLAS
+
+package_specific_build () {
+
+    # Try to change CPU frequency
+    if [ x$CPU_SCALING == "xyes" ]; then
+
+        read -p "SCALING CPU"
+
+        # Determine number of cores and frequency
+        CORES=`grep processor /proc/cpuinfo | sort | awk '{print $3}'`
+        NUM_CORES=`grep processor /proc/cpuinfo | sort | tail -1 | awk '{print $3}'`
+        MAX_FREQ=`cpufreq-info | grep limits | awk '{print $6$7}' | tail -1`
+
+        echo
+        echo "It looks like your machine has $NUM_CORES cores and that the maximum"
+        echo "CPU frequency is $MAX_FREQ."
+        echo
+
+        echo
+        echo "Adjusting CPU frequency and governor. Be patient, this may take some time."
+        for i in $CORES; do
+            echo "Adjusting frequency for core $i"
+            sudo cpufreq-set -c $i -u $MAX_FREQ
+            sudo cpufreq-selector -g performance -c $i
+        done
+
+    fi
+
+    # Create and enter build directory
+    mkdir -p build
+    cd build
+
+    # Determine CPU frequency
+    CPU_MHZ=`cat /proc/cpuinfo | grep "cpu MHz" | awk '{print $4}' | cut -d'.' -f1 | tail -1`
+
+    # Configure ATLAS
+    ../configure -b 64 -D c -DPentiumCPS=$CPU_MHZ --shared \
+      --prefix=$INSTALL_PATH \
+      --with-netlib-lapack-tarfile=../lapack-3.4.2.tgz
+
+    # Build
+    make build
+
+    # Check
+    make check
+    make ptcheck
+    make time
+
+    # Install
+    make install
+}
+
+package_specific_install () {
+    echo "Nothing to do here, install handled by ATLAS."
+}
+
+package_specific_register () {
+    export ATLAS_DIR=${INSTALL_PATH}
+    export ATLAS_LIB_DIR=${INSTALL_PATH}/lib
+
+    # This is important for building Trilinos
+    export BLAS_LIBRARY_NAMES="cblas f77blas atlas"
+}

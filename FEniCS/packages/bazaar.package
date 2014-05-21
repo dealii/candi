@@ -1,0 +1,5 @@
+NAME=bzr-2.5.1
+SOURCE=http://launchpad.net/bzr/2.5/2.5.1/+download/
+PACKING=.tar.gz
+CHECKSUM=ac5079858364a046071000d5cdccb67b
+BUILDCHAIN=python

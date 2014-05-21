@@ -1,0 +1,6 @@
+NAME=pcre-8.21
+SOURCE=http://downloads.sourceforge.net/pcre/
+PACKING=.tar.gz
+CHECKSUM=b8c9469717262a1e486cffc288b28283
+BUILDCHAIN=autotools
+

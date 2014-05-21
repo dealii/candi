@@ -1,0 +1,6 @@
+NAME=scons-2.0.1
+SOURCE=http://downloads.sourceforge.net/scons/
+PACKING=.tar.gz
+CHECKSUM=beca648b894cdbf85383fffc79516d18
+BUILDCHAIN=python
+

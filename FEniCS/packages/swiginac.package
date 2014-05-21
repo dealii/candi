@@ -1,0 +1,8 @@
+NAME=swiginac-1.5.1.1
+SOURCE=http://download.berlios.de/swiginac/
+PACKING=.tgz
+BUILDCHAIN=python
+
+package_specific_setup () {
+python setup.py build
+}

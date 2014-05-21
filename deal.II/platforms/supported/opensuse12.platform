@@ -1,0 +1,33 @@
+# openSUSE 12
+# 
+# This build script assumes that you have several packages already
+# installed via openSUSE's zypper using the following commands:
+#
+# > su -c 'zypper -n in -t pattern devel_basis devel_C_C++ devel_qt4'
+# 
+# > su -c 'zypper -n in Modules gcc-fortran subversion git cmake \
+#   openmpi openmpi-devel splint blas-devel lapack-devel \
+#   doxygen graphviz graphviz-devel'
+# 
+# Then reboot and run candi again.
+# 
+# NOTE: There is a small "bug" in openmpi 1.6, you must set the following
+#       softlink to run mpi-programs:
+#       > su -c 'mkdir /usr/lib64/mpi/gcc/openmpi/etc'
+# 
+#       > su -c 'ln -s /etc/openmpi-default-hostfile \
+#         /usr/lib64/mpi/gcc/openmpi/etc/openmpi-default-hostfile'
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+#once:boost
+once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)
+

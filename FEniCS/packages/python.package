@@ -1,0 +1,18 @@
+VERSION=2.7.2
+NAME=Python-${VERSION}
+SOURCE=http://www.python.org/ftp/python/${VERSION}/
+PACKING=.tar.bz2
+BUILDCHAIN=autotools
+CONFOPTS="--enable-shared"
+
+package_specific_setup() {
+    patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/python.patch || true
+}
+
+package_specific_register() {
+    export PYTHON_DIR=${INSTALL_PATH}
+    export PYTHON_EXECUTABLE=${PYTHON_DIR}/bin/python
+    export PYTHON_INCLUDE_DIR=${PYTHON_DIR}/include/python2.7
+    # FIXME: should be .dylib on OS X
+    export PYTHON_LIBRARY=${PYTHON_DIR}/lib/libpython2.7.so
+}

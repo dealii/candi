@@ -1,0 +1,62 @@
+# Fedora 20
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# su -c 'yum install -y redhat-lsb bzr bzrtools subversion \
+# libxml2-devel gcc gcc-c++ openmpi-devel openmpi numpy swig wget \
+# atlas-devel suitesparse-devel blas-devel \
+# lapack-devel cln-devel ginac-devel python-devel cmake \
+# ScientificPython mpfr-devel armadillo-devel gmp-devel CGAL-devel \
+# cppunit-devel flex bison bzip2-devel python-ply eigen3 scotch scotch-devel \
+# vtk vtkdata vtk-devel vtk-python tk tk-devel tcl tcl-devel \
+# sphinx python-sphinx python-numpydoc'
+#
+# If you have multiple MPI libraries installed, make sure the
+# appropriate version is selected. For this, on a 32-bit operating
+# system, run:
+#
+# module load openmpi-i386
+#
+# or on a 64-bit operating system, run:
+#
+# module load openmpi-x86_64
+#
+# After Dorsal has completed, please make sure the following
+# environment variable is set before running any Python DOLFIN
+# programs:
+#
+# export BOOST_DIR=${INSTALL_PATH}
+#
+# Also, if you are using SELinux, you may need to disable it to run
+# DOLFIN programs.
+##
+
+# Platform specific variables
+default PETSC_ARCH=linux-gnu-cxx-opt
+default SCOTCH_ARCH=pc_linux2
+default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
+
+# Define the packages this platform needs
+PACKAGES=(
+skip:FEniCS-prepare
+#once:hdf5
+once:boost
+once:parmetis
+once:trilinos
+once:petsc
+once:slepc
+#once:sphinx
+# swiginac
+# once:scotch
+fiat
+ferari
+ufc
+ufl
+ffc
+# syfi
+viper
+instant
+dolfin
+skip:FEniCS
+)

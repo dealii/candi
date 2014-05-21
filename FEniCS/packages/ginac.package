@@ -1,0 +1,4 @@
+NAME=ginac-1.6.1
+SOURCE=ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/
+PACKING=.tar.bz2
+BUILDCHAIN=autotools

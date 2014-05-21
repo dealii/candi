@@ -1,0 +1,9 @@
+NAME=eigen3_3.2.0
+SOURCE=http://fenicsproject.org/pub/software/contrib/
+PACKING=.tar.bz2
+BUILDCHAIN=cmake
+EXTRACTSTO=eigen-eigen-ffa86ffb5570
+
+package_specific_register () {
+    export EIGEN_DIR=${INSTALL_PATH}
+}

@@ -1,0 +1,61 @@
+VERSION=${GCC}
+NAME=gcc-${VERSION}
+SOURCE=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/${NAME}/
+PACKING=.tar.gz
+CHECKSUM=ignore
+BUILDCHAIN=autotools
+
+if [ ${GCC} = "4.7.3" ]; then
+    CHECKSUM=d518eace24a53aef59c2c69498ea4989
+elif [ ${GCC} = "4.8.2" ]; then
+    CHECKSUM=deca88241c1135e2ff9fa5486ab5957b
+fi
+
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/gcc
+CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
+
+# **********************************************************************************
+package_specific_conf() {
+    # Generate modulefile
+    
+    mkdir -p ${MODULEFILE_PATH}
+    CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+# GNU/GCC ${VERSION} Compiler modulefile
+#
+
+proc ModulesHelp { } {
+   puts stderr "\tThis module adds GNU ${VERSION} Compiler."
+}
+conflict compiler
+  
+module-whatis   "Sets up the GNU ${VERSION} Compiler environment."
+
+prepend-path            PATH 		${INSTALL_PATH}/bin
+prepend-path            MANPATH		${INSTALL_PATH}/share/man
+prepend-path            INFOPATH	${INSTALL_PATH}/share/info
+prepend-path            LD_LIBRARY_PATH ${INSTALL_PATH}/lib64
+prepend-path            LD_RUN_PATH     ${INSTALL_PATH}/lib64
+
+setenv			LIBDIR		${INSTALL_PATH}/lib64
+setenv			LDFLAGS		\"-Wl,-rpath -Wl,${INSTALL_PATH}/lib64\"
+
+setenv			CC		${INSTALL_PATH}/bin/gcc
+setenv			CXX		${INSTALL_PATH}/bin/g++
+setenv			FC		${INSTALL_PATH}/bin/gfortran
+setenv			FF		${INSTALL_PATH}/bin/gfortran
+" >> $CONFIG_FILE
+    
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+}
+

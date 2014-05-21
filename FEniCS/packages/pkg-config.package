@@ -1,0 +1,4 @@
+NAME=pkg-config-0.28
+SOURCE=http://pkgconfig.freedesktop.org/releases/
+PACKING=.tar.gz
+BUILDCHAIN=autotools

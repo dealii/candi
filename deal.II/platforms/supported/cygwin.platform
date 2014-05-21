@@ -1,0 +1,32 @@
+# cygwin
+# 
+# This build script assumes that you have several packages already
+# installed:
+#
+# subversion, git, development-tools (gcc, g++, autoconf, automake, cmake)
+# openmpi, blas, lapack (development packages also!)
+# Please also make sure, that in your local.cfg only the indended packages
+# are switched ON.
+# 
+# Issues:
+# - p4est will NOT compile without errors
+# - boost 1.55 will NOT compile without errors
+# 
+# Untested:
+# - MPI
+# - Trilinos, PetSC, Slepc
+# 
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+#once:boost
+#once:hdf5
+#once:p4est
+#once:trilinos
+#once:petsc
+#once:slepc
+dealii
+)
+

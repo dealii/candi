@@ -1,0 +1,27 @@
+# Fedora 19
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# su -c 'yum install -y svn \
+# @development-tools gcc-c++ cmake \
+# blas blas-devel lapack lapack-devel \
+# doxygen graphviz graphviz-devel qt-devel '
+# 
+# ARPACK system packages: arpack arpack-devel
+# METIS  system packages: metis metis-devel
+#
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+#once:boost
+#once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)
+

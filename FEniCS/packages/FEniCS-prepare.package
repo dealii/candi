@@ -1,0 +1,25 @@
+NAME=FEniCS_prepare
+BUILDCHAIN=ignore
+
+package_specific_conf() {
+    # Generate FEniCS folders
+    mkdir -p ${INSTALL_PATH}/conf
+    mkdir -p ${INSTALL_PATH}/bin
+    mkdir -p ${INSTALL_PATH}/include
+    mkdir -p ${INSTALL_PATH}/lib
+    mkdir -p ${INSTALL_PATH}/lib/python${PYTHONVER}/site-packages
+    mkdir -p ${INSTALL_PATH}/share
+    export PATH=${INSTALL_PATH}/bin:${PATH}
+    export LD_LIBRARY_PATH=${INSTALL_PATH}/lib:${LD_LIBRARY_PATH}
+    export DYLD_LIBRARY_PATH=${INSTALL_PATH}/lib:${DYLD_LIBRARY_PATH}
+    export PYTHONPATH=${INSTALL_PATH}/lib/python${PYTHONVER}/site-packages:${PYTHONPATH}
+    export PKG_CONFIG_PATH=${INSTALL_PATH}/lib/pkgconfig:${PKG_CONFIG_PATH}
+
+    # Add some extra library paths for 64 bit machines
+    if [ "$ARCH" == "x86_64" ]; then
+        export LD_LIBRARY_PATH=${INSTALL_PATH}/lib64:${LD_LIBRARY_PATH}
+        export DYLD_LIBRARY_PATH=${INSTALL_PATH}/lib64:${DYLD_LIBRARY_PATH}
+        export PYTHONPATH=${INSTALL_PATH}/lib64/python${PYTHONVER}/site-packages:${PYTHONPATH}
+    fi
+}
+

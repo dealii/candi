@@ -1,0 +1,4 @@
+NAME=cln-1.3.2
+SOURCE=ftp://ftpthep.physik.uni-mainz.de/pub/gnu/
+PACKING=.tar.bz2
+BUILDCHAIN=autotools

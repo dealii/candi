@@ -1,0 +1,30 @@
+VERSION=1.0-beta
+NAME=dolfin-${VERSION}
+SOURCE=http://launchpad.net/dolfin/trunk/${VERSION}/+download/
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+
+# Dolfin is compiled with GNU compiler because the Intel compiler used does not support 
+#  the "tuple" template and it cannot read the boost headers properly.
+
+# Compiler flags are added to ensure proper linking to Intel MKL
+COMPILERFLAGS="'-fPIC -DMPICH_IGNORE_CXX_SEEK -m64 -DMKL_ILP64 -lpthread -lmkl_rt -lifcore -lsvml'"
+
+CONFOPTS="-DCMAKE_SKIP_RPATH:BOOL=ON
+	  -DCGAL_DISABLE_ROUNDING_MATH_CHECK:BOOL=ON
+	  -D CMAKE_CXX_FLAGS:STRING=${COMPILERFLAGS}
+	  -D CMAKE_C_FLAGS:STRING=${COMPILERFLAGS}"
+
+package_specific_setup () {
+# The CMake Armadillo does not pass because it does not pass the correct linking options.
+#  The patch basically make the test pass all the time. 
+    patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/dolfin-armadillo-test.patch || true
+# Intel compiler cannot find iostream. Maybe because it is not in the intel mpi.h. 
+    find . -name "*.cpp" | xargs sed -i -e 's,#include <mpi.h>,#include <mpi.h>\n#include <iostream>,g'
+# Link to intel MKL BLAS
+    export BLAS_DIR=/soft/intel/mkl/10.3.6.233/composer_xe_2011_sp1.6.233/mkl/lib/intel64
+}
+
+if [ -x "${SWIG_EXECUTABLE}" ]; then
+    CONFOPTS="${CONFOPTS} -D SWIG_EXECUTABLE:FILEPATH=${SWIG_EXECUTABLE}"
+fi

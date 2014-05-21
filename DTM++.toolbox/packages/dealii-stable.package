@@ -1,0 +1,8 @@
+VERSION=8.1.0
+NAME=deal.II-${VERSION}
+SOURCE=https://dealii.googlecode.com/files/
+PACKING=.tar.gz
+CHECKSUM=aa8fadc2ce5eb674f44f997461bf668d
+BUILDCHAIN=cmake
+EXTRACTSTO=deal.II
+

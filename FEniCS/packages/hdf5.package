@@ -1,0 +1,21 @@
+VERSION=1.8.12
+NAME=hdf5-${VERSION}
+SOURCE=http://www.hdfgroup.org/ftp/HDF5/releases/${NAME}/src/
+PACKING=.tar.gz
+CHECKSUM=d804802feb99b87fc668a90e6fa34411
+BUILDCHAIN=autotools
+
+CONFOPTS="--with-pthread
+          --enable-unsupported
+          --enable-shared
+          --enable-production=yes
+          --enable-parallel=yes
+          --enable-largefile=yes
+          --with-default-api-version=v18"
+
+#          --disable-sharedlib-rpath
+
+package_specific_register () {
+    export HDF5_DIR=${INSTALL_PATH}
+}
+

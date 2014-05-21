@@ -1,0 +1,21 @@
+NAME=slepc-3.4.2
+SOURCE=http://www.fenicsproject.org/pub/software/contrib/
+PACKING=.tar.gz
+CHECKSUM=78ff6a709f50ccd765fa61589400d5f3
+BUILDCHAIN=custom
+
+package_specific_setup () {
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+    patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/slepc.patch || true
+    export SLEPC_DIR=${PWD}
+}
+
+package_specific_build () {
+    SLEPC_DIR=${PWD} ./configure --prefix=${INSTALL_PATH}
+    make PETSC_ARCH=arch-installed-petsc all
+    make PETSC_ARCH=arch-installed-petsc install
+}
+
+package_specific_register () {
+    export SLEPC_DIR=${INSTALL_PATH}
+}

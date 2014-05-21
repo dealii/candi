@@ -1,0 +1,26 @@
+NAME=armadillo-3.6.1
+SOURCE=http://downloads.sourceforge.net/arma/
+PACKING=.tar.gz
+CHECKSUM=cf0e72fbd2ed07d9fbde01ec8feee953
+BUILDCHAIN=cmake
+
+CONFOPTS="-D CMAKE_INSTALL_PREFIX:PATH=${INSTALL_PATH}
+	  -D INSTALL_LIB_DIR:STRING=lib"
+
+if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+    CONFOPTS="${CONFOPTS}
+              -D LAPACK_LIBRARY:FILEPATH=${ATLAS_LIB_DIR}/liblapack.a
+              -D BLAS_LIBRARY:FILEPATH=${ATLAS_LIB_DIR}/libatlas.a"
+fi
+
+package_specific_setup() {
+    # Apply patch to prevent Armadillo from picking up MKL
+    # when ATLAS_LIB_DIR is defined
+    if [ ! -z "${ATLAS_LIB_DIR}" ]; then
+	patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/armadillo_no_mkl.patch || true
+    fi
+}
+
+package_specific_register () {
+    export ARMADILLO_DIR=${INSTALL_PATH}
+}

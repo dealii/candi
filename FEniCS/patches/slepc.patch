@@ -1,0 +1,14 @@
+diff -Nru slepc-3.4.1.orig/config/configure.py slepc-3.4.1/config/configure.py
+--- slepc-3.4.1.orig/config/configure.py	2013-08-14 10:14:04.157596562 +0200
++++ slepc-3.4.1/config/configure.py	2013-08-14 10:14:37.341561962 +0200
+@@ -297,8 +297,8 @@
+   pkgconfig = open(os.sep.join([pkgconfigdir,'SLEPc.pc']),'w')
+ except:
+   sys.exit('ERROR: cannot create pkgconfig file in ' + pkgconfigdir)
+-if prefixinstall and os.path.isfile(os.sep.join([prefixdir,'include','slepc.h'])):
+-  sys.exit('ERROR: prefix directory ' + prefixdir + ' contains files from a previous installation')
++#if prefixinstall and os.path.isfile(os.sep.join([prefixdir,'include','slepc.h'])):
++#  sys.exit('ERROR: prefix directory ' + prefixdir + ' contains files from a previous installation')
+ 
+ # Create temporary directory and makefile for running tests
+ try:

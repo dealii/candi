@@ -1,0 +1,4 @@
+VERSION=snapshot
+NAME=ffc-${VERSION}
+SOURCE=http://fenicsproject.org/pub/software/ffc/
+PACKING=.tar.gz

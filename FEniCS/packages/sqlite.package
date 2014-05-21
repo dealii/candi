@@ -1,0 +1,11 @@
+VERSION=3070800
+NAME=sqlite-autoconf-${VERSION}
+SOURCE=http://www.sqlite.org/
+PACKING=.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build () {
+    ./configure --prefix=${INSTALL_PATH}
+    make -j ${PROCS}
+    make install
+}

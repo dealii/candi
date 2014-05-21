@@ -1,0 +1,37 @@
+NAME=scotch_6.0.0_esmumps
+SOURCE=http://fenicsproject.org/pub/software/contrib/
+PACKING=.tar.gz
+CHECKSUM=c50d6187462ba801f9a82133ee666e8e
+BUILDCHAIN=autotools
+EXTRACTSTO=scotch_6.0.0_esmumps/src
+PROCS=1
+TARGETS=('' 'ptscotch' 'ptesmumps')
+
+package_specific_setup () {
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    if [ ${SCOTCH_ARCH} == "pc_linux2" ]
+    then
+        SCOTCH_ARCH=$(echo $ARCH|sed 's/_/-/g')_${SCOTCH_ARCH}
+    fi
+    perl -pi -e 's/^CFLAGS\t\t=/CFLAGS  = -fPIC/g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
+    perl -pi -e 's/^CCS.*= gcc/CCS  = mpicc/g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
+    perl -pi -e 's/^CCD.*= gcc/CCD  = mpicc/g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
+    if [ ${SCOTCH_ARCH} == "i686_mac_darwin8" ]
+    then
+	# Darwin does not have a pthread_barrier_t implementation
+	perl -pi -e 's/-DSCOTCH_PTHREAD/-DCOMMON_PTHREAD_BARRIER/g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
+    else
+	perl -pi -e 's/-DSCOTCH_PTHREAD//g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
+    fi
+    ln -sf Make.inc/Makefile.inc.${SCOTCH_ARCH} Makefile.inc
+}
+
+package_specific_install () {
+    make ptesmumps install -j ${PROCS} prefix=${INSTALL_PATH}
+    cp -f ../lib/*scotc*[^m].a ${INSTALL_PATH}/lib
+    cp -f ../lib/*esmumps.a ${INSTALL_PATH}/lib
+}
+
+package_specific_register () {
+    export SCOTCH_DIR=${INSTALL_PATH}
+}

@@ -1,0 +1,5 @@
+VERSION=1.0.0
+NAME=viper-${VERSION}
+SOURCE=http://launchpad.net/fenics-viper/1.0.x/${VERSION}/+download/
+PACKING=.tar.gz
+CHECKSUM=4aa7d37934c98e637b45eb9cc7d03cdd

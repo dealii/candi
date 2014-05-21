@@ -1,0 +1,44 @@
+NVRI.software/candi is a majorily tweaked DORSAL and maintained by:
+  Uwe Koecher           <uwe.koecher@hsu-hamburg.de>
+
+The origin is Dorsal (licensed under the LGPL):
+  https://bitbucket.org/fenics-project/dorsal/src
+  master c667be2 2013-11-27
+
+Please find the list of the authors of Dorsal below:
+
+Dorsal is written and maintained by:
+
+  Harish Narayanan <hnarayanan@gmail.com>
+  http://home.simula.no/~harish/
+
+Major contributors ordered by number of commits include:
+
+  Garth N. Wells        <gnw20@cam.ac.uk>
+  Anders Logg           <logg@simula.no>
+  Johannes Ring         <johannr@simula.no>
+  Joachim B. Haga       <jobh@simula.no>
+  Roman Putanowicz      <putanowr@l5.pk.edu.pl>
+  Ilmar Wilbers         <ilmarw@simula.no>
+
+Minor contributors in chronological order include:
+
+  Luk ShunTim           <shuntim.luk@polyu.edu.hk>
+  Kristoffer Selim      <selim@simula.no>
+  Peter-Jan Randewijk   <pjrandew@sun.ac.za>
+  Aron Wahlberg         <aron.wahlberg@gmail.com>
+  Douglas N. Arnold     <arnold@umn.edu>
+  Andre Massing         <massing@simula.no>
+  Dimitris Tsarouchas   <dt335@cam.ac.uk>
+  Krishna S. Rudraraju  <rudraa@umich.edu>
+  Alexander Jarosch     <alex@alexj.at>
+  Marie E. Rognes       <meg@simula.no>
+  Patrick Riesen        <priesen@student.ethz.ch>
+  Gerd Wachsmuth        <gerd.wachsmuth@mathematik.tu-chemnitz.de>
+  Johan Hake            <hake@simula.no>
+  Benjamin Kehlet       <benjamik@simula.no>
+  Richard Katz          <richard.katz@earth.ox.ac.uk>
+  Fredrik Valdmanis     <fredva@ifi.uio.no>
+  Michele Marcionelli   <michele.marcionelli@math.ethz.ch>
+
+Missing or incorrect credits? Tell us and we will fix it!

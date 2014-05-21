@@ -1,0 +1,28 @@
+# openSUSE 13
+# 
+# This build script assumes that you have several packages already
+# installed via openSUSE's zypper using the following commands:
+#
+# > su -c 'zypper -n in -t pattern devel_basis devel_C_C++ devel_qt4'
+# 
+# and
+# 
+# > su -c 'zypper -n in Modules gcc-fortran subversion git cmake \
+#   openmpi openmpi-devel splint blas-devel lapack-devel \
+#   doxygen graphviz graphviz-devel'
+# 
+# Then reboot and run candi again.
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+#once:boost
+once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)
+

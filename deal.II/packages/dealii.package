@@ -1,0 +1,60 @@
+VERSION=svn
+NAME=deal.II-${VERSION}
+SOURCE=https://svn.dealii.org/trunk/deal.II
+PACKING=svn
+BUILDCHAIN=cmake
+
+CONFOPTS=" \
+${DEAL_CONFOPTS} \
+"
+
+CONFOPTS="${CONFOPTS} \
+-D HDF5_DIR=${HDF5_DIR} \
+"
+
+CONFOPTS="${CONFOPTS} \
+-D TRILINOS_DIR=${TRILINOS_DIR} \
+"
+
+CONFOPTS="${CONFOPTS} \
+-D PETSC_DIR=${PETSC_DIR} \
+"
+
+CONFOPTS="${CONFOPTS} \
+-D SLEPC_DIR=${SLEPC_DIR} \
+"
+
+# **********************************************************************************
+package_specific_conf() {
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/deal.II/${COMPILER}
+CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
+CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /')
+
+    # Generate modulefile
+    
+    mkdir -p ${MODULEFILE_PATH}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+#  deal.II module for use with 'environment-modules' package:
+#
+module-whatis          "Provides the deal.II toolbox."
+conflict                deal.II
+module load ${CURRENT_MODULES}
+
+setenv                  DEAL_II_DIR         ${INSTALL_PATH}
+" >> $CONFIG_FILE
+    
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+
+    export DEAL_II_DIR=${INSTALL_PATH}
+}
+

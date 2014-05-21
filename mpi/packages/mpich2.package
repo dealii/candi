@@ -1,0 +1,68 @@
+VERSION=1.4.1p1
+NAME=mpich2-${VERSION}
+SOURCE=http://www.mpich.org/static/downloads/${VERSION}/
+PACKING=.tar.gz
+CHECKSUM=b470666749bcb4a0449a072a18e2c204
+
+BUILDCHAIN=autotools
+PROCS=1
+CONFOPTS="-q CFLAGS=-fPIC CXXFLAGS=-fPIC FFLAGS=-fPIC FCFLAGS=-fPIC"
+INSTALL_PATH=${INSTALL_PATH}/${COMPILER}/${NAME}
+
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
+CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
+
+# **********************************************************************************
+package_specific_conf() {
+    # Generate modulefile
+
+    mkdir -p ${MODULEFILE_PATH}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+# ${NAME} against ${COMPILER}
+#
+
+conflict compiler
+
+prepend-path		PATH 		${PATH}
+prepend-path		MANPATH		${MANPATH}
+prepend-path            INFOPATH	${INFOPATH}
+prepend-path		LD_LIBRARY_PATH ${LD_LIBRARY_PATH}
+prepend-path		LD_RUN_PATH     ${LD_RUN_PATH}
+
+setenv			LIBDIR		${LIBDIR}
+setenv			LDFLAGS		\"${LDFLAGS}\"
+
+prepend-path		PATH 		${INSTALL_PATH}/bin
+prepend-path		LD_LIBRARY_PATH	${INSTALL_PATH}/lib
+prepend-path		MANPATH		${INSTALL_PATH}/share/man
+
+setenv			MPI_BIN		${INSTALL_PATH}/bin
+setenv			MPI_SYSCONFIG	${INSTALL_PATH}/etc
+setenv			MPI_INCLUDE	${INSTALL_PATH}/include
+setenv			MPI_LIB		${INSTALL_PATH}/lib
+setenv			MPI_MAN		${INSTALL_PATH}/share/man
+setenv			MPI_COMPILER	mpich-x86_64
+setenv			MPI_SUFFIX	_mpich
+setenv			MPI_HOME	${INSTALL_PATH}
+
+setenv			CC		${INSTALL_PATH}/bin/mpicc
+setenv			CXX		${INSTALL_PATH}/bin/mpic++
+setenv			FC		${INSTALL_PATH}/bin/mpif90
+setenv			FF		${INSTALL_PATH}/bin/mpif77
+setenv			F90		${INSTALL_PATH}/mpif90
+setenv			F77		${INSTALL_PATH}/bin/mpif77
+" >> $CONFIG_FILE
+
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+}
+
