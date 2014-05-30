@@ -1,6 +1,7 @@
 NAME=pastix_release_4030
 SOURCE=https://gforge.inria.fr/frs/download.php/32044/
 PACKING=.tar.bz2
+CHECKSUM=d2395bca420901b93d8d2a66cda2062d
 BUILDCHAIN=custom
 
 package_specific_build () {
@@ -28,7 +29,7 @@ package_specific_build () {
     fi
 
     # Create config file
-    cd src
+    cd ${UNPACK_PATH}/${EXTRACTSTO}/src
     cat > config.in << EOF
 HOSTARCH    = ${PASTIX_ARCH}
 VERSIONBIT  = ${VERSIONBIT}

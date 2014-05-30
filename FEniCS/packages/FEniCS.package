@@ -2,7 +2,7 @@ NAME=FEniCS
 VERSION=1.3.0
 BUILDCHAIN=ignore
 
-MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/NVRI.software/toolbox/${NAME}
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/candi/toolbox/${NAME}
 CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
 CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /')
 
@@ -17,7 +17,7 @@ package_specific_conf() {
 #  FEniCS module for use with 'environment-modules' package:
 #
 
-conflict NVRI.software/toolbox
+conflict candi/toolbox
 
 module load ${CURRENT_MODULES}
 

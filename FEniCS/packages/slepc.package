@@ -1,7 +1,7 @@
-NAME=slepc-3.4.2
-SOURCE=http://www.fenicsproject.org/pub/software/contrib/
+NAME=slepc-3.4.4
+SOURCE=http://www.grycap.upv.es/slepc/download/download.php?filename=
 PACKING=.tar.gz
-CHECKSUM=78ff6a709f50ccd765fa61589400d5f3
+CHECKSUM=329179c5139027c7b293dd5ab0bc112c
 BUILDCHAIN=custom
 
 package_specific_setup () {

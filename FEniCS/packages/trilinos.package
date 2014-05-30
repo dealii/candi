@@ -3,10 +3,10 @@ NAME=trilinos-${VERSION}-Source
 SOURCE=http://trilinos.sandia.gov/download/files/
 PACKING=.tar.gz
 CHECKSUM=3c9465b6d63d824e9dc0365ca73c3370
-BUILDCHAIN=custom
+BUILDCHAIN=cmake
 
 package_specific_setup () {
-echo "Build ${NAME}"
+#echo "Build ${NAME}"
 
 CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
@@ -65,14 +65,14 @@ if [ ! -z "${PYTHON_LIBRARY}" ]; then
 fi
 
 
-TRILINOS_SOURCE="${UNPACK_PATH}/${EXTRACTSTO}"
+#TRILINOS_SOURCE="${UNPACK_PATH}/${EXTRACTSTO}"
 
 # configure
-cmake ${CONFOPTS} ${TRILINOS_SOURCE}
+#cmake ${CONFOPTS} ${TRILINOS_SOURCE}
 
 # make
-make -j${PROCS}
-make install
+#make -j${PROCS}
+#make install
 }
 
 package_specific_register () {

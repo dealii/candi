@@ -10,7 +10,7 @@
 # ScientificPython mpfr-devel armadillo-devel gmp-devel CGAL-devel \
 # cppunit-devel flex bison bzip2-devel python-ply eigen3 scotch scotch-devel \
 # vtk vtkdata vtk-devel vtk-python tk tk-devel tcl tcl-devel \
-# sphinx python-sphinx python-numpydoc'
+# sphinx python-sphinx python-numpydoc octave-devel'
 #
 # If you have multiple MPI libraries installed, make sure the
 # appropriate version is selected. For this, on a 32-bit operating
@@ -40,15 +40,18 @@ default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
 # Define the packages this platform needs
 PACKAGES=(
 skip:FEniCS-prepare
-#once:hdf5
+once:mpi4py
+once:hdf5
 once:boost
+once:swig
 once:parmetis
 once:trilinos
 once:petsc
 once:slepc
-#once:sphinx
+# once:sphinx
 # swiginac
-# once:scotch
+once:scotch
+# once:pastix
 fiat
 ferari
 ufc

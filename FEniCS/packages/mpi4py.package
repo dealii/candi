@@ -1,5 +1,6 @@
 VERSION=1.3.1
 NAME=mpi4py-${VERSION}
-SOURCE=https://mpi4py.googlecode.com/files/
+SOURCE=https://bitbucket.org/mpi4py/mpi4py/downloads/
 PACKING=.tar.gz
+CHECKSUM=dbe9d22bdc8ed965c23a7ceb6f32fc3c
 BUILDCHAIN=python
