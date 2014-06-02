@@ -9,6 +9,7 @@ PROCS=1
 #CONFOPTS="--disable-dlopen"
 TARGETS=('' all install)
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
 CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
 
@@ -33,31 +34,31 @@ prepend-path		LD_RUN_PATH     ${LD_RUN_PATH}
 setenv			LIBDIR		${LIBDIR}
 setenv			LDFLAGS		\"${LDFLAGS}\"
 
-prepend-path		PATH 		${INSTALL_PATH}/${COMPILER}/${NAME}/bin
-prepend-path		LD_LIBRARY_PATH	${INSTALL_PATH}/${COMPILER}/${NAME}/lib
-prepend-path		MANPATH		${INSTALL_PATH}/${COMPILER}/${NAME}/share/man
+prepend-path		PATH 		${INSTALL_PATH}/bin
+prepend-path		LD_LIBRARY_PATH	${INSTALL_PATH}/lib
+prepend-path		MANPATH		${INSTALL_PATH}/share/man
 
-setenv			MPI_BIN		${INSTALL_PATH}/${COMPILER}/${NAME}/bin
-setenv			MPI_SYSCONFIG	${INSTALL_PATH}/${COMPILER}/${NAME}/etc
-setenv			MPI_INCLUDE	${INSTALL_PATH}/${COMPILER}/${NAME}/include
-setenv			MPI_LIB		${INSTALL_PATH}/${COMPILER}/${NAME}/lib
-setenv			MPI_MAN		${INSTALL_PATH}/${COMPILER}/${NAME}/share/man
+setenv			MPI_BIN		${INSTALL_PATH}/bin
+setenv			MPI_SYSCONFIG	${INSTALL_PATH}/etc
+setenv			MPI_INCLUDE	${INSTALL_PATH}/include
+setenv			MPI_LIB		${INSTALL_PATH}/lib
+setenv			MPI_MAN		${INSTALL_PATH}/share/man
 setenv			MPI_COMPILER	openmpi-x86_64
 setenv			MPI_SUFFIX	_openmpi
-setenv			MPI_HOME	${INSTALL_PATH}/${COMPILER}/${NAME}
+setenv			MPI_HOME	${INSTALL_PATH}
 
-setenv			CC		${INSTALL_PATH}/${COMPILER}/${NAME}/bin/mpicc
-setenv			CXX		${INSTALL_PATH}/${COMPILER}/${NAME}/bin/mpic++
-setenv			FC		${INSTALL_PATH}/${COMPILER}/${NAME}/bin/mpif90
-setenv			FF		${INSTALL_PATH}/${COMPILER}/${NAME}/bin/mpif77
-setenv			F90		${INSTALL_PATH}/${COMPILER}/${NAME}/mpif90
-setenv			F77		${INSTALL_PATH}/${COMPILER}/${NAME}/bin/mpif77
+setenv			CC		${INSTALL_PATH}/bin/mpicc
+setenv			CXX		${INSTALL_PATH}/bin/mpic++
+setenv			FC		${INSTALL_PATH}/bin/mpif90
+setenv			FF		${INSTALL_PATH}/bin/mpif77
+setenv			F90		${INSTALL_PATH}/bin/mpif90
+setenv			F77		${INSTALL_PATH}/bin/mpif77
 " >> $CONFIG_FILE
 
     echo
     echo "${NAME} has now been installed in"
     echo
-    cecho ${GOOD} "    ${INSTALL_PATH}/${COMPILER}/${NAME}"
+    cecho ${GOOD} "    ${INSTALL_PATH}"
     echo
     echo "To update your environment variables, use the created modulefile:"
     echo
