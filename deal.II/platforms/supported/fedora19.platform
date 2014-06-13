@@ -17,7 +17,7 @@
 # Define the packages this platform needs
 PACKAGES=(
 #once:boost
-#once:hdf5
+once:hdf5
 once:p4est
 once:trilinos
 once:petsc
