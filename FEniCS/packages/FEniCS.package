@@ -1,5 +1,5 @@
 NAME=FEniCS
-VERSION=1.3.0
+VERSION=1.4.0
 BUILDCHAIN=ignore
 
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/candi/toolbox/${NAME}

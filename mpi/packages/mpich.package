@@ -9,6 +9,7 @@ PROCS=1
 CONFOPTS="-q CFLAGS=-fPIC CXXFLAGS=-fPIC FFLAGS=-fPIC FCFLAGS=-fPIC"
 INSTALL_PATH=${INSTALL_PATH}/${COMPILER}/${NAME}
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
 CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
 
@@ -17,13 +18,12 @@ package_specific_conf() {
     # Generate modulefile
 
     mkdir -p ${MODULEFILE_PATH}
+    CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "#%Module 1.0
 #
 # ${NAME} against ${COMPILER}
 #
-
-conflict compiler
 
 prepend-path		PATH 		${PATH}
 prepend-path		MANPATH		${MANPATH}
@@ -43,15 +43,15 @@ setenv			MPI_SYSCONFIG	${INSTALL_PATH}/etc
 setenv			MPI_INCLUDE	${INSTALL_PATH}/include
 setenv			MPI_LIB		${INSTALL_PATH}/lib
 setenv			MPI_MAN		${INSTALL_PATH}/share/man
-setenv			MPI_COMPILER	mpich-x86_64
-setenv			MPI_SUFFIX	_mpich
+setenv			MPI_COMPILER	openmpi-x86_64
+setenv			MPI_SUFFIX	_openmpi
 setenv			MPI_HOME	${INSTALL_PATH}
 
 setenv			CC		${INSTALL_PATH}/bin/mpicc
 setenv			CXX		${INSTALL_PATH}/bin/mpic++
 setenv			FC		${INSTALL_PATH}/bin/mpif90
 setenv			FF		${INSTALL_PATH}/bin/mpif77
-setenv			F90		${INSTALL_PATH}/mpif90
+setenv			F90		${INSTALL_PATH}/bin/mpif90
 setenv			F77		${INSTALL_PATH}/bin/mpif77
 " >> $CONFIG_FILE
 

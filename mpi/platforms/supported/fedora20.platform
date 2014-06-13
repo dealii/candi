@@ -9,5 +9,7 @@
 PACKAGES=(
 #once:mpich2
 #once:mpich
-once:openmpi
+#once:openmpi
+once:mvapich2
 )
+

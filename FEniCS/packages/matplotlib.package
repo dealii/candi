@@ -1,4 +1,6 @@
-NAME=matplotlib-1.0.1
-SOURCE=http://sourceforge.net/projects/matplotlib/files/matplotlib/$NAME/
+VERSION=1.3.1
+NAME=matplotlib-${VERSION}
+SOURCE=http://downloads.sourceforge.net/matplotlib/
 PACKING=.tar.gz
+CHECKSUM=444624ad58de05f9029b0b5811e11c17
 BUILDCHAIN=python

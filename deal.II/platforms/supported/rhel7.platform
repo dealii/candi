@@ -1,0 +1,25 @@
+# RHEL 7
+
+# This build script assumes that you have several packages already
+# installed via RHEL's yum using the following command:
+#
+# su -c 'yum install -y svn git wget \
+# @development-tools gcc-c++ cmake \
+# blas blas-devel lapack lapack-devel \
+# doxygen graphviz graphviz-devel qt-devel '
+# 
+# ARPACK: arpack arpack-devel
+# METIS: metis metis-devel
+#
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)

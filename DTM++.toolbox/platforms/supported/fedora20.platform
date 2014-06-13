@@ -27,7 +27,8 @@ default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
 
 # Define the packages this platform needs
 PACKAGES=(
-once:hwloc
+#once:hwloc
+once:superlu_dist
 once:hdf5
 once:p4est
 once:trilinos

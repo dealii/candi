@@ -51,7 +51,6 @@ once:vtkwithqt
 # once:scotch
 fiat
 ferari
-ufc
 ufl
 ffc
 # syfi

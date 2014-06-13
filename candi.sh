@@ -338,6 +338,14 @@ guess_platform() {
             "Schrödinger’s Cat"*) echo fedora19;;
             Heisenbug*)           echo fedora20;;
         esac
+    elif [ -f /etc/redhat-release ]
+    then
+        local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
+        case ${RHELNAME} in
+            "Tikanga"*) echo rhel5;;
+            "Santiago"*) echo rhel6;;
+            "Maipo"*) echo rhel7;;
+        esac
     elif [ -x /usr/bin/sw_vers ]
     then
         local MACOSVER=$(sw_vers -productVersion)

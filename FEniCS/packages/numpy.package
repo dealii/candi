@@ -1,6 +1,7 @@
-NAME=numpy-1.6.2
+NAME=numpy-1.8.1
 SOURCE=http://downloads.sourceforge.net/numpy/
 PACKING=.tar.gz
+CHECKSUM=be95babe263bfa3428363d6db5b64678
 BUILDCHAIN=python
 
 package_specific_setup () {
@@ -24,8 +25,6 @@ library_dirs = ${LAPACKANDBLAS_DIR}
 atlas_libs = lapack, blas
 " > site.cfg
     fi
-
-    python setup.py build --fcompiler=gnu95
 }
 
 package_specific_register () {

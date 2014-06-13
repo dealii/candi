@@ -1,14 +1,6 @@
-VERSION=1.3.0
+VERSION=1.4.0
 NAME=dolfin-${VERSION}
 SOURCE=https://bitbucket.org/fenics-project/dolfin/downloads/
 PACKING=.tar.gz
-CHECKSUM=bc5b9f18ee7738b2e9e6768c7aa57c58
+CHECKSUM=b736119d524590b6bd0484f09893e018
 
-package_specific_setup () {
-    # Let CMake picks correct VTK, follow-up of issue151
-    # https://bitbucket.org/fenics-project/dolfin/issue/151
-    # Applies to DOLFIN 1.3.0, not applicable to 1.3.0+.
-    if [ "$VERSION" == "1.3.0" ]; then
-      patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/dolfin-1.3.0-vtk.patch || true
-    fi
-}

@@ -1,0 +1,11 @@
+VERSION=3.4
+NAME=petsc4py-${VERSION}
+SOURCE=https://bitbucket.org/petsc/petsc4py/downloads/
+PACKING=.tar.gz
+CHECKSUM=f6a2914fe3c057b0bf0eac4330a071ea
+BUILDCHAIN=python
+
+package_specific_setup () {
+    patch -p1 --forward < ${ORIG_DIR}/FEniCS/patches/petsc4py-c++11.patch || true
+}
+

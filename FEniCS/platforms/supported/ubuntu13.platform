@@ -31,7 +31,6 @@ petsc
 slepc
 fiat
 #ferari
-ufc
 ufl
 ffc
 instant

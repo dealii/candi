@@ -1,14 +1,17 @@
-# RHEL 6
+# RHEL 7
 
 # This build script assumes that you have several packages already
 # installed via RHEL's yum using the following command:
 #
 # su -c 'yum install -y redhat-lsb bzr bzrtools subversion \
 # libxml2-devel gcc gcc-c++ openmpi-devel openmpi numpy swig wget \
-# vtk-python atlas-devel suitesparse-devel blas-devel \
+# atlas-devel suitesparse-devel blas-devel \
 # lapack-devel cln-devel ginac-devel python-devel cmake \
 # ScientificPython mpfr-devel armadillo-devel gmp-devel CGAL-devel \
-# cppunit-devel flex bison bzip2-devel python-ply eigen3 scotch scotch-devel'
+# cppunit-devel flex bison bzip2-devel python-ply eigen3 scotch scotch-devel \
+# hdf5 hdf5-devel vtk-devel vtk-python vtk-qt vtk-qt-python \
+# vtk-qt-tcl vtk-tcl vtk-testing vtkdata.noarch vtk \
+# netcdf-cxx netcdf-cxx-devel netcdf netcdf-devel '
 #
 # If you have multiple MPI libraries installed, make sure the
 # appropriate version is selected. For this, on a 32-bit operating

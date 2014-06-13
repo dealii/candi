@@ -12,6 +12,9 @@ CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
           -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON \
           -D Trilinos_ENABLE_Epetra:BOOL=ON \
+          -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
+          -D Trilinos_ENABLE_Amesos:BOOL=ON \
+          -D Trilinos_ENABLE_Belos:BOOL=ON \
           -D Trilinos_ENABLE_ML:BOOL=ON \
           -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
           -D Trilinos_ENABLE_TESTS:BOOL=OFF \

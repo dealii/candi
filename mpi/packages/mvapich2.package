@@ -1,13 +1,12 @@
-VERSION=1.4.1p1
-NAME=mpich2-${VERSION}
-SOURCE=http://www.mpich.org/static/downloads/${VERSION}/
-PACKING=.tar.gz
-CHECKSUM=b470666749bcb4a0449a072a18e2c204
-
+VERSION=1.9
+NAME=mvapich2-${VERSION}
+SOURCE=http://mvapich.cse.ohio-state.edu/download/mvapich2/
+PACKING=.tgz
+CHECKSUM=5dc58ed08fd3142c260b70fe297e127c
 BUILDCHAIN=autotools
-PROCS=1
-CONFOPTS="-q CFLAGS=-fPIC CXXFLAGS=-fPIC FFLAGS=-fPIC FCFLAGS=-fPIC"
-INSTALL_PATH=${INSTALL_PATH}/${COMPILER}/${NAME}
+
+CONFOPTS="--enable-shared"
+#CONFOPTS="--enable-error-messages=all --enable-g=dbg --enable-debuginfo" // for debugging
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
@@ -43,8 +42,8 @@ setenv			MPI_SYSCONFIG	${INSTALL_PATH}/etc
 setenv			MPI_INCLUDE	${INSTALL_PATH}/include
 setenv			MPI_LIB		${INSTALL_PATH}/lib
 setenv			MPI_MAN		${INSTALL_PATH}/share/man
-setenv			MPI_COMPILER	openmpi-x86_64
-setenv			MPI_SUFFIX	_openmpi
+setenv			MPI_COMPILER	mvapich2-x86_64
+setenv			MPI_SUFFIX	_mvapich2
 setenv			MPI_HOME	${INSTALL_PATH}
 
 setenv			CC		${INSTALL_PATH}/bin/mpicc
@@ -65,4 +64,3 @@ setenv			F77		${INSTALL_PATH}/bin/mpif77
     cecho ${GOOD} "    $CONFIG_FILE"
     echo
 }
-

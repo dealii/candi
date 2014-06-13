@@ -41,6 +41,11 @@ default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
 PACKAGES=(
 skip:FEniCS-prepare
 once:mpi4py
+once:numpy
+once:scipy
+once:matplotlib
+once:ipython
+once:sympy
 once:hdf5
 once:boost
 once:swig
@@ -54,7 +59,6 @@ once:scotch
 # once:pastix
 fiat
 ferari
-ufc
 ufl
 ffc
 # syfi

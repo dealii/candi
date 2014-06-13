@@ -8,7 +8,9 @@
 
 # Define the packages this platform needs
 PACKAGES=(
-once:mpich2
+#once:mvapich2
+#once:mpich2
 #once:mpich
-#once:openmpi
+once:openmpi
 )
+

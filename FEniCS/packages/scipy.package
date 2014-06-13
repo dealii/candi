@@ -1,6 +1,7 @@
-NAME=scipy-0.12.0
+NAME=scipy-0.14.0
 SOURCE=http://downloads.sourceforge.net/scipy/
 PACKING=.tar.gz
+CHECKSUM=d7c7f4ccf8b07b08d6fe49d5cd51f85d
 BUILDCHAIN=python
 
 package_specific_setup () {
@@ -32,3 +33,4 @@ umfpack_libs = umfpack
 " >> site.cfg
     fi
 }
+

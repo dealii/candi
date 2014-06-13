@@ -1,8 +1,6 @@
 NAME=libadjoint
-SOURCE=lp:
-PACKING=bzr
-BUILDCHAIN=custom
+SOURCE=https://bitbucket.org/dolfin-adjoint/
+PACKING=hg
+BUILDCHAIN=cmake
+CONFOPTS="-DBUILD_SHARED_LIBS:BOOL=ON"
 
-package_specific_build () {
-    make install prefix=${INSTALL_PATH}
-}
