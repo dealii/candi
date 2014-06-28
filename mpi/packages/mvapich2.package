@@ -9,7 +9,7 @@ CONFOPTS="--enable-shared"
 #CONFOPTS="--enable-error-messages=all --enable-g=dbg --enable-debuginfo" // for debugging
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
-MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/candi/compiler/mpi/${COMPILER}
 CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
 
 # **********************************************************************************
@@ -23,6 +23,9 @@ package_specific_conf() {
 #
 # ${NAME} against ${COMPILER}
 #
+conflict compiler
+conflict candi/compiler
+conflict mpi
 
 prepend-path		PATH 		${PATH}
 prepend-path		MANPATH		${MANPATH}

@@ -7,10 +7,9 @@ CHECKSUM=9c5d5d4fe1e17dd12153f40bc5b6dbc0
 BUILDCHAIN=autotools
 PROCS=1
 CONFOPTS="-q CFLAGS=-fPIC CXXFLAGS=-fPIC FFLAGS=-fPIC FCFLAGS=-fPIC"
-INSTALL_PATH=${INSTALL_PATH}/${COMPILER}/${NAME}
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
-MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/mpi/${COMPILER}
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/candi/compiler/mpi/${COMPILER}
 CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
 
 # **********************************************************************************
@@ -24,6 +23,9 @@ package_specific_conf() {
 #
 # ${NAME} against ${COMPILER}
 #
+conflict compiler
+conflict candi/compiler
+conflict mpi
 
 prepend-path		PATH 		${PATH}
 prepend-path		MANPATH		${MANPATH}
