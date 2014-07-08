@@ -5,12 +5,15 @@
 #
 # su -c 'yum install -y svn git wget \
 # @development-tools gcc-c++ cmake \
+# openmpi openmpi-devel \
 # blas blas-devel lapack lapack-devel \
 # doxygen graphviz graphviz-devel qt-devel '
 # 
 # ARPACK: arpack arpack-devel
 # METIS: metis metis-devel
-#
+# 
+# Load the openmpi compiler with (e.g. for 64bit systems)
+#   module load openmpi-x86_64
 ##
 
 #
