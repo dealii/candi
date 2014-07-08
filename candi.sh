@@ -345,6 +345,7 @@ guess_platform() {
             "Tikanga"*) echo rhel5;;
             "Santiago"*) echo rhel6;;
             "Maipo"*) echo rhel7;;
+            "Core"*) echo centos7;;
         esac
     elif [ -x /usr/bin/sw_vers ]
     then
