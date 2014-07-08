@@ -363,6 +363,7 @@ guess_platform() {
         local DESCRIPTION=$(lsb_release -d -s)
         case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
             *:*:*Ubuntu*\ 13*)     echo ubuntu13;;
+            *:*:*Ubuntu*\ 14*)     echo ubuntu14;;
             *:Tikanga*:*)          echo rhel5;;
             *:Santiago*:*)         echo rhel6;;
             Scientific:Carbon*:*)  echo rhel6;;
