@@ -1,5 +1,6 @@
-NAME=p4est-0.3.4.2
-SOURCE=http://www.p4est.org/tarball/
+VERSION=0.3.4.2
+NAME=p4est-${VERSION}
+SOURCE=http://p4est.github.io/release/
 PACKING=.tar.gz
 CHECKSUM=ef38ea3be84628b1548188106a5b01e7
 BUILDCHAIN=custom
