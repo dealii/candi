@@ -480,6 +480,33 @@ if [ $# -eq 0 ]; then
         cecho ${GOOD} "$(module list)"
         echo "-------------------------------------------------------------------------------"
     fi
+
+    echo "-------------------------------------------------------------------------------"
+    echo "Compiler Variables:"
+    if [ -n "$CC" ]; then
+        cecho ${WARN} "CC  = $(which $CC)"
+    else
+        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <C compiler>"
+    fi
+
+    if [ -n "$CXX" ]; then
+        cecho ${WARN} "CXX = $(which $CXX)"
+    else
+        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <C++ compiler>"
+    fi
+
+    if [ -n "$FC" ]; then
+        cecho ${WARN} "FC  = $(which $FC)"
+    else
+        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <Fortran 90 compiler>"
+    fi
+
+    if [ -n "$FF" ]; then
+        cecho ${WARN} "FF  = $(which $FF)"
+    else
+        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <Fortran 77 compiler>"
+    fi
+    echo "-------------------------------------------------------------------------------"
     
     echo ""
     cecho ${GOOD} "Once ready, hit enter to continue!"
