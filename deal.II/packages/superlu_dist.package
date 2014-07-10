@@ -1,0 +1,82 @@
+VERSION=3.3
+NAME=superlu_dist_${VERSION}
+EXTRACTSTO=SuperLU_DIST_${VERSION}
+SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
+PACKING=.tar.gz
+CHECKSUM=f4805659157d93a962500902c219046b
+#1d77f10a265f5751d4e4b59317d778f8  superlu_dist_3.0.tar.gz
+#5b114d6f97d9e94d643f51bb3c6cf03f  superlu_dist_3.1.tar.gz
+#b67bab5bb1ee92d38ad6c345b3c2b18d  superlu_dist_3.2.tar.gz
+#f4805659157d93a962500902c219046b  superlu_dist_3.3.tar.gz
+BUILDCHAIN=custom
+
+package_specific_build() {
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+    mv make.inc make.inc.bak
+    #create make.inc
+echo "#  The machine (platform) identifier to append to the library names
+#
+PLAT            = _x86_64
+
+#
+#  The name of the libraries to be created/linked to
+#
+DSuperLUroot    = ${INSTALL_PATH}
+DSUPERLULIB     = \$(DSuperLUroot)/lib/libsuperlu_dist_${VERSION}.a
+
+#
+BLASDEF         = -DUSE_VENDOR_BLAS
+BLASLIB         = -lblas
+
+## parmetis 4.x.x
+METISLIB        = -L${PARMETIS_DIR}/lib -lmetis
+PARMETISLIB     = -L${PARMETIS_DIR}/lib -lparmetis
+
+# Define the required Fortran libraries, if you use C compiler to link
+#FLIBS          = -lpgf90 -lpgf90_rpm1
+
+# Define all the libraries
+LIBS            = \$(DSUPERLULIB) \$(BLASLIB) \$(PARMETISLIB) \$(METISLIB) \$(FLIBS)
+
+#
+#  The archiver and the flag(s) to use when building archive (library)
+#  If your system has no ranlib, set RANLIB = echo.
+#
+ARCH            = ar
+ARCHFLAGS	= cr
+RANLIB          = ranlib
+
+############################################################################
+# C compiler setup
+# CFLAGS should be set to be the C flags that include optimization
+CFLAGS          = -fPIC -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
+#
+# NOOPTS should be set to be the C flags that turn off any optimization
+NOOPTS          = -fPIC -O0
+############################################################################
+# FORTRAN compiler setup
+FORTRAN         = \$(FC)
+#F90FLAGS	= -fast -Mipa=fast,safe
+############################################################################
+LOADER          = \$(CC)
+#LOADOPTS	= -fast
+############################################################################
+#  C preprocessor defs for compilation (-DNoChange, -DAdd_, or -DUpCase)
+#
+#  Need follow the convention of how C calls a Fortran routine.
+#
+CDEFS        = -DAdd_
+" >> make.inc
+
+    # now compile superlu_dist
+    make superlulib
+    rm -f ${INSTALL_PATH}/lib/libsuperlu_dist.a
+    ln -s ${INSTALL_PATH}/lib/libsuperlu_dist_${VERSION}.a ${INSTALL_PATH}/lib/libsuperlu_dist.a
+    mkdir -p ${INSTALL_PATH}/include/superlu
+    cp SRC/*.h ${INSTALL_PATH}/include/superlu
+}
+
+package_specific_register () {
+    export SUPERLU_DIR=${INSTALL_PATH}
+}
+

@@ -18,6 +18,8 @@
 # Define the packages this platform needs
 PACKAGES=(
 #once:boost
+once:parmetis
+once:superlu_dist
 once:hdf5
 once:p4est
 once:trilinos
