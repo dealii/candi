@@ -1,4 +1,4 @@
-# Fedora 20
+# Saucy
 
 # This build script assumes that you have several packages already
 # installed via Fedora's yum using the following command:
@@ -14,6 +14,8 @@
 
 # Define the packages this platform needs
 PACKAGES=(
+once:parmetis
+once:superlu_dist
 once:hdf5
 once:p4est
 once:trilinos
