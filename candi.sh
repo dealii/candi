@@ -506,6 +506,11 @@ if [ $# -eq 0 ]; then
     else
         cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <Fortran 77 compiler>"
     fi
+    
+    if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
+        cecho ${BAD} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
+    fi
     echo "-------------------------------------------------------------------------------"
     
     echo ""
