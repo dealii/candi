@@ -3,7 +3,7 @@
 # This build script assumes that you have several packages already
 # installed via RHEL's yum using the following command:
 #
-# su -c 'yum install -y svn git wget \
+# su -c 'yum install -y patch svn git wget \
 # @development-tools gcc-c++ cmake \
 # openmpi openmpi-devel \
 # blas blas-devel lapack lapack-devel \
