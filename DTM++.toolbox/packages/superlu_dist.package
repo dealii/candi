@@ -9,7 +9,7 @@ BUILDCHAIN=custom
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_3.3.patch
+    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_3.3.patch || true
 
     mv make.inc make.inc.bak
     #create make.inc

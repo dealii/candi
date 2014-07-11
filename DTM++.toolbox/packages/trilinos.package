@@ -28,7 +28,7 @@ CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
 package_specific_setup() {
     # Apply patch to let Trilinos/Amesos work with SuperLUDist_3.3
     cd ${UNPACK_PATH}/${EXTRACTSTO}/packages/amesos/src
-    patch --forward Amesos_Superludist.cpp < ${ORIG_DIR}/${PROJECT}/patches/Amesos_Superludist.cpp.patch
+    patch --forward Amesos_Superludist.cpp < ${ORIG_DIR}/${PROJECT}/patches/Amesos_Superludist.cpp.patch || true
 }
 
 package_specific_register () {
