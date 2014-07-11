@@ -4,14 +4,13 @@ EXTRACTSTO=SuperLU_DIST_${VERSION}
 SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 PACKING=.tar.gz
 CHECKSUM=f4805659157d93a962500902c219046b
-#1d77f10a265f5751d4e4b59317d778f8  superlu_dist_3.0.tar.gz
-#5b114d6f97d9e94d643f51bb3c6cf03f  superlu_dist_3.1.tar.gz
-#b67bab5bb1ee92d38ad6c345b3c2b18d  superlu_dist_3.2.tar.gz
-#f4805659157d93a962500902c219046b  superlu_dist_3.3.tar.gz
 BUILDCHAIN=custom
 
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+
+    patch -p1 < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_3.3.patch
+
     mv make.inc make.inc.bak
     #create make.inc
 echo "#  The machine (platform) identifier to append to the library names
@@ -22,7 +21,9 @@ PLAT            = _x86_64
 #  The name of the libraries to be created/linked to
 #
 DSuperLUroot    = ${INSTALL_PATH}
-DSUPERLULIB     = \$(DSuperLUroot)/lib/libsuperlu_dist_${VERSION}.a
+DSUPERLULIBNAME = libsuperlu_dist
+DSUPERLULIBDIR  = \$(DSuperLUroot)/lib
+DSUPERLULIB     = \$(DSUPERLULIBDIR)/\$(DSUPERLULIBNAME)
 
 #
 BLASDEF         = -DUSE_VENDOR_BLAS
@@ -70,8 +71,6 @@ CDEFS        = -DAdd_
 
     # now compile superlu_dist
     make superlulib
-    rm -f ${INSTALL_PATH}/lib/libsuperlu_dist.a
-    ln -s ${INSTALL_PATH}/lib/libsuperlu_dist_${VERSION}.a ${INSTALL_PATH}/lib/libsuperlu_dist.a
     mkdir -p ${INSTALL_PATH}/include/superlu
     cp SRC/*.h ${INSTALL_PATH}/include/superlu
 }

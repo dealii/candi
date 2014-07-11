@@ -13,7 +13,7 @@ CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_ParMETIS:BOOL=ON \
           -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \
-          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist_3.3.a \
+          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
           -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_CXX_FLAGS:STRING=-fPIC -g -O3 \
