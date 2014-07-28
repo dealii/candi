@@ -1,11 +1,17 @@
-VERSION=0.3.4.2
-NAME=p4est-${VERSION}
-SOURCE=http://p4est.github.io/release/
-PACKING=.tar.gz
-CHECKSUM=ef38ea3be84628b1548188106a5b01e7
+VERSION=1.0
+NAME=p4est.git
+EXTRACTSTO=p4est
+SOURCE=https://github.com/cburstedde/
+PACKING=git
 BUILDCHAIN=custom
 
 package_specific_setup () {
+    ORIG_BUILD_DIR=`pwd`
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    git submodule update --init; ./bootstrap
+    cd ${ORIG_BUILD_DIR}
+    unset ${ORIG_BUILD_DIR}
+
     function bdie () {
         echo "Error: $@"
         exit 1
