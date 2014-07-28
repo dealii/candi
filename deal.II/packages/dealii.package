@@ -1,7 +1,9 @@
-VERSION=svn
-NAME=deal.II-${VERSION}
-SOURCE=https://svn.dealii.org/trunk/deal.II
-PACKING=svn
+VERSION=git
+#NAME=deal.II-${VERSION}
+NAME=dealii.git
+EXTRACTSTO=dealii
+SOURCE=https://github.com/dealii/
+PACKING=git
 BUILDCHAIN=cmake
 
 CONFOPTS=" \
