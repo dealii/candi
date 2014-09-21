@@ -40,7 +40,7 @@ CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /')
 #
 #  deal.II module for use with 'environment-modules' package:
 #
-module-whatis          "Provides the deal.II toolbox."
+module-whatis          \"Provides the deal.II toolbox.\"
 conflict                deal.II
 module load ${CURRENT_MODULES}
 
