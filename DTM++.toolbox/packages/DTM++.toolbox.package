@@ -16,7 +16,7 @@ package_specific_conf() {
 #
 #  DTM++.TOOLBOX module for use with 'environment-modules' package:
 #
-module-whatis          "Provides the DTM++.TOOLBOX."
+module-whatis          \"Provides the DTM++.TOOLBOX.\"
 conflict               candi/toolbox
 module load ${CURRENT_MODULES}
 
