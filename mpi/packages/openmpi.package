@@ -1,6 +1,8 @@
-VERSION=1.8.2
+MAJOR=1.8
+MINOR=2
+VERSION=${MAJOR}.${MINOR}
 NAME=openmpi-${VERSION}
-SOURCE=http://www.open-mpi.org/software/ompi/v1.6/downloads/
+SOURCE=http://www.open-mpi.org/software/ompi/v${MAJOR}/downloads/
 PACKING=.tar.bz2
 CHECKSUM=ignore
 
