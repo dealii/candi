@@ -1,8 +1,14 @@
-VERSION=1.6.5
+VERSION=1.8.2
 NAME=openmpi-${VERSION}
 SOURCE=http://www.open-mpi.org/software/ompi/v1.6/downloads/
 PACKING=.tar.bz2
-CHECKSUM=03aed2a4aa4d0b27196962a2a65fc475
+CHECKSUM=ignore
+
+if [ ${VERSION} = 1.8.2 ]; then
+    CHECKSUM=339a9fc199563bacbb359875ce8c9e20
+elif [ ${VERSION = 1.6.5 ]; then
+    CHECKSUM=03aed2a4aa4d0b27196962a2a65fc475
+fi
 
 BUILDCHAIN=autotools
 PROCS=1
