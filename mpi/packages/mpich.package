@@ -1,8 +1,14 @@
-VERSION=3.0.4
+VERSION=3.1.2
 NAME=mpich-${VERSION}
 SOURCE=http://www.mpich.org/static/downloads/${VERSION}/
 PACKING=.tar.gz
-CHECKSUM=9c5d5d4fe1e17dd12153f40bc5b6dbc0
+CHECKSUM=ignore
+
+if [ ${VERSION} = "3.1.2" ]; then
+    CHECKSUM=7fbf4b81dcb74b07ae85939d1ceee7f1
+elif [ ${VERSION} = "3.0.4" ]; then
+    CHECKSUM=9c5d5d4fe1e17dd12153f40bc5b6dbc0
+fi
 
 BUILDCHAIN=autotools
 PROCS=1
@@ -45,8 +51,8 @@ setenv			MPI_SYSCONFIG	${INSTALL_PATH}/etc
 setenv			MPI_INCLUDE	${INSTALL_PATH}/include
 setenv			MPI_LIB		${INSTALL_PATH}/lib
 setenv			MPI_MAN		${INSTALL_PATH}/share/man
-setenv			MPI_COMPILER	openmpi-x86_64
-setenv			MPI_SUFFIX	_openmpi
+setenv			MPI_COMPILER	mpich-x86_64
+setenv			MPI_SUFFIX	_mpich
 setenv			MPI_HOME	${INSTALL_PATH}
 
 setenv			CC		${INSTALL_PATH}/bin/mpicc
