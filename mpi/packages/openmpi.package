@@ -6,7 +6,7 @@ CHECKSUM=ignore
 
 if [ ${VERSION} = 1.8.2 ]; then
     CHECKSUM=339a9fc199563bacbb359875ce8c9e20
-elif [ ${VERSION = 1.6.5 ]; then
+elif [ ${VERSION} = 1.6.5 ]; then
     CHECKSUM=03aed2a4aa4d0b27196962a2a65fc475
 fi
 
