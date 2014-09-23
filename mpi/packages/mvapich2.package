@@ -1,8 +1,8 @@
-VERSION=1.9
+VERSION=2.1a
 NAME=mvapich2-${VERSION}
-SOURCE=http://mvapich.cse.ohio-state.edu/download/mvapich2/
-PACKING=.tgz
-CHECKSUM=5dc58ed08fd3142c260b70fe297e127c
+SOURCE=http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/
+PACKING=.tar.gz
+CHECKSUM=50d2ca13fd8e5e483cb7797e5c69e84a
 BUILDCHAIN=autotools
 
 CONFOPTS="--enable-shared"
