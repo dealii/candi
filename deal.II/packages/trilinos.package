@@ -1,4 +1,4 @@
-VERSION=11.8.1
+VERSION=11.10.2
 NAME=trilinos-${VERSION}-Source
 SOURCE=http://trilinos.sandia.gov/download/files/
 PACKING=.tar.gz
