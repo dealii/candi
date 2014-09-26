@@ -119,7 +119,7 @@ package_fetch () {
         cd ${UNPACK_PATH}
         # Suitably clone or update git repositories
         if [ ! -d ${EXTRACTSTO} ]; then
-            git clone ${SOURCE}${NAME}
+            git clone ${SOURCE}${NAME} ${EXTRACTSTO}
         else
             cd ${EXTRACTSTO}
             git pull
@@ -146,7 +146,7 @@ package_verify() {
     cd ${DOWNLOAD_PATH}
 
     # Only need to verify archives
-    if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] ||  [ ${PACKING} = ".tbz2" ] || ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
+    if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] ||  [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         cecho ${GOOD} "Verifying ${NAME}${PACKING}"
       
         # Check checksum has been specified for the package
