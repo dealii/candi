@@ -2,6 +2,7 @@ VERSION=3.4.4
 NAME=petsc-${VERSION}
 SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
 PACKING=.tar.gz
+#CHECKSUM=ignore
 CHECKSUM=7edbc68aa6d8d6a3295dd5f6c2f6979d
 BUILDCHAIN=custom
 

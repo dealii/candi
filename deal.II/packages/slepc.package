@@ -2,6 +2,8 @@ VERSION=3.4.4
 NAME=slepc-${VERSION}
 SOURCE=http://www.grycap.upv.es/slepc/download/download.php?filename=
 PACKING=.tar.gz
+# 3.5.1 CHECKSUM=5106f42051eaed215afa82064612df5b
+#CHECKSUM=ignore
 CHECKSUM=329179c5139027c7b293dd5ab0bc112c
 BUILDCHAIN=custom
 

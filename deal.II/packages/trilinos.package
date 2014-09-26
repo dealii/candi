@@ -1,8 +1,9 @@
-VERSION=11.10.2
+VERSION=11.8.1
 NAME=trilinos-${VERSION}-Source
 SOURCE=http://trilinos.sandia.gov/download/files/
 PACKING=.tar.gz
-CHECKSUM=37bbbb30756e9cb2d35c092954d2f1eb
+CHECKSUM=3c9465b6d63d824e9dc0365ca73c3370
+# 11.10.2 CHECKSUM=37bbbb30756e9cb2d35c092954d2f1eb
 BUILDCHAIN=cmake
 
 CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
