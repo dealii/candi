@@ -1,7 +1,6 @@
 VERSION=git
-#NAME=deal.II-${VERSION}
 NAME=dealii.git
-EXTRACTSTO=dealii
+EXTRACTSTO=deal.II-git
 SOURCE=https://github.com/dealii/
 PACKING=git
 BUILDCHAIN=cmake
