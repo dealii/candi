@@ -179,7 +179,7 @@ package_verify() {
     fi
     
     # Quit with a useful message if something goes wrong
-    quit_if_fail "Error verifying checksum for ${NAME}${PACKING}"
+    quit_if_fail "Error verifying checksum for ${NAME}${PACKING}\nMake sure that you are connected to the internet.\nIf a corrupted file has been downloaded, please remove\n   ${DOWNLOAD_PATH}/${NAME}${PACKING}\nbefore you restart candi!"
 }
 
 
