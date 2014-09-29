@@ -487,29 +487,30 @@ if [ $# -eq 0 ]; then
     if [ -n "$CC" ]; then
         cecho ${WARN} "CC  = $(which $CC)"
     else
-        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <C compiler>"
+        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
     fi
 
     if [ -n "$CXX" ]; then
         cecho ${WARN} "CXX = $(which $CXX)"
     else
-        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <C++ compiler>"
+        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
     fi
 
     if [ -n "$FC" ]; then
         cecho ${WARN} "FC  = $(which $FC)"
     else
-        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <Fortran 90 compiler>"
+        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
     fi
 
     if [ -n "$FF" ]; then
         cecho ${WARN} "FF  = $(which $FF)"
     else
-        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <Fortran 77 compiler>"
+        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
     fi
     
     if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
-        cecho ${BAD} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${BAD} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
         cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
     fi
     echo "-------------------------------------------------------------------------------"
