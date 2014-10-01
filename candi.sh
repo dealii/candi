@@ -337,7 +337,8 @@ guess_platform() {
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
             "Schrödinger’s Cat"*) echo fedora19;;
-            Heisenbug*)           echo fedora20;;
+            "Heisenbug"*)         echo fedora20;;
+            "Twenty One"*)        echo fedora21;;
         esac
     elif [ -f /etc/redhat-release ]
     then
