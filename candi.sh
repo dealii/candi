@@ -458,8 +458,8 @@ if [ $# -eq 0 ]; then
     awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
     echo
     echo "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
-    echo "Unpacking files to:   $(prettify_dir ${UNPACK_PATH})"
-    echo "Building projects in: $(prettify_dir ${BUILD_PATH})"
+    echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
+    echo "Building projects in:   $(prettify_dir ${BUILD_PATH})"
     echo "Installing projects in: $(prettify_dir ${INSTALL_PATH})"
     echo
     if [ ${STABLE_BUILD} = true ]; then
