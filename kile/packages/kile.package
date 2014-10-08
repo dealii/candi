@@ -1,0 +1,45 @@
+VERSION=${KILEVERSION}
+NAME=kile-${VERSION}
+SOURCE=http://sourceforge.net/projects/kile/files/stable/kile-${VERSION}/
+PACKING=.tar.bz2
+BUILDCHAIN=cmake
+CHECKSUM=ignore
+if [ ${VERSION} = 2.1.3 ]; then
+    CHECKSUM=f3129e73eea21890c40781de80b44808
+fi
+
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/kile
+CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
+
+# **********************************************************************************
+package_specific_conf() {
+    cd ${BUILDDIR}
+    export KDEDIRS=${INSTALL_PATH}:${KDEDIRS}
+    kbuildsycoca4
+
+    # Generate modulefile
+
+    mkdir -p ${MODULEFILE_PATH}
+    CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+# ${NAME}
+#
+conflict kdevelop
+
+prepend-path		PATH 		${INSTALL_PATH}/bin
+prepend-path		KDEDIRS		${INSTALL_PATH}
+" >> $CONFIG_FILE
+
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+}
+
