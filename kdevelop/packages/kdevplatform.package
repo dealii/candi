@@ -1,0 +1,10 @@
+VERSION=${KDEVPLATFORMVERSION}
+NAME=kdevplatform-${VERSION}
+SOURCE=http://download.kde.org/stable/kdevelop/4.7.0/src/
+PACKING=.tar.xz
+BUILDCHAIN=cmake
+CHECKSUM=ignore
+if [ ${VERSION} = 1.7.0 ]; then
+    CHECKSUM=72375e077f97b44056c76c7f85ce49ad
+fi
+
