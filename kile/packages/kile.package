@@ -20,13 +20,12 @@ package_specific_conf() {
     # Generate modulefile
 
     mkdir -p ${MODULEFILE_PATH}
-    CONFIG_FILE=${MODULEFILE_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "#%Module 1.0
 #
 # ${NAME}
 #
-conflict kdevelop
+conflict kile
 
 prepend-path		PATH 		${INSTALL_PATH}/bin
 prepend-path		KDEDIRS		${INSTALL_PATH}
