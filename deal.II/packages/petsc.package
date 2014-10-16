@@ -55,7 +55,7 @@ package_specific_setup () {
     
     ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS}
     
-    make all test install
+    make all install
 }
 
 package_specific_register () {

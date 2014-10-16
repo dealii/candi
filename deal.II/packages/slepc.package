@@ -12,7 +12,7 @@ package_specific_setup () {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
     ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS}
-    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} PETSC_ARCH=arch-installed-petsc all test install
+    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} PETSC_ARCH=arch-installed-petsc all install
 }
 
 package_specific_register () {
