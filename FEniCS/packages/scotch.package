@@ -24,6 +24,7 @@ package_specific_setup () {
 	perl -pi -e 's/-DSCOTCH_PTHREAD//g' Make.inc/Makefile.inc.${SCOTCH_ARCH}
     fi
     ln -sf Make.inc/Makefile.inc.${SCOTCH_ARCH} Makefile.inc
+    cp -rf * ${BUILDDIR}
 }
 
 package_specific_install () {
