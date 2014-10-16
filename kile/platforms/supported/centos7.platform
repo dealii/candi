@@ -6,7 +6,7 @@
 # su -c 'yum groupinstall -y "Development Tools"'
 # 
 # su -c 'yum install -y cmake gcc-c++ boost boost-devel \
-# kdelibs kdelibs-devel kdebase-workspace-devel \
+# kdelibs kdelibs-devel kdebase-workspace-devel kate \
 # grantlee grantlee-devel qjson qjson-devel \
 # qtwebkit qtwebkit-devel kdesdk-okteta kdesdk-okteta-devel'
 # 
