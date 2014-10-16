@@ -1,0 +1,74 @@
+# CentOS/RHEL 7
+
+# This build script assumes that you have several packages already
+# installed via RHEL's yum using the following command:
+# 
+# Install the EPEL 7 repository.
+# Install the nux-dextop or rpmfusion el7 repository.
+# 
+# su -c 'yum groupinstall "Development and Creative Workstation"'
+# su -c 'yum groupinstall "Development Tools"'
+# 
+# su -c 'yum install -y redhat-lsb bzr bzrtools subversion \
+#  libxml2-devel gcc gcc-c++ openmpi-devel openmpi numpy swig wget \
+#  atlas-devel suitesparse-devel blas-devel lapack-devel python-devel cmake \
+#  mpfr-devel armadillo-devel gmp-devel cppunit-devel flex bison bzip2-devel \
+#  python-ply eigen3 hdf5 hdf5-devel vtk-devel vtk-python vtk-qt vtk-qt-python \
+#  vtk-qt-tcl vtk-tcl vtk-testing vtkdata.noarch vtk tk tk-devel tcl tcl-devel \
+#  netcdf-cxx netcdf-cxx-devel netcdf netcdf-devel'
+#
+# If you have multiple MPI libraries installed, make sure the
+# appropriate version is selected. For this, on a 32-bit operating
+# system, run (64bit OS):
+#
+# module load mpi/openmpi-x86_64
+#
+# After CANDI has completed, please make sure the following
+# environment variable is set before running any Python DOLFIN
+# programs:
+#
+# export BOOST_DIR=${INSTALL_PATH}
+#
+# Also, if you are using SELinux, you may need to disable it to run
+# DOLFIN programs.
+##
+
+# Platform specific variables
+default PETSC_ARCH=linux-gnu-cxx-opt
+default SCOTCH_ARCH=pc_linux2
+default UMFPACK_INCLUDE_DIR=/usr/include/suitesparse
+
+# Define the packages this platform needs
+PACKAGES=(
+skip:FEniCS-prepare
+once:boost
+once:pcre
+once:scientificpython
+once:numpy
+once:scipy
+once:matplotlib
+once:ipython
+once:sympy
+once:cgal
+once:bazaar
+once:scons
+once:mtl
+once:hdf5
+once:parmetis
+once:swig
+once:trilinos
+once:petsc
+once:slepc
+once:armadillo
+once:scotch
+once:vtkwithqt
+fiat
+ferari
+ufl
+ffc
+# syfi
+viper
+instant
+dolfin
+skip:FEniCS
+)
