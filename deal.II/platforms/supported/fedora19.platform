@@ -6,6 +6,7 @@
 # su -c 'yum install -y svn \
 # @development-tools gcc-c++ cmake \
 # blas blas-devel lapack lapack-devel \
+# libtool lua lua-devel \
 # doxygen graphviz graphviz-devel qt-devel '
 # 
 # ARPACK system packages: arpack arpack-devel

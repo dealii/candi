@@ -6,6 +6,7 @@
 # su -c 'yum install -y patch svn git wget \
 # @development-tools gcc-c++ cmake \
 # openmpi openmpi-devel \
+# libtool lua lua-devel \
 # blas blas-devel lapack lapack-devel \
 # doxygen graphviz graphviz-devel qt-devel '
 # 

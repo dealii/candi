@@ -5,6 +5,7 @@
 #
 # su -c 'yum install -y svn git wget \
 # @development-tools gcc-c++ cmake \
+# libtool lua lua-devel \
 # blas blas-devel lapack lapack-devel \
 # doxygen graphviz graphviz-devel qt-devel '
 # 
