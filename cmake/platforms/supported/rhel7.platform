@@ -1,0 +1,22 @@
+# RHEL 7
+
+# This build script assumes that you have several packages already
+# installed via CentOS's yum using the following commands:
+#
+# su -c 'yum groupinstall -y "Development Tools"'
+# 
+# su -c 'yum install -y cmake gcc-c++'
+# 
+# Set the compiler
+#   export CC=/usr/bin/gcc
+#   export CXX=/usr/bin/g++
+#   export FC=/usr/bin/gfortran
+#   export FF=/usr/bin/gfortran
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+once:cmake
+)
+

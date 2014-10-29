@@ -1,0 +1,38 @@
+VERSION=${CMAKEVERSION}
+NAME=cmake-${VERSION}
+SOURCE=http://www.cmake.org/files/v2.8/
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+CHECKSUM=ignore
+if [ ${VERSION} = 2.8.12.2 ]; then
+    CHECKSUM=17c6513483d23590cbce6957ec6d1e66
+fi
+
+MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/cmake
+CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
+
+# **********************************************************************************
+package_specific_conf() {
+    # Generate modulefile
+    mkdir -p ${MODULEFILE_PATH}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+# ${NAME}
+#
+conflict cmake
+
+prepend-path		PATH 		${INSTALL_PATH}/bin
+" >> $CONFIG_FILE
+
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+}
+
