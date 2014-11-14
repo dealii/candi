@@ -1,10 +1,10 @@
-# Fedora 20
+# Fedora 21
 
 # This build script assumes that you have several packages already
 # installed via Fedora's yum using the following command:
 #
 # $ su -c 'yum install -y \
-# @development-tools gcc-c++ cmake mpich mpich-devel splint \
+# @development-tools gcc-c++ cmake openmpi openmpi-devel splint \
 # patch libtool lua lua-devel \
 # blas blas-devel lapack lapack-devel \
 # doxygen graphviz graphviz-devel qt-devel '
@@ -12,9 +12,10 @@
 # Additional packages (if you need):
 # ~ ARPACK system packages: arpack arpack-devel
 # ~ METIS  system packages: metis metis-devel
+# ~ MUMPS  system packages: MUMPS-openmpi MUMPS-openmpi-devel
 # 
-# Please load the 'mpich' compiler with
-# $  module load mpi/mpich-x86_64
+# Please load the 'openmpi' compiler with
+# $  module load mpi/openmpi-x86_64
 # and then set the compiler enviroment variables to
 # $ export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
 # before you continue!
