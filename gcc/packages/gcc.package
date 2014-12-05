@@ -1,18 +1,12 @@
 VERSION=${GCC}
 NAME=gcc-${VERSION}
 SOURCE=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/${NAME}/
-PACKING=.tar.gz
+PACKING=.tar.bz2
 CHECKSUM=ignore
 BUILDCHAIN=autotools
 
-if [ ${GCC} = "4.9.1" ]; then
-    CHECKSUM=b188a3c9be25ddbf36b4fa6f04aaafaa
-elif [ ${GCC} = "4.9.0" ]; then
-    CHECKSUM=fe8786641134178ecfeee2dc7644a0d8
-elif [ ${GCC} = "4.8.2" ]; then
-    CHECKSUM=deca88241c1135e2ff9fa5486ab5957b
-elif [ ${GCC} = "4.7.3" ]; then
-    CHECKSUM=d518eace24a53aef59c2c69498ea4989
+if [ ${GCC} = "4.9.2" ]; then
+    CHECKSUM=4df8ee253b7f3863ad0b86359cd39c43
 fi
 
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/gcc
