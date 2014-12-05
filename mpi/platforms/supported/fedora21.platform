@@ -1,0 +1,15 @@
+# Fedora 21
+
+# This build script assumes that you have installed
+# an appropriate C/C++ and Fortran compiler.
+#
+##
+
+# Define the packages this platform needs
+PACKAGES=(
+#once:mpich2
+once:mpich
+#once:openmpi
+#once:mvapich2
+)
+
