@@ -1,12 +1,14 @@
 MAJOR=1.8
-MINOR=2
+MINOR=3
 VERSION=${MAJOR}.${MINOR}
 NAME=openmpi-${VERSION}
 SOURCE=http://www.open-mpi.org/software/ompi/v${MAJOR}/downloads/
 PACKING=.tar.bz2
 CHECKSUM=ignore
 
-if [ ${VERSION} = 1.8.2 ]; then
+if [ ${VERSION} = 1.8.3 ]; then
+    CHECKSUM=2067d00853e0c33d498153fc7d268d2b
+elif [ ${VERSION} = 1.8.2 ]; then
     CHECKSUM=339a9fc199563bacbb359875ce8c9e20
 elif [ ${VERSION} = 1.6.5 ]; then
     CHECKSUM=03aed2a4aa4d0b27196962a2a65fc475
