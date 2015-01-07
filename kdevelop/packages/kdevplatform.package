@@ -8,3 +8,4 @@ if [ ${VERSION} = 1.7.0 ]; then
     CHECKSUM=72375e077f97b44056c76c7f85ce49ad
 fi
 
+CONFOPTS="-D LIB_SUFFIX=64"
