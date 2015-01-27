@@ -1,6 +1,6 @@
-VERSION=1.0
+VERSION=v1.1
 NAME=p4est.git
-EXTRACTSTO=p4est
+EXTRACTSTO=p4est-${VERSION}
 SOURCE=https://github.com/cburstedde/
 PACKING=git
 BUILDCHAIN=custom
