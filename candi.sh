@@ -125,6 +125,10 @@ package_fetch () {
             git pull
             cd ..
         fi
+        if [ ${STABLE_BUILD} = true ]
+            cd ${EXTRACTSTO}
+            git checkout ${VERSION}
+        fi
     elif [ ${PACKING} = "bzr" ]; then
         cd ${UNPACK_PATH}
         # Suitably branch or update bzr repositories
