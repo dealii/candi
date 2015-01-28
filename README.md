@@ -22,19 +22,25 @@ This downloads the current version of candi.
 Usage
 ----
 
-### deal.II Library with Trilinos, PetSc, MPI Support, and more:
-
-candi is initially configured to compile and install the current version of the deal.II library.
-
+### First Run
+Make sure, that you are in the downloaded folder of candi; e.g. after the download type
 ```bash
  $> cd candi
+```
+Note: candi is initially configured to compile and install the current version of the deal.II library.
+
+You run the installer by
+```bash
  $> ./candi.sh
 ```
-
 * Abort the installer by pressing < CTRL > + C
-* Read Carefully the instructions!
-* Install the needed packages from your distribution. (For that, you need super user rights.)
-* Set up of the needed compilers
+
+### deal.II Library with Trilinos, PetSc, MPI Support, and more:
+* Make sure that you have done the First Run steps from above.
+* Abort the installer by pressing < CTRL > + C
+* READ CAREFULLY the instructions!
+* INSTALL the needed packages from your distribution. (You need super user rights for this step.)
+* Set up of the needed compilers.
 
 #### Install deal.II on RHEL 7, CentOS 7 or Fedora 20/21:
 ```bash
