@@ -40,7 +40,7 @@ You run the installer by
 * Abort the installer by pressing < CTRL > + C
 * READ CAREFULLY the instructions!
 * INSTALL the needed packages from your distribution. (You need super user rights for this step.)
-* Set up of the needed compilers.
+* SET UP the intended compilers; cf. the following instructions for this step.
 
 #### Install deal.II on RHEL 7, CentOS 7 or Fedora 20/21:
 ```bash
@@ -58,6 +58,7 @@ You can adapt several things to your personal needs, this includes the individua
 * the UNPACK folder of the downloaded packages (can be safely removed after installation),
 * the BUILD folder (can be safely removed after installation),
 * the INSTALLATION destination folder,
+* the NUMBER of build processes to use (Variable PROCS),
 and more options.
 
 Edit the file behind the softlink "candi.cfg", e.g.
