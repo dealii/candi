@@ -43,3 +43,17 @@ candi is initially configured to compile and install the current version of the 
   $> ./candi.sh
 ```
 Hit return and wait.
+
+Adapting candi to your needs
+----
+
+You can adapt several things to your personal needs, this includes the individual choice for
+* the DOWNLOAD folder (can be safely removed after installation),
+* the BUILD folder (can be safely removed after installation),
+* the INSTALLATION destination folder,
+and more options.
+
+Edit the file behind the softlink "candi.cfg", e.g.
+```bash
+  $> gedit candi.cfg
+```
