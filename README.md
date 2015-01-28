@@ -49,6 +49,7 @@ Adapting candi to your needs
 
 You can adapt several things to your personal needs, this includes the individual choice for
 * the DOWNLOAD folder (can be safely removed after installation),
+* the UNPACK folder of the downloaded packages (can be safely removed after installation),
 * the BUILD folder (can be safely removed after installation),
 * the INSTALLATION destination folder,
 and more options.
@@ -56,4 +57,19 @@ and more options.
 Edit the file behind the softlink "candi.cfg", e.g.
 ```bash
   $> gedit candi.cfg
+```
+
+Switching candi to other Projects (e.g. FEniCS)
+----
+
+You can switch the current project to handle to your needs.
+For doing this, firstly find out which projects are currently bundled with candi by
+```bash
+  $> ls project-*.cfg
+```
+This gives you a list of the currently configured projects.
+
+If you want to switch to a currently configured project, e.g. to project-FEniCS.cfg, type
+```bash
+  $> ./switch-project-to FEniCS
 ```
