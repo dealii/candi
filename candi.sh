@@ -343,6 +343,7 @@ guess_platform() {
             "Schrödinger’s Cat"*) echo fedora19;;
             "Heisenbug"*)         echo fedora20;;
             "Twenty One"*)        echo fedora21;;
+            "Twenty Two"*)        echo fedora22;;
         esac
     elif [ -f /etc/redhat-release ]
     then
