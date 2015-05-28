@@ -125,7 +125,7 @@ package_fetch () {
             git pull
             cd ..
         fi
-        if [ ${STABLE_BUILD} = true ] && [${VERSION} != "git"]; then
+        if [ ${STABLE_BUILD} = true ]; then
             cd ${EXTRACTSTO}
             git checkout ${VERSION}
         fi
