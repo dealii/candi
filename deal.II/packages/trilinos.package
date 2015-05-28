@@ -13,7 +13,7 @@ CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
-          -D Trilinos_ENABLE_MueLu:BOOL=ON \
+          -D Trilinos_ENABLE_MueLu:BOOL=OFF \
           -D TPL_ENABLE_ParMETIS:BOOL=ON \
           -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \
