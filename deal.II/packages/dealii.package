@@ -1,4 +1,4 @@
-VERSION=git
+VERSION=master
 NAME=dealii.git
 EXTRACTSTO=deal.II-${VERSION}
 SOURCE=https://github.com/dealii/
