@@ -1,0 +1,37 @@
+# Fedora 22
+
+# This build script assumes that you have several packages already
+# installed via Fedora's yum using the following command:
+#
+# $ su -c 'dnf install -y \
+# @development-tools gcc-c++ cmake openmpi openmpi-devel splint \
+# patch libtool lua lua-devel \
+# blas blas-devel lapack lapack-devel \
+# doxygen graphviz graphviz-devel qt-devel '
+# 
+# Additional packages (if you need):
+# ~ ARPACK system packages: arpack arpack-devel
+# ~ METIS  system packages: metis metis-devel
+# ~ MUMPS  system packages: MUMPS-openmpi MUMPS-openmpi-devel
+# 
+# Please load the 'openmpi' compiler with
+# $  module load mpi/openmpi-x86_64
+# and then set the compiler enviroment variables to
+# $ export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+# before you continue!
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+#once:boost
+once:parmetis
+once:superlu_dist
+once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)
+
