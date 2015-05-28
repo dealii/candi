@@ -1,4 +1,4 @@
-VERSION=git
+VERSION=v1.1
 NAME=p4est.git
 EXTRACTSTO=p4est-${VERSION}
 SOURCE=https://github.com/cburstedde/
