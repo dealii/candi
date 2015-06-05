@@ -371,6 +371,7 @@ guess_platform() {
         case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
             *:*:*Ubuntu*\ 13*)     echo ubuntu13;;
             *:*:*Ubuntu*\ 14*)     echo ubuntu14;;
+            *:*:*Ubuntu*\ 15*)     echo ubuntu15;;
             *:Tikanga*:*)          echo rhel5;;
             *:Santiago*:*)         echo rhel6;;
             Scientific:Carbon*:*)  echo rhel6;;
@@ -451,7 +452,7 @@ if [ $# -eq 0 ]; then
     else
 	cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
 	echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-	echo "./candi.sh ${PROJECT}/platforms/myplatform.platform"
+	echo "./candi.sh ${PROJECT}/platforms/supported/myplatform.platform"
 	echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
 	exit 1
     fi
