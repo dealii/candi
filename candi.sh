@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -a
 
-#  Copyright (C) 2013-2014 by Uwe Koecher                                      #
+#  Copyright (C) 2013-2015 by Uwe Koecher                                      #
 #  AND by the DORSAL Authors, cf. the file AUTHORS for details                 #
 #                                                                              #
 #  This file is part of CANDI.                                                 #
@@ -83,13 +83,17 @@ package_fetch () {
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         # Only download archives that do not exist
         if [ ! -e ${NAME}${PACKING} ]; then
-            if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-                wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+            if [ ${DOWNLOADER} = "curl" ]; then
+                curl -O ${SOURCE}${NAME}${PACKING}
             else
-                wget --retry-connrefused --no-check-certificate -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+                if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
+                    wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+                else
+                    wget --retry-connrefused --no-check-certificate -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+                fi
             fi
         fi
-
+        
         # Download again when using snapshots and unstable packages, but
         # only when the timestamp has changed
         if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
@@ -527,6 +531,78 @@ if [ $# -eq 0 ]; then
     read
 elif [ $# -eq 1 ]; then
     PLATFORM=${1}
+    cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+    
+    echo "-------------------------------------------------------------------------------"
+    # Show the initial comments in the platform file, as it often
+    # contains instructions about packages that should be installed
+    # first, etc. Remove first field '#' so that cut-and-paste of
+    # e.g. apt-get commands is easy.
+    awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
+    echo
+    echo "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
+    echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
+    echo "Building projects in:   $(prettify_dir ${BUILD_PATH})"
+    echo "Installing projects in: $(prettify_dir ${INSTALL_PATH})"
+    echo
+    if [ ${STABLE_BUILD} = true ]; then
+        echo "Building stable point-releases of ${PROJECT} projects."
+    else
+        if [ ${USE_SNAPSHOTS} = true ]; then
+        echo "Building development versions of ${PROJECT} projects (using snapshots)."
+        else
+            echo "Building development versions of ${PROJECT} projects."
+        fi
+    fi
+    echo "-------------------------------------------------------------------------------"
+    cecho ${GOOD} "Please make sure you've read the instructions above and your system"
+    cecho ${GOOD} "is ready for installing ${PROJECT}. We find it easiest to copy and paste"
+    cecho ${GOOD} "these instructions in another terminal window."
+    
+    if builtin command -v module > /dev/null; then
+        echo ""
+        echo "-------------------------------------------------------------------------------"
+        cecho ${GOOD} "$(module list)"
+        echo "-------------------------------------------------------------------------------"
+    fi
+    
+    echo "-------------------------------------------------------------------------------"
+    echo "Compiler Variables:"
+    if [ -n "$CC" ]; then
+        cecho ${WARN} "CC  = $(which $CC)"
+    else
+        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
+    fi
+    
+    if [ -n "$CXX" ]; then
+        cecho ${WARN} "CXX = $(which $CXX)"
+    else
+        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
+    fi
+    
+    if [ -n "$FC" ]; then
+        cecho ${WARN} "FC  = $(which $FC)"
+    else
+        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
+    fi
+    
+    if [ -n "$FF" ]; then
+        cecho ${WARN} "FF  = $(which $FF)"
+    else
+        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
+    fi
+    
+    if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
+        cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${BAD} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
+        cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
+    fi
+    echo "-------------------------------------------------------------------------------"
+    
+    echo ""
+    cecho ${GOOD} "Once ready, hit enter to continue!"
+    read
+    
 elif [ $# -eq 2 ]; then
     # Check if the user wants to install a single package
     if [ ${1} == "install-package" ]; then
@@ -604,6 +680,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset MAKEOPTS
     unset SCONSOPTS
     unset CONFIG_FILE
+    DOWNLOADER=wget
     TARGETS=('' install)
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
