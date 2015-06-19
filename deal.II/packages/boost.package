@@ -1,16 +1,8 @@
-NAME=boost_1_55_0
+NAME=boost_1_58_0
 SOURCE=http://downloads.sourceforge.net/boost/
-PACKING=.tar.bz2
-CHECKSUM=d6eef4b4cacb2183f2bf265a5a03a354
+PACKING=.tar.gz
+CHECKSUM=5a5d5614d9a07672e1ab2a250b5defc5
 BUILDCHAIN=custom
-
-if [ ! -z "${BZIP2_DIR}" ]; then
-    CONFOPTS="${CONFOPTS}
-              -sNO_BZIP2=0
-              -sBZIP2_BINARY=bz2
-              -sBZIP2_INCLUDE=${BZIP2_DIR}/include
-              -sBZIP2_LIBPATH=${BZIP2_DIR}/lib"
-fi
 
 package_specific_build () {
     cp -rf ${UNPACK_PATH}/${NAME}/* .

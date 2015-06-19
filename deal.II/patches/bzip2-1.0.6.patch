@@ -1,0 +1,26 @@
+--- bzip2-1.0.6/Makefile	2010-09-10 17:46:02.000000000 -0500
++++ bzip2-1.0.6.patched/Makefile	2015-06-12 10:06:03.153419669 -0500
+@@ -11,11 +11,13 @@
+ # This program is released under the terms of the license contained
+ # in the file LICENSE.
+ # ------------------------------------------------------------------
++#
++# This file was modified by Bruno Turcksin to be used by candi, 2015
++#
+ 
+ SHELL=/bin/sh
+ 
+ # To assist in cross-compiling
+-CC=gcc
+ AR=ar
+ RANLIB=ranlib
+ LDFLAGS=
+@@ -24,7 +26,7 @@
+ CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+ 
+ # Where you want it installed when you do 'make install'
+-PREFIX=/usr/local
++PREFIX=${INSTALL_PATH}
+ 
+ 
+ OBJS= blocksort.o  \
