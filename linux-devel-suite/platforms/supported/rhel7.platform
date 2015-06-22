@@ -4,15 +4,13 @@
 # This build script assumes that you have several packages already
 # installed via RHEL's yum using the following command:
 #
-# su -c 'yum install -y \
-# @development-tools gcc-c++ \
+# su -c 'yum install -y @development-tools gcc-c++ \
 # glibc glibc-devel '
 # 
 # Provided packages:
 #  bzip2
+#  zlib
 #  gmp, mpfr, mpc
-#  
-# gzip
 #
 ##
 
