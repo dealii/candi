@@ -1,0 +1,7 @@
+VERSION=1.0.3
+NAME=mpc-${VERSION}
+PACKING=.tar.gz
+DOWNLOADER=curl
+SOURCE=ftp://ftp.gnu.org/gnu/mpc/
+CHECKSUM=d6a1d5f8ddea3abd2cc3e98f58352d26
+BUILDCHAIN=autotools

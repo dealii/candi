@@ -1,0 +1,7 @@
+VERSION=6.0.0a
+NAME=gmp-${VERSION}
+EXTRACTSTO=gmp-6.0.0
+PACKING=.tar.bz2
+SOURCE=https://gmplib.org/download/gmp/
+CHECKSUM=b7ff2d88cae7f8085bd5006096eed470
+BUILDCHAIN=autotools

@@ -1,0 +1,32 @@
+diff -u -r -N bzip2-1.0.6-origin/Makefile bzip2-1.0.6/Makefile
+--- bzip2-1.0.6-origin/Makefile	2015-06-11 10:00:55.410362529 +0200
++++ bzip2-1.0.6/Makefile	2015-06-22 12:52:50.882578523 +0200
+@@ -11,20 +11,25 @@
+ # This program is released under the terms of the license contained
+ # in the file LICENSE.
+ # ------------------------------------------------------------------
++# 
++# This file has been modified by Bruno Turcksin to be used by candi (2015).
++# This file has been modified by Uwe Köcher to be used by candi (2015).
++#
+ 
+ SHELL=/bin/sh
+ 
+ # To assist in cross-compiling
+-CC=gcc
++#CC=gcc
+ AR=ar
+ RANLIB=ranlib
+-LDFLAGS=
++#LDFLAGS=
+ 
+ BIGFILES=-D_FILE_OFFSET_BITS=64
+ CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+ 
+ # Where you want it installed when you do 'make install'
+-PREFIX=/usr/local
++#PREFIX=/usr/local
++PREFIX=${INSTALL_PATH}
+ 
+ 
+ OBJS= blocksort.o  \

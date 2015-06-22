@@ -1,0 +1,48 @@
+NAME=linux-devel-suite
+VERSION=1.0.0
+BUILDCHAIN=ignore
+
+MODULEFILE_PATH=${INSTALL_PATH}/share/modulefiles/${NAME}/
+CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
+CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /')
+
+# **********************************************************************************
+package_specific_conf() {
+    # Generate modulefile
+
+    mkdir -p ${MODULEFILE_PATH}
+    rm -f $CONFIG_FILE
+    echo "#%Module 1.0
+#
+#  linux-devel-suite module for use with 'environment-modules' package:
+#
+
+#module load ${CURRENT_MODULES}
+
+# Define prefix so PATH and MANPATH can be updated.
+setenv        INSTALL_PATH	 ${INSTALL_PATH}
+prepend-path  PATH               ${INSTALL_PATH}/bin
+prepend-path  LD_LIBRARY_PATH    ${INSTALL_PATH}/lib
+prepend-path  DYLD_LIBRARY_PATH  ${INSTALL_PATH}/lib
+prepend-path  MANPATH            ${INSTALL_PATH}/share/man
+prepend-path  CPLUS_INCLUDE_PATH ${INSTALL_PATH}/include
+" >> $CONFIG_FILE
+    
+    echo
+    echo "${NAME} has now been installed in"
+    echo
+    cecho ${GOOD} "    ${INSTALL_PATH}"
+    echo
+    echo "To update your environment variables, use the created modulefile:"
+    echo
+    cecho ${GOOD} "    $CONFIG_FILE"
+    echo
+    
+    echo "To update your environment variables, run the following command:"
+    echo
+    cecho ${GOOD} "    source $CONFIG_FILE"
+    echo
+    echo "For future reference, we recommend that you add this command to your"
+    echo "configuration (.bashrc, .profile or similar)."
+    echo
+}

@@ -1,0 +1,28 @@
+# RHEL 7
+
+# Install common packages for linux clusters.
+# This build script assumes that you have several packages already
+# installed via RHEL's yum using the following command:
+#
+# su -c 'yum install -y \
+# @development-tools gcc-c++ \
+# glibc glibc-devel '
+# 
+# Provided packages:
+#  bzip2
+#  gmp, mpfr, mpc
+#  
+# gzip
+#
+##
+
+# Define the packages this platform needs
+PACKAGES=(
+once:bzip2
+once:zlib
+once:gmp
+once:mpfr
+once:mpc
+skip:linux-devel-suite
+)
+
