@@ -9,6 +9,15 @@ if [ ${GCC} = "4.9.2" ]; then
     CHECKSUM=4df8ee253b7f3863ad0b86359cd39c43
 fi
 
+CONFOPTS="--disable-multilib"
+
+if [ "${LINUX_DEVEL_SUITE}" ]; then
+  CONFOPTS="${CONFOPTS} 
+    --with-gmp=${LINUX_DEVEL_SUITE}
+    --with-mpfr=${LINUX_DEVEL_SUITE}
+    --with-mpc=${LINUX_DEVEL_SUITE}"
+fi
+
 MODULEFILE_PATH=${INSTALL_PATH}/conf/modulefiles/compiler/gcc
 CONFIG_FILE=${MODULEFILE_PATH}/${VERSION}
 
