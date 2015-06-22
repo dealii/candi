@@ -8,6 +8,9 @@
 # glibc glibc-devel glibc.i686 glibc-devel.i686 \
 # libmpc libmpc-devel mpfr mpfr-devel gmp gmp-devel \
 # gzip bzip2 '
+# 
+# *** OR *** install the project "linux-devel-suite" with
+# candi firstly.
 #
 ##
 
