@@ -419,6 +419,7 @@ default INSTALL_PATH=${HOME}/apps/candi/${PROJECT}
 default PROCS=1
 default STABLE_BUILD=true
 default USE_SNAPSHOTS=false
+default PACKAGES_OFF=""
 
 # Check if project was specified correctly
 if [ -d ${PROJECT} ]; then
@@ -658,7 +659,15 @@ for PACKAGE in ${PACKAGES[@]}; do
     SKIP=false
     case ${PACKAGE} in
         skip:*) SKIP=true;  PACKAGE=${PACKAGE#*:};;
-        once:*) SKIP=maybe; PACKAGE=${PACKAGE#*:};;
+        once:*) 
+          # If the package is turned off in the deal.II configuration, do not
+          # install it.
+          PACKAGE=${PACKAGE#*:};
+          if [[ ${PACKAGES_OFF} =~ ${PACKAGE} ]]; then
+            SKIP=true; 
+          else
+            SKIP=maybe;
+          fi;;
     esac
     
     # Check if the package exists
