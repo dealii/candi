@@ -1,6 +1,6 @@
 --- bzip2-1.0.6/Makefile	2010-09-10 17:46:02.000000000 -0500
-+++ bzip2-1.0.6.patched/Makefile	2015-06-12 10:06:03.153419669 -0500
-@@ -11,11 +11,13 @@
++++ bzip2-1.0.6.patched/Makefile	2015-07-10 19:44:13.520593242 -0500
+@@ -11,20 +11,22 @@
  # This program is released under the terms of the license contained
  # in the file LICENSE.
  # ------------------------------------------------------------------
@@ -15,8 +15,10 @@
  AR=ar
  RANLIB=ranlib
  LDFLAGS=
-@@ -24,7 +26,7 @@
- CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+ 
+ BIGFILES=-D_FILE_OFFSET_BITS=64
+-CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
++CFLAGS=-Wall -fPIC -Winline -O2 -g $(BIGFILES)
  
  # Where you want it installed when you do 'make install'
 -PREFIX=/usr/local
