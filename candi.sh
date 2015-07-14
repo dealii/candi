@@ -639,6 +639,7 @@ mkdir -p ${DOWNLOAD_PATH}
 mkdir -p ${UNPACK_PATH}
 mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
+mkdir -p ${INSTALL_PATH}/lib
 
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_PROCS=${PROCS}
