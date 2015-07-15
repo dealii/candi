@@ -7,7 +7,8 @@
 #   gfortran openmpi-bin openmpi-common libopenmpi-dev \
 #   cmake subversion git \
 #   libblas-dev liblapack-dev libblas3gf liblapack3gf \
-#   splint tcl tcl-dev environment-modules'
+#   splint tcl tcl-dev environment-modules libsuitesparse-dev \
+#   libtool libboost-all-dev'
 # 
 # Then reboot and run candi again.
 ##
