@@ -17,8 +17,9 @@
 #
 # Define the packages this platform needs
 PACKAGES=(
-once:zlib 
-once:bzip2 
+skip:dealii-prepare
+once:zlib
+once:bzip2
 once:boost
 once:parmetis
 once:superlu_dist

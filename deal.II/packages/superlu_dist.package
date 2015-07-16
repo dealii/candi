@@ -3,6 +3,7 @@ NAME=superlu_dist_${VERSION}
 EXTRACTSTO=SuperLU_DIST_${VERSION}
 SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 PACKING=.tar.gz
+DOWNLOADER=curl
 CHECKSUM=f4805659157d93a962500902c219046b
 BUILDCHAIN=custom
 

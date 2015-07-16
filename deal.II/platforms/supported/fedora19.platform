@@ -17,6 +17,7 @@
 #
 # Define the packages this platform needs
 PACKAGES=(
+skip:dealii-prepare
 #once:boost
 once:parmetis
 once:superlu_dist
