@@ -3,11 +3,12 @@
 # This build script assumes that you have several packages already
 # installed via Fedora's yum using the following command:
 #
-# $ su -c 'dnf install -y \
+# $ sudo dnf install -y \
 # @development-tools gcc-c++ cmake openmpi openmpi-devel splint \
 # patch libtool lua lua-devel \
 # blas blas-devel lapack lapack-devel \
-# doxygen graphviz graphviz-devel qt-devel '
+# doxygen graphviz graphviz-devel qt-devel \
+# metis metis-devel 
 # 
 # Additional packages (if you need):
 # ~ ARPACK system packages: arpack arpack-devel
