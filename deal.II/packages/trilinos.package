@@ -7,7 +7,8 @@ CHECKSUM=26a07a4fe43e49a8208953dea5ab2652
 # 11.10.2 CHECKSUM=37bbbb30756e9cb2d35c092954d2f1eb
 BUILDCHAIN=cmake
 
-CONFOPTS="-D Trilinos_ENABLE_OpenMP:BOOL=OFF \
+CONFOPTS="${TRILINOS_CONFOPTS} \
+          -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
           -D Trilinos_ENABLE_Didasko:BOOL=ON \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
