@@ -34,7 +34,7 @@ PACKAGES_OFF=${PACKAGES_OFF,,}
 #########################################################################
 TRILINOS_CONFOPTS=" \
 -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR} \
--D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_LIBRARY_DIRS} \
+-D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR} \
 "
 
 if [[ ${MKL} == ON ]]; then
