@@ -286,6 +286,8 @@ package_build() {
             echo scons -j ${PROCS} ${SCONSOPTS} prefix=${INSTALL_PATH} $target >>candi_build
         done
     elif [ ${BUILDCHAIN} = "cmake" ]; then
+        rm -f ${BUILDDDIR}/CMakeCache.txt
+        rm -rf ${BUILDDIR}/CMakeFiles
         echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
