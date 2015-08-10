@@ -1,10 +1,8 @@
-VERSION=11.12.1
+VERSION=12.0.1
 NAME=trilinos-${VERSION}-Source
 SOURCE=http://trilinos.org/oldsite/download/files/
 PACKING=.tar.gz
-CHECKSUM=26a07a4fe43e49a8208953dea5ab2652
-# 11.8.1  CHECKSUM=3c9465b6d63d824e9dc0365ca73c3370
-# 11.10.2 CHECKSUM=37bbbb30756e9cb2d35c092954d2f1eb
+CHECKSUM=bd99741d047471e127b8296b2ec08017
 BUILDCHAIN=cmake
 
 CONFOPTS="${TRILINOS_CONFOPTS} \
@@ -14,7 +12,8 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
-          -D Trilinos_ENABLE_MueLu:BOOL=OFF \
+          -D Trilinos_ENABLE_MueLu:BOOL=ON \
+          -D Trilinos_ENABLE_Amesos2:BOOL=OFF \
           -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
           -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
           -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
