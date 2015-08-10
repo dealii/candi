@@ -1,8 +1,8 @@
-VERSION=1.8.12
+VERSION=1.8.15-patch1
 NAME=hdf5-${VERSION}
 SOURCE=http://www.hdfgroup.org/ftp/HDF5/releases/${NAME}/src/
 PACKING=.tar.gz
-CHECKSUM=d804802feb99b87fc668a90e6fa34411
+CHECKSUM=4467c25ed9c0b126b194a4d9d66c29ac
 BUILDCHAIN=autotools
 
 CONFOPTS="--enable-shared --enable-parallel"
