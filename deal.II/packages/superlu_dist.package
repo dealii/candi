@@ -52,10 +52,10 @@ RANLIB          = ranlib
 ############################################################################
 # C compiler setup
 # CFLAGS should be set to be the C flags that include optimization
-CFLAGS          = -fPIC \$(I_PARMETIS) -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
+CFLAGS          = -fPIC -std=c99 \$(I_PARMETIS) -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
 #
 # NOOPTS should be set to be the C flags that turn off any optimization
-NOOPTS          = -fPIC -O0
+NOOPTS          = -fPIC -std=c99 -O0
 ############################################################################
 # FORTRAN compiler setup
 FORTRAN         = \$(FC)
