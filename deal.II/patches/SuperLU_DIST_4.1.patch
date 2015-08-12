@@ -872,56 +872,9 @@ diff -u -r -N SuperLU_DIST_4.1/SRC/pzgstrf.c SuperLU_DIST_4.1.patched/SRC/pzgstr
  
 diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.c SuperLU_DIST_4.1.patched/SRC/xscatter.c
 --- SuperLU_DIST_4.1/SRC/xscatter.c	1970-01-01 01:00:00.000000000 +0100
-+++ SuperLU_DIST_4.1.patched/SRC/xscatter.c	2015-08-10 13:56:02.562173000 +0200
-@@ -0,0 +1,331 @@
-+
-+#include <math.h>
-+#include "superlu_defs.h"
-+
-+
-+static void
-+arrive_at_ublock (int_t j,      //block number 
-+                  int_t * iukp, // output 
-+                  int_t * rukp, int_t * jb, /* Global block number of block U(k,j). */
-+                  int_t * ljb,  /* Local block number of U(k,j). */
-+                  int_t * nsupc,    /*supernode size of destination block */
-+                  int_t iukp0,  //input
-+                  int_t rukp0, int_t * usub,    /*usub scripts */
-+                  int_t * perm_u,   /*permutation matrix */
-+                  int_t * xsup, /*for SuperSize and LBj */
-+                  gridinfo_t * grid)
-+{
-+    int_t jj;
-+    *iukp = iukp0;
-+    *rukp = rukp0;
-+
-+#ifdef ISORT
-+    for (jj = 0; jj < perm_u[j]; jj++)
-+#else
-+    for (jj = 0; jj < perm_u[2 * j + 1]; jj++)
-+#endif
-+    {
-+        /* reinitilize the pointers to the begining of the */
-+        /* kth column/row of L/U factors                   */
-+        // printf("iukp %d \n",*iukp );
-+        *jb = usub[*iukp];      /* Global block number of block U(k,j). */
-+        // printf("jb %d \n",*jb );
-+        *nsupc = SuperSize (*jb);
-+        // printf("nsupc %d \n",*nsupc );
-+        *iukp += UB_DESCRIPTOR; /* Start fstnz of block U(k,j). */
-+
-+        *rukp += usub[*iukp - 1];   /* Move to block U(k,j+1) */
-+        *iukp += *nsupc;
-+    }
-+
-+    /* reinitilize the pointers to the begining of the */
-+    /* kth column/row of L/U factors                   */
-+    *jb = usub[*iukp];          /* Global block number of block U(k,j). */
-+    *ljb = LBj (*jb, grid);     /* Local block number of U(k,j). */
-+    *nsupc = SuperSize (*jb);
-+    *iukp += UB_DESCRIPTOR;     /* Start fstnz of block U(k,j). */
-+}
-+
++++ SuperLU_DIST_4.1.patched/SRC/xscatter.c	2015-08-12 09:56:36.917188487 +0200
+@@ -0,0 +1,284 @@
++#include "xscatter.h"
 +
 +typedef struct pair pair;
 +
@@ -1207,8 +1160,8 @@ diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.c SuperLU_DIST_4.1.patched/SRC/xscat
 +#endif  /* defined GPU_ACC */
 diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.h SuperLU_DIST_4.1.patched/SRC/xscatter.h
 --- SuperLU_DIST_4.1/SRC/xscatter.h	1970-01-01 01:00:00.000000000 +0100
-+++ SuperLU_DIST_4.1.patched/SRC/xscatter.h	2015-08-10 13:54:59.563734000 +0200
-@@ -0,0 +1,65 @@
++++ SuperLU_DIST_4.1.patched/SRC/xscatter.h	2015-08-12 09:53:29.979813198 +0200
+@@ -0,0 +1,97 @@
 +#ifndef _xscatter_h
 +#define _xscatter_h
 +
@@ -1226,7 +1179,39 @@ diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.h SuperLU_DIST_4.1.patched/SRC/xscat
 +                  int_t rukp0, int_t * usub,    /*usub scripts */
 +                  int_t * perm_u,   /*permutation matrix */
 +                  int_t * xsup, /*for SuperSize and LBj */
-+                  gridinfo_t * grid);
++                  gridinfo_t * grid)
++{
++    int_t jj;
++    *iukp = iukp0;
++    *rukp = rukp0;
++
++#ifdef ISORT
++    for (jj = 0; jj < perm_u[j]; jj++)
++#else
++    for (jj = 0; jj < perm_u[2 * j + 1]; jj++)
++#endif
++    {
++        /* reinitilize the pointers to the begining of the */
++        /* kth column/row of L/U factors                   */
++        // printf("iukp %d \n",*iukp );
++        *jb = usub[*iukp];      /* Global block number of block U(k,j). */
++        // printf("jb %d \n",*jb );
++        *nsupc = SuperSize (*jb);
++        // printf("nsupc %d \n",*nsupc );
++        *iukp += UB_DESCRIPTOR; /* Start fstnz of block U(k,j). */
++
++        *rukp += usub[*iukp - 1];   /* Move to block U(k,j+1) */
++        *iukp += *nsupc;
++    }
++
++    /* reinitilize the pointers to the begining of the */
++    /* kth column/row of L/U factors                   */
++    *jb = usub[*iukp];          /* Global block number of block U(k,j). */
++    *ljb = LBj (*jb, grid);     /* Local block number of U(k,j). */
++    *nsupc = SuperSize (*jb);
++    *iukp += UB_DESCRIPTOR;     /* Start fstnz of block U(k,j). */
++}
++
 +
 +typedef struct pair pair;
 +
