@@ -1,8 +1,9 @@
-VERSION=12.0.1
+VERSION=12.2.1
 NAME=trilinos-${VERSION}-Source
 SOURCE=http://trilinos.org/oldsite/download/files/
 PACKING=.tar.gz
 CHECKSUM=bd99741d047471e127b8296b2ec08017
+CHECKSUM=ignore
 BUILDCHAIN=cmake
 
 CONFOPTS="${TRILINOS_CONFOPTS} \
@@ -30,7 +31,7 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_setup() {
-    # Apply patch to let Trilinos/Amesos work with SuperLUDist_3.3
+    # Apply patch to let Trilinos/Amesos work with SuperLU_Dist v4.1
     cd ${UNPACK_PATH}/${EXTRACTSTO}/packages/amesos/src
     patch --forward Amesos_Superludist.cpp < ${ORIG_DIR}/${PROJECT}/patches/Amesos_Superludist.cpp.patch || true
 }
