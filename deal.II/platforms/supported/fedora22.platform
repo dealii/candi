@@ -13,7 +13,6 @@
 # Additional packages (if you need):
 # ~ ARPACK system packages: arpack arpack-devel
 # ~ METIS  system packages: metis metis-devel
-# ~ MUMPS  system packages: MUMPS-openmpi MUMPS-openmpi-devel
 # 
 # Please load the 'openmpi' compiler with
 # $  module load mpi/openmpi-x86_64
