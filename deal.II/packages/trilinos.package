@@ -1,8 +1,9 @@
 VERSION=12.2.1
 NAME=trilinos-${VERSION}-Source
-SOURCE=http://trilinos.org/oldsite/download/files/
-PACKING=.tar.gz
-CHECKSUM=6161926ea247863c690e927687f83be9
+SOURCE=http://trilinos.csbsju.edu/download/files/
+PACKING=.tar.bz2
+DOWNLOADER=curl
+CHECKSUM=760f14cbce482b4b9a41d1c18297b531
 BUILDCHAIN=cmake
 
 CONFOPTS="${TRILINOS_CONFOPTS} \
