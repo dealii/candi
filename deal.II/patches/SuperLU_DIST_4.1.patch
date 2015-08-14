@@ -1,0 +1,1719 @@
+diff -u -r -N SuperLU_DIST_4.1/Makefile SuperLU_DIST_4.1.patched/Makefile
+--- SuperLU_DIST_4.1/Makefile	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/Makefile	2015-08-10 13:57:27.347418000 +0200
+@@ -14,7 +14,8 @@
+ 
+ include make.inc
+ 
+-all: install lib example
++#all: install lib example
++all: install lib
+ 
+ lib: superlulib
+ 
+diff -u -r -N SuperLU_DIST_4.1/SRC/dreadMM.c SuperLU_DIST_4.1.patched/SRC/dreadMM.c
+--- SuperLU_DIST_4.1/SRC/dreadMM.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/dreadMM.c	2015-08-10 11:23:23.601106000 +0200
+@@ -1,6 +1,3 @@
+-
+-
+-
+ /*! @file 
+  * \brief 
+  * Contributed by Francois-Henry Rouet.
+@@ -8,6 +5,7 @@
+  */
+ #include <ctype.h>
+ #include "superlu_ddefs.h"
++#include "dreadrhs.h"
+ 
+ #undef EXPAND_SYM
+ 
+@@ -212,22 +210,3 @@
+ #endif
+ 
+ }
+-
+-
+-void dreadrhs(int m, double *b)
+-{
+-    FILE *fp, *fopen();
+-    int i;
+-
+-    if ( !(fp = fopen("b.dat", "r")) ) {
+-        fprintf(stderr, "dreadrhs: file does not exist\n");
+-	exit(-1);
+-    }
+-    for (i = 0; i < m; ++i)
+-      fscanf(fp, "%lf\n", &b[i]);
+-      /*fscanf(fp, "%d%lf\n", &j, &b[i]);*/
+-    /*        readpair_(j, &b[i]);*/
+-    fclose(fp);
+-}
+-
+-
+diff -u -r -N SuperLU_DIST_4.1/SRC/dreadrhs.c SuperLU_DIST_4.1.patched/SRC/dreadrhs.c
+--- SuperLU_DIST_4.1/SRC/dreadrhs.c	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/dreadrhs.c	2015-08-10 11:24:46.620343000 +0200
+@@ -0,0 +1,17 @@
++#include "dreadrhs.h"
++
++void dreadrhs(int m, double *b)
++{
++    FILE *fp, *fopen();
++    int i;
++
++    if ( !(fp = fopen("b.dat", "r")) ) {
++        fprintf(stderr, "dreadrhs: file does not exist\n");
++	exit(-1);
++    }
++    for (i = 0; i < m; ++i)
++      fscanf(fp, "%lf\n", &b[i]);
++      /*fscanf(fp, "%d%lf\n", &j, &b[i]);*/
++    /*        readpair_(j, &b[i]);*/
++    fclose(fp);
++}
+diff -u -r -N SuperLU_DIST_4.1/SRC/dreadrhs.h SuperLU_DIST_4.1.patched/SRC/dreadrhs.h
+--- SuperLU_DIST_4.1/SRC/dreadrhs.h	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/dreadrhs.h	2015-08-10 10:06:06.109972000 +0200
+@@ -0,0 +1,10 @@
++#ifndef _dreadrhs_h
++#define _dreadrhs_h
++
++#include <stdio.h>
++#include "superlu_ddefs.h"
++
++#undef EXPAND_SYM
++
++void dreadrhs(int m, double *b);
++#endif
+diff -u -r -N SuperLU_DIST_4.1/SRC/dreadtriple.c SuperLU_DIST_4.1.patched/SRC/dreadtriple.c
+--- SuperLU_DIST_4.1/SRC/dreadtriple.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/dreadtriple.c	2015-08-10 11:27:58.000000000 +0200
+@@ -1,11 +1,10 @@
+-
+-
+ /*! @file 
+  * \brief 
+  *
+  */
+ #include <stdio.h>
+ #include "superlu_ddefs.h"
++#include "dreadrhs.h"
+ 
+ #undef EXPAND_SYM
+ 
+@@ -148,23 +147,3 @@
+ #endif
+ 
+ }
+-
+-
+-void dreadrhs(int m, double *b)
+-{
+-    FILE *fp, *fopen();
+-    int i;
+-
+-    if ( !(fp = fopen("b.dat", "r")) ) {
+-        fprintf(stderr, "dreadrhs: file does not exist\n");
+-	exit(-1);
+-    }
+-    for (i = 0; i < m; ++i)
+-      fscanf(fp, "%lf\n", &b[i]);
+-      /*fscanf(fp, "%d%lf\n", &j, &b[i]);*/
+-    /*        readpair_(j, &b[i]);*/
+-
+-    fclose(fp);
+-}
+-
+-
+diff -u -r -N SuperLU_DIST_4.1/SRC/dscatter.c SuperLU_DIST_4.1.patched/SRC/dscatter.c
+--- SuperLU_DIST_4.1/SRC/dscatter.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/dscatter.c	2015-08-10 13:51:57.922353000 +0200
+@@ -1,5 +1,3 @@
+-
+-
+ /*! @file 
+  * \brief Scatter the computed blocks into LU destination.
+  *
+@@ -258,340 +256,4 @@
+     // TAU_STATIC_TIMER_STOP("SCATTER_UB");
+ } /* dscatter_u */
+ 
+-
+-static void
+-arrive_at_ublock (int_t j,      //block number 
+-                  int_t * iukp, // output 
+-                  int_t * rukp, int_t * jb, /* Global block number of block U(k,j). */
+-                  int_t * ljb,  /* Local block number of U(k,j). */
+-                  int_t * nsupc,    /*supernode size of destination block */
+-                  int_t iukp0,  //input
+-                  int_t rukp0, int_t * usub,    /*usub scripts */
+-                  int_t * perm_u,   /*permutation matrix */
+-                  int_t * xsup, /*for SuperSize and LBj */
+-                  gridinfo_t * grid)
+-{
+-    int_t jj;
+-    *iukp = iukp0;
+-    *rukp = rukp0;
+-
+-#ifdef ISORT
+-    for (jj = 0; jj < perm_u[j]; jj++)
+-#else
+-    for (jj = 0; jj < perm_u[2 * j + 1]; jj++)
+-#endif
+-    {
+-        /* reinitilize the pointers to the begining of the */
+-        /* kth column/row of L/U factors                   */
+-        // printf("iukp %d \n",*iukp );
+-        *jb = usub[*iukp];      /* Global block number of block U(k,j). */
+-        // printf("jb %d \n",*jb );
+-        *nsupc = SuperSize (*jb);
+-        // printf("nsupc %d \n",*nsupc );
+-        *iukp += UB_DESCRIPTOR; /* Start fstnz of block U(k,j). */
+-
+-        *rukp += usub[*iukp - 1];   /* Move to block U(k,j+1) */
+-        *iukp += *nsupc;
+-    }
+-
+-    /* reinitilize the pointers to the begining of the */
+-    /* kth column/row of L/U factors                   */
+-    *jb = usub[*iukp];          /* Global block number of block U(k,j). */
+-    *ljb = LBj (*jb, grid);     /* Local block number of U(k,j). */
+-    *nsupc = SuperSize (*jb);
+-    *iukp += UB_DESCRIPTOR;     /* Start fstnz of block U(k,j). */
+-}
+-
+-typedef struct pair pair;
+-
+-int_t
+-get_min (int_t * sums, int_t nprocs)
+-{
+-    int_t min_ind, min_val;
+-    min_ind = 0;
+-    min_val = 2147483647;
+-    for (int i = 0; i < nprocs; i++)
+-    {
+-        if (sums[i] < min_val)
+-        {
+-            min_val = sums[i];
+-            min_ind = i;
+-        }
+-    }
+-
+-    return min_ind;
+-}
+-
+-int
+-compare_pair (const void *a, const void *b)
+-{
+-    return (((pair *) a)->val - ((pair *) b)->val);
+-}
+-
+-int_t
+-static_partition (pair * work_load, int_t nwl, int_t * partition, int_t ldp,
+-                  int_t * sums, int_t * counts, int nprocs)
+-{
+-    //initialization loop
+-    for (int i = 0; i < nprocs; ++i)
+-    {
+-        counts[i] = 0;
+-        sums[i] = 0;
+-    }
+-    qsort (work_load, nwl, sizeof (pair), compare_pair);
+-    // for(int i=0;i<nwl;i++)
+-    for (int i = nwl - 1; i >= 0; i--)
+-    {
+-        int_t ind = get_min (sums, nprocs);
+-        // printf("ind %d\n",ind );
+-        partition[ldp * ind + counts[ind]] = work_load[i].ind;
+-        counts[ind]++;
+-        sums[ind] += work_load[i].val;
+-
+-    }
+-
+-    return 0;
+-}
+-
+-/*Divide CPU-GPU dgemm work here*/
+-#ifdef PI_DEBUG
+-int Ngem = 2;
+-// int_t Ngem = 0;
+-int min_gpu_col = 6;
+-#else
+-
+-    // int_t Ngem = 0;
+-
+-#endif
+-
+-
+-#ifdef GPU_ACC
+-
+-void
+-gemm_division_cpu_gpu(
+-    int* num_streams_used,  /*number of streams that will be used */
+-    int* stream_end_col,    /*array holding last column blk for each partition */
+-    int * ncpu_blks,        /*Number of CPU dgemm blks */
+-    /*input */
+-    int nbrow,              /*number of row in A matrix */
+-    int ldu,                /*number of k in dgemm */
+-    int nstreams, 
+-    int* full_u_cols,       /*array containing prefix sum of work load */
+-    int num_blks            /*Number of work load */
+-)
+-{
+-    int Ngem = sp_ienv(7);  /*get_mnk_dgemm ();*/
+-    int min_gpu_col = get_cublas_nb ();
+-
+-    // Ngem = 1000000000;
+-    /*
+-       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
+-       However since there is gpu latency of around 20,000 ns implying about
+-       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
+-       should be done in cpu to hide the latency; we Ngem =200,000/2 
+-     */
+-    int i, j;
+-
+-    // {
+-    //     *num_streams_used=0;
+-    //     *ncpu_blks = num_blks;
+-    //     return;
+-    // }
+-
+-    for (int i = 0; i < nstreams; ++i)
+-    {
+-        stream_end_col[i] = num_blks;
+-    }
+-
+-    *ncpu_blks = 0;
+-    /*easy returns -1 when number of column are less than threshold */
+-    if (full_u_cols[num_blks - 1] < (Ngem / (nbrow * ldu)) || num_blks == 1 )
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-#ifdef PI_DEBUG
+-        printf ("full_u_cols[num_blks-1] %d  %d \n",
+-                full_u_cols[num_blks - 1], (Ngem / (nbrow * ldu)));
+-        printf ("Early return \n");
+-#endif
+-        return;
+-
+-    }
+-
+-    /* Easy return -2 when number of streams =0 */
+-    if (nstreams == 0)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-        return;
+-        /* code */
+-    }
+-    /*find first block where count > Ngem */
+-
+-
+-    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
+-    {
+-        if (full_u_cols[i + 1] > Ngem / (nbrow * ldu))
+-            break;
+-    }
+-    *ncpu_blks = i + 1;
+-
+-    int_t cols_remain =
+-        full_u_cols[num_blks - 1] - full_u_cols[*ncpu_blks - 1];
+-
+-#ifdef PI_DEBUG
+-    printf ("Remaining cols %d num_blks %d cpu_blks %d \n", cols_remain,
+-            num_blks, *ncpu_blks);
+-#endif
+-    if (cols_remain > 0)
+-    {
+-        *num_streams_used = 1;  /* now atleast one stream would be used */
+-
+-#ifdef PI_DEBUG
+-        printf ("%d %d  %d %d \n", full_u_cols[num_blks - 1],
+-                full_u_cols[*ncpu_blks], *ncpu_blks, nstreams);
+-#endif
+-        int_t FP_MIN = 200000 / (nbrow * ldu);
+-        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
+-        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
+-#ifdef PI_DEBUG
+-        printf ("cols_per_stream :\t%d\n", cols_per_stream);
+-#endif
+-
+-        int_t cutoff = cols_per_stream + full_u_cols[*ncpu_blks - 1];
+-        for (int_t i = 0; i < nstreams; ++i)
+-        {
+-            stream_end_col[i] = num_blks;
+-        }
+-        j = *ncpu_blks;
+-        for (i = 0; i < nstreams - 1; ++i)
+-        {
+-            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
+-
+-            for (j = st; j < num_blks - 1; ++j)
+-            {
+-#ifdef PI_DEBUG
+-                printf ("i %d, j %d, %d  %d ", i, j, full_u_cols[j + 1],
+-                        cutoff);
+-#endif
+-                if (full_u_cols[j + 1] > cutoff)
+-                {
+-#ifdef PI_DEBUG
+-                    printf ("cutoff met \n");
+-#endif
+-                    cutoff = cols_per_stream + full_u_cols[j];
+-                    stream_end_col[i] = j + 1;
+-                    *num_streams_used += 1;
+-                    j++;
+-                    break;
+-                }
+-#ifdef PI_DEBUG
+-                printf ("\n");
+-#endif
+-            }
+-
+-        }
+-
+-    }
+-}
+-
+-void
+-gemm_division_new (int * num_streams_used,   /*number of streams that will be used */
+-                   int * stream_end_col, /*array holding last column blk for each partition */
+-                   int * ncpu_blks,  /*Number of CPU dgemm blks */
+-                        /*input */
+-                   int nbrow,    /*number of row in A matrix */
+-                   int ldu,  /*number of k in dgemm */
+-                   int nstreams,
+-                   Ublock_info_t *Ublock_info,    /*array containing prefix sum of work load */
+-                   int num_blks  /*Number of work load */
+-    )
+-{
+-    int Ngem = sp_ienv(7); /*get_mnk_dgemm ();*/
+-    int min_gpu_col = get_cublas_nb ();
+-
+-    Ngem = 1000000000;
+-    /*
+-       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
+-       However since there is gpu latency of around 20,000 ns implying about
+-       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
+-       should be done in cpu to hide the latency; we Ngem =200,000/2 
+-     */
+-    int_t i, j;
+-
+-
+-    for (int i = 0; i < nstreams; ++i)
+-    {
+-        stream_end_col[i] = num_blks;
+-    }
+-
+-    *ncpu_blks = 0;
+-    /*easy returns -1 when number of column are less than threshold */
+-    if (Ublock_info[num_blks - 1].full_u_cols < (Ngem / (nbrow * ldu)) || num_blks == 1)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-
+-        return;
+-
+-    }
+-
+-    /* Easy return -2 when number of streams =0 */
+-    if (nstreams == 0)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-        return;
+-        /* code */
+-    }
+-    /*find first block where count > Ngem */
+-
+-
+-    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
+-    {
+-        if (Ublock_info[i + 1].full_u_cols > Ngem / (nbrow * ldu))
+-            break;
+-    }
+-    *ncpu_blks = i + 1;
+-
+-    int_t cols_remain =
+-       Ublock_info [num_blks - 1].full_u_cols - Ublock_info[*ncpu_blks - 1].full_u_cols;
+-
+-    if (cols_remain > 0)
+-    {
+-        *num_streams_used = 1;  /* now atleast one stream would be used */
+-
+-        int_t FP_MIN = 200000 / (nbrow * ldu);
+-        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
+-        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
+-
+-        int_t cutoff = cols_per_stream + Ublock_info[*ncpu_blks - 1].full_u_cols;
+-        for (int_t i = 0; i < nstreams; ++i)
+-        {
+-            stream_end_col[i] = num_blks;
+-        }
+-        j = *ncpu_blks;
+-        for (i = 0; i < nstreams - 1; ++i)
+-        {
+-            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
+-
+-            for (j = st; j < num_blks - 1; ++j)
+-            {
+-                if (Ublock_info[j + 1].full_u_cols > cutoff)
+-                {
+-
+-                    cutoff = cols_per_stream + Ublock_info[j].full_u_cols;
+-                    stream_end_col[i] = j + 1;
+-                    *num_streams_used += 1;
+-                    j++;
+-                    break;
+-                }
+-
+-            }
+-
+-        }
+-
+-    }
+-}
+-
+-#endif  /* defined GPU_ACC */
++#include "xscatter.h"
+diff -u -r -N SuperLU_DIST_4.1/SRC/lsame.c SuperLU_DIST_4.1.patched/SRC/lsame.c
+--- SuperLU_DIST_4.1/SRC/lsame.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/lsame.c	2015-08-10 11:40:12.723180000 +0200
+@@ -63,11 +63,11 @@
+     } else if (zcode == 233 || zcode == 169) {
+ 	/* EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or   
+           upper case 'Z'. */
+-	if (inta >= 129 && inta <= 137 || inta >= 145 && inta <= 153 || inta 
+-		>= 162 && inta <= 169)
++	if ( (inta >= 129 && inta <= 137) || (inta >= 145 && inta <= 153) ||
++		 (inta >= 162 && inta <= 169) )
+ 	    inta += 64;
+-	if (intb >= 129 && intb <= 137 || intb >= 145 && intb <= 153 || intb 
+-		>= 162 && intb <= 169)
++	if ( (intb >= 129 && intb <= 137) || (intb >= 145 && intb <= 153) ||
++		 (intb >= 162 && intb <= 169) )
+ 	    intb += 64;
+     } else if (zcode == 218 || zcode == 250) {
+ 	/* ASCII is assumed, on Prime machines - ZCODE is the ASCII code   
+diff -u -r -N SuperLU_DIST_4.1/SRC/Makefile SuperLU_DIST_4.1.patched/SRC/Makefile
+--- SuperLU_DIST_4.1/SRC/Makefile	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/Makefile	2015-08-10 13:50:24.226188000 +0200
+@@ -40,7 +40,7 @@
+ endif
+ 
+ #### LAPACK auxiliary routines
+-LAAUX	= lsame.o xerbla.o slamch.o dlamch.o
++LAAUX	= lsame.o xerbla.o slamch.o dlamch.o pxgstrf.o xscatter.o
+ 
+ #
+ # Routines literally taken from SuperLU
+@@ -68,18 +68,22 @@
+ 	  pzgstrs.o pzgstrs1.o pzgstrs_lsum.o pzgstrs_Bglobal.o \
+ 	  pzgsrfs.o pzgsmv.o pzgsrfs_ABXglobal.o pzgsmv_AXglobal.o 
+ 
+-all:  double complex16
++all:  double complex16 shared
+ 
+ double: $(DSLUSRC) $(DPLUSRC) $(ALLAUX) $(LAAUX)
+-	$(ARCH) $(ARCHFLAGS) $(DSUPERLULIB) \
++	$(ARCH) $(ARCHFLAGS) $(DSUPERLULIB).a \
+ 		$(DSLUSRC) $(DPLUSRC) $(ALLAUX) $(LAAUX)
+-	$(RANLIB) $(DSUPERLULIB)
++	$(RANLIB) $(DSUPERLULIB).a
+ 
+ complex16: $(ZSLUSRC) $(ZPLUSRC) $(ALLAUX) $(LAAUX)
+-	$(ARCH) $(ARCHFLAGS) $(DSUPERLULIB) \
++	$(ARCH) $(ARCHFLAGS) $(DSUPERLULIB).a \
+ 		$(ZSLUSRC) $(ZPLUSRC) $(ALLAUX) $(LAAUX)
+-	$(RANLIB) $(DSUPERLULIB)
++	$(RANLIB) $(DSUPERLULIB).a
+ 
++# link shared library
++shared: $(DSLUSRC) $(DPLUSRC) $(ZSLUSRC) $(ZPLUSRC) $(ALLAUX) $(LAAUX)
++	$(CC) -shared -Wl,-soname,$(DSUPERLULIBNAME).so -o $(DSUPERLULIB).so \
++		$(DSLUSRC) $(DPLUSRC) $(ZSLUSRC) $(ZPLUSRC) $(ALLAUX) $(LAAUX)
+ 
+ ##################################
+ # Do not optimize these routines #
+@@ -95,6 +99,5 @@
+ 	$(FORTRAN) $(FFLAGS) -c $< $(VERBOSE)
+ 
+ clean:	
+-	rm -f *.o $(DSUPERLULIB)
+-
++	rm -f *.o $(DSUPERLULIB).a $(DSUPERLULIB).so
+ 
+diff -u -r -N SuperLU_DIST_4.1/SRC/pdgstrf.c SuperLU_DIST_4.1.patched/SRC/pdgstrf.c
+--- SuperLU_DIST_4.1/SRC/pdgstrf.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/pdgstrf.c	2015-08-10 13:29:13.281419000 +0200
+@@ -143,83 +143,7 @@
+ 
+ #define ISORT                   /* Note: qsort() has bug on Mac */
+ 
+-#ifdef ISORT
+-extern void isort (int_t N, int_t * ARRAY1, int_t * ARRAY2);
+-extern void isort1 (int_t N, int_t * ARRAY);
+-
+-#else
+-
+-int
+-superlu_sort_perm (const void *arg1, const void *arg2)
+-{
+-    const int_t *val1 = (const int_t *) arg1;
+-    const int_t *val2 = (const int_t *) arg2;
+-    return (*val2 < *val1);
+-}
+-#endif
+-
+-
+-int get_thread_per_process()
+-{   
+-    char* ttemp; 
+-    ttemp = getenv("THREAD_PER_PROCESS");
+-
+-    if(ttemp) return atoi(ttemp);
+-    else return 1;
+-}
+-
+-int
+-get_mic_offload ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("SUPERLU_MIC_OFFLOAD");
+-
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 0;
+-}
+-
+-int_t
+-get_max_buffer_size ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("MAX_BUFFER_SIZE");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 5000000;
+-}
+-
+-int_t
+-get_cublas_nb ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("CUBLAS_NB");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 64;
+-}
+-
+-int_t
+-get_num_cuda_streams ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("NUM_CUDA_STREAMS");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 8;
+-}
+-
+-/*int omp_get_num_threads (void);
+-  int omp_get_thread_num (void);*/
+-
+-int AssignMic(int my_rank)
+-{
+-    return (my_rank+1)%2;
+-}
++#include "pxgstrf.h"
+ 
+ /************************************************************************/
+ 
+diff -u -r -N SuperLU_DIST_4.1/SRC/pxgstrf.c SuperLU_DIST_4.1.patched/SRC/pxgstrf.c
+--- SuperLU_DIST_4.1/SRC/pxgstrf.c	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/pxgstrf.c	2015-08-10 13:19:38.000000000 +0200
+@@ -0,0 +1,83 @@
++#include "pxgstrf.h"
++
++
++#ifdef ISORT
++extern void isort (int_t N, int_t * ARRAY1, int_t * ARRAY2);
++extern void isort1 (int_t N, int_t * ARRAY);
++
++#else
++
++int
++superlu_sort_perm (const void *arg1, const void *arg2)
++{
++    const int_t *val1 = (const int_t *) arg1;
++    const int_t *val2 = (const int_t *) arg2;
++    return (*val2 < *val1);
++}
++#endif
++
++
++int
++get_thread_per_process()
++{
++    char* ttemp;
++    ttemp = getenv("THREAD_PER_PROCESS");
++
++    if(ttemp) return atoi(ttemp);
++    else return 1;
++}
++
++
++int
++get_mic_offload ()
++{
++    char *ttemp;
++    ttemp = getenv ("SUPERLU_MIC_OFFLOAD");
++
++    if (ttemp)
++        return atoi (ttemp);
++    else
++        return 0;
++}
++
++
++int_t
++get_max_buffer_size ()
++{
++    char *ttemp;
++    ttemp = getenv ("MAX_BUFFER_SIZE");
++    if (ttemp)
++        return atoi (ttemp);
++    else
++        return 5000000;
++}
++
++
++int_t
++get_cublas_nb ()
++{
++    char *ttemp;
++    ttemp = getenv ("CUBLAS_NB");
++    if (ttemp)
++        return atoi (ttemp);
++    else
++        return 64;
++}
++
++
++int_t
++get_num_cuda_streams ()
++{
++    char *ttemp;
++    ttemp = getenv ("NUM_CUDA_STREAMS");
++    if (ttemp)
++        return atoi (ttemp);
++    else
++        return 8;
++}
++
++
++int AssignMic(int my_rank)
++{
++    return (my_rank+1)%2;
++}
+diff -u -r -N SuperLU_DIST_4.1/SRC/pxgstrf.h SuperLU_DIST_4.1.patched/SRC/pxgstrf.h
+--- SuperLU_DIST_4.1/SRC/pxgstrf.h	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/pxgstrf.h	2015-08-10 13:28:52.845601000 +0200
+@@ -0,0 +1,34 @@
++#ifndef _pxgstrf_h
++#define _pxgstrf_h
++
++#include <math.h>
++#include "superlu_defs.h"
++
++#ifdef ISORT
++extern void isort (int_t N, int_t * ARRAY1, int_t * ARRAY2);
++extern void isort1 (int_t N, int_t * ARRAY);
++
++#else
++
++int superlu_sort_perm (const void *arg1, const void *arg2);
++#endif
++
++
++int get_thread_per_process();
++
++
++int get_mic_offload ();
++
++
++int_t get_max_buffer_size ();
++
++
++int_t get_cublas_nb ();
++
++
++int_t get_num_cuda_streams ();
++
++
++int AssignMic(int my_rank);
++
++#endif
+diff -u -r -N SuperLU_DIST_4.1/SRC/pzgsmv.c SuperLU_DIST_4.1.patched/SRC/pzgsmv.c
+--- SuperLU_DIST_4.1/SRC/pzgsmv.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/pzgsmv.c	2015-08-10 13:32:36.762611000 +0200
+@@ -365,11 +365,11 @@
+     int_t *it;
+     doublecomplex *dt;
+     SUPERLU_FREE(gsmv_comm->extern_start);
+-    if ( it = gsmv_comm->ind_tosend ) SUPERLU_FREE(it);
+-    if ( it = gsmv_comm->ind_torecv ) SUPERLU_FREE(it);
++    if ( (it = gsmv_comm->ind_tosend) ) SUPERLU_FREE(it);
++    if ( (it = gsmv_comm->ind_torecv) ) SUPERLU_FREE(it);
+     SUPERLU_FREE(gsmv_comm->ptr_ind_tosend);
+     SUPERLU_FREE(gsmv_comm->SendCounts);
+-    if ( dt = gsmv_comm->val_tosend ) SUPERLU_FREE(dt);
+-    if ( dt = gsmv_comm->val_torecv ) SUPERLU_FREE(dt);
++    if ( (dt = gsmv_comm->val_tosend) ) SUPERLU_FREE(dt);
++    if ( (dt = gsmv_comm->val_torecv) ) SUPERLU_FREE(dt);
+ }
+ 
+diff -u -r -N SuperLU_DIST_4.1/SRC/pzgstrf.c SuperLU_DIST_4.1.patched/SRC/pzgstrf.c
+--- SuperLU_DIST_4.1/SRC/pzgstrf.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/pzgstrf.c	2015-08-10 13:21:54.830339000 +0200
+@@ -1,4 +1,3 @@
+-
+ /*! @file
+  * \brief Performs LU factorization in parallel
+  *
+@@ -142,83 +141,7 @@
+ 
+ #define ISORT                   /* Note: qsort() has bug on Mac */
+ 
+-#ifdef ISORT
+-extern void isort (int_t N, int_t * ARRAY1, int_t * ARRAY2);
+-extern void isort1 (int_t N, int_t * ARRAY);
+-
+-#else
+-
+-int
+-superlu_sort_perm (const void *arg1, const void *arg2)
+-{
+-    const int_t *val1 = (const int_t *) arg1;
+-    const int_t *val2 = (const int_t *) arg2;
+-    return (*val2 < *val1);
+-}
+-#endif
+-
+-
+-int get_thread_per_process()
+-{   
+-    char* ttemp; 
+-    ttemp = getenv("THREAD_PER_PROCESS");
+-
+-    if(ttemp) return atoi(ttemp);
+-    else return 1;
+-}
+-
+-int
+-get_mic_offload ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("SUPERLU_MIC_OFFLOAD");
+-
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 0;
+-}
+-
+-int_t
+-get_max_buffer_size ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("MAX_BUFFER_SIZE");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 5000000;
+-}
+-
+-int_t
+-get_cublas_nb ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("CUBLAS_NB");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 64;
+-}
+-
+-int_t
+-get_num_cuda_streams ()
+-{
+-    char *ttemp;
+-    ttemp = getenv ("NUM_CUDA_STREAMS");
+-    if (ttemp)
+-        return atoi (ttemp);
+-    else
+-        return 8;
+-}
+-
+-/*int omp_get_num_threads (void);
+-  int omp_get_thread_num (void);*/
+-
+-int AssignMic(int my_rank)
+-{
+-    return (my_rank+1)%2;
+-}
++#include "pxgstrf.h"
+ 
+ /************************************************************************/
+ 
+diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.c SuperLU_DIST_4.1.patched/SRC/xscatter.c
+--- SuperLU_DIST_4.1/SRC/xscatter.c	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/xscatter.c	2015-08-12 09:56:36.917188487 +0200
+@@ -0,0 +1,284 @@
++#include "xscatter.h"
++
++typedef struct pair pair;
++
++
++int_t
++get_min (int_t * sums, int_t nprocs)
++{
++    int_t min_ind, min_val;
++    min_ind = 0;
++    min_val = 2147483647;
++    for (int i = 0; i < nprocs; i++)
++    {
++        if (sums[i] < min_val)
++        {
++            min_val = sums[i];
++            min_ind = i;
++        }
++    }
++
++    return min_ind;
++}
++
++int
++compare_pair (const void *a, const void *b)
++{
++    return (((pair *) a)->val - ((pair *) b)->val);
++}
++
++int_t
++static_partition (pair * work_load, int_t nwl, int_t * partition, int_t ldp,
++                  int_t * sums, int_t * counts, int nprocs)
++{
++    //initialization loop
++    for (int i = 0; i < nprocs; ++i)
++    {
++        counts[i] = 0;
++        sums[i] = 0;
++    }
++    qsort (work_load, nwl, sizeof (pair), compare_pair);
++    // for(int i=0;i<nwl;i++)
++    for (int i = nwl - 1; i >= 0; i--)
++    {
++        int_t ind = get_min (sums, nprocs);
++        // printf("ind %d\n",ind );
++        partition[ldp * ind + counts[ind]] = work_load[i].ind;
++        counts[ind]++;
++        sums[ind] += work_load[i].val;
++
++    }
++
++    return 0;
++}
++
++#ifdef GPU_ACC
++
++void
++gemm_division_cpu_gpu(
++    int* num_streams_used,  /*number of streams that will be used */
++    int* stream_end_col,    /*array holding last column blk for each partition */
++    int * ncpu_blks,        /*Number of CPU dgemm blks */
++    /*input */
++    int nbrow,              /*number of row in A matrix */
++    int ldu,                /*number of k in dgemm */
++    int nstreams, 
++    int* full_u_cols,       /*array containing prefix sum of work load */
++    int num_blks            /*Number of work load */
++)
++{
++    int Ngem = sp_ienv(7);  /*get_mnk_dgemm ();*/
++    int min_gpu_col = get_cublas_nb ();
++
++    // Ngem = 1000000000;
++    /*
++       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
++       However since there is gpu latency of around 20,000 ns implying about
++       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
++       should be done in cpu to hide the latency; we Ngem =200,000/2 
++     */
++    int i, j;
++
++    // {
++    //     *num_streams_used=0;
++    //     *ncpu_blks = num_blks;
++    //     return;
++    // }
++
++    for (int i = 0; i < nstreams; ++i)
++    {
++        stream_end_col[i] = num_blks;
++    }
++
++    *ncpu_blks = 0;
++    /*easy returns -1 when number of column are less than threshold */
++    if (full_u_cols[num_blks - 1] < (Ngem / (nbrow * ldu)) || num_blks == 1 )
++    {
++        *num_streams_used = 0;
++        *ncpu_blks = num_blks;
++#ifdef PI_DEBUG
++        printf ("full_u_cols[num_blks-1] %d  %d \n",
++                full_u_cols[num_blks - 1], (Ngem / (nbrow * ldu)));
++        printf ("Early return \n");
++#endif
++        return;
++
++    }
++
++    /* Easy return -2 when number of streams =0 */
++    if (nstreams == 0)
++    {
++        *num_streams_used = 0;
++        *ncpu_blks = num_blks;
++        return;
++        /* code */
++    }
++    /*find first block where count > Ngem */
++
++
++    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
++    {
++        if (full_u_cols[i + 1] > Ngem / (nbrow * ldu))
++            break;
++    }
++    *ncpu_blks = i + 1;
++
++    int_t cols_remain =
++        full_u_cols[num_blks - 1] - full_u_cols[*ncpu_blks - 1];
++
++#ifdef PI_DEBUG
++    printf ("Remaining cols %d num_blks %d cpu_blks %d \n", cols_remain,
++            num_blks, *ncpu_blks);
++#endif
++    if (cols_remain > 0)
++    {
++        *num_streams_used = 1;  /* now atleast one stream would be used */
++
++#ifdef PI_DEBUG
++        printf ("%d %d  %d %d \n", full_u_cols[num_blks - 1],
++                full_u_cols[*ncpu_blks], *ncpu_blks, nstreams);
++#endif
++        int_t FP_MIN = 200000 / (nbrow * ldu);
++        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
++        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
++#ifdef PI_DEBUG
++        printf ("cols_per_stream :\t%d\n", cols_per_stream);
++#endif
++
++        int_t cutoff = cols_per_stream + full_u_cols[*ncpu_blks - 1];
++        for (int_t i = 0; i < nstreams; ++i)
++        {
++            stream_end_col[i] = num_blks;
++        }
++        j = *ncpu_blks;
++        for (i = 0; i < nstreams - 1; ++i)
++        {
++            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
++
++            for (j = st; j < num_blks - 1; ++j)
++            {
++#ifdef PI_DEBUG
++                printf ("i %d, j %d, %d  %d ", i, j, full_u_cols[j + 1],
++                        cutoff);
++#endif
++                if (full_u_cols[j + 1] > cutoff)
++                {
++#ifdef PI_DEBUG
++                    printf ("cutoff met \n");
++#endif
++                    cutoff = cols_per_stream + full_u_cols[j];
++                    stream_end_col[i] = j + 1;
++                    *num_streams_used += 1;
++                    j++;
++                    break;
++                }
++#ifdef PI_DEBUG
++                printf ("\n");
++#endif
++            }
++
++        }
++
++    }
++}
++
++void
++gemm_division_new (int * num_streams_used,   /*number of streams that will be used */
++                   int * stream_end_col, /*array holding last column blk for each partition */
++                   int * ncpu_blks,  /*Number of CPU dgemm blks */
++                        /*input */
++                   int nbrow,    /*number of row in A matrix */
++                   int ldu,  /*number of k in dgemm */
++                   int nstreams,
++                   Ublock_info_t *Ublock_info,    /*array containing prefix sum of work load */
++                   int num_blks  /*Number of work load */
++    )
++{
++    int Ngem = sp_ienv(7); /*get_mnk_dgemm ();*/
++    int min_gpu_col = get_cublas_nb ();
++
++    Ngem = 1000000000;
++    /*
++       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
++       However since there is gpu latency of around 20,000 ns implying about
++       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
++       should be done in cpu to hide the latency; we Ngem =200,000/2 
++     */
++    int_t i, j;
++
++
++    for (int i = 0; i < nstreams; ++i)
++    {
++        stream_end_col[i] = num_blks;
++    }
++
++    *ncpu_blks = 0;
++    /*easy returns -1 when number of column are less than threshold */
++    if (Ublock_info[num_blks - 1].full_u_cols < (Ngem / (nbrow * ldu)) || num_blks == 1)
++    {
++        *num_streams_used = 0;
++        *ncpu_blks = num_blks;
++
++        return;
++
++    }
++
++    /* Easy return -2 when number of streams =0 */
++    if (nstreams == 0)
++    {
++        *num_streams_used = 0;
++        *ncpu_blks = num_blks;
++        return;
++        /* code */
++    }
++    /*find first block where count > Ngem */
++
++
++    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
++    {
++        if (Ublock_info[i + 1].full_u_cols > Ngem / (nbrow * ldu))
++            break;
++    }
++    *ncpu_blks = i + 1;
++
++    int_t cols_remain =
++       Ublock_info [num_blks - 1].full_u_cols - Ublock_info[*ncpu_blks - 1].full_u_cols;
++
++    if (cols_remain > 0)
++    {
++        *num_streams_used = 1;  /* now atleast one stream would be used */
++
++        int_t FP_MIN = 200000 / (nbrow * ldu);
++        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
++        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
++
++        int_t cutoff = cols_per_stream + Ublock_info[*ncpu_blks - 1].full_u_cols;
++        for (int_t i = 0; i < nstreams; ++i)
++        {
++            stream_end_col[i] = num_blks;
++        }
++        j = *ncpu_blks;
++        for (i = 0; i < nstreams - 1; ++i)
++        {
++            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
++
++            for (j = st; j < num_blks - 1; ++j)
++            {
++                if (Ublock_info[j + 1].full_u_cols > cutoff)
++                {
++
++                    cutoff = cols_per_stream + Ublock_info[j].full_u_cols;
++                    stream_end_col[i] = j + 1;
++                    *num_streams_used += 1;
++                    j++;
++                    break;
++                }
++
++            }
++
++        }
++
++    }
++}
++
++#endif  /* defined GPU_ACC */
+diff -u -r -N SuperLU_DIST_4.1/SRC/xscatter.h SuperLU_DIST_4.1.patched/SRC/xscatter.h
+--- SuperLU_DIST_4.1/SRC/xscatter.h	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/xscatter.h	2015-08-12 09:53:29.979813198 +0200
+@@ -0,0 +1,97 @@
++#ifndef _xscatter_h
++#define _xscatter_h
++
++#include <math.h>
++#include "superlu_defs.h"
++
++
++static void
++arrive_at_ublock (int_t j,      //block number 
++                  int_t * iukp, // output 
++                  int_t * rukp, int_t * jb, /* Global block number of block U(k,j). */
++                  int_t * ljb,  /* Local block number of U(k,j). */
++                  int_t * nsupc,    /*supernode size of destination block */
++                  int_t iukp0,  //input
++                  int_t rukp0, int_t * usub,    /*usub scripts */
++                  int_t * perm_u,   /*permutation matrix */
++                  int_t * xsup, /*for SuperSize and LBj */
++                  gridinfo_t * grid)
++{
++    int_t jj;
++    *iukp = iukp0;
++    *rukp = rukp0;
++
++#ifdef ISORT
++    for (jj = 0; jj < perm_u[j]; jj++)
++#else
++    for (jj = 0; jj < perm_u[2 * j + 1]; jj++)
++#endif
++    {
++        /* reinitilize the pointers to the begining of the */
++        /* kth column/row of L/U factors                   */
++        // printf("iukp %d \n",*iukp );
++        *jb = usub[*iukp];      /* Global block number of block U(k,j). */
++        // printf("jb %d \n",*jb );
++        *nsupc = SuperSize (*jb);
++        // printf("nsupc %d \n",*nsupc );
++        *iukp += UB_DESCRIPTOR; /* Start fstnz of block U(k,j). */
++
++        *rukp += usub[*iukp - 1];   /* Move to block U(k,j+1) */
++        *iukp += *nsupc;
++    }
++
++    /* reinitilize the pointers to the begining of the */
++    /* kth column/row of L/U factors                   */
++    *jb = usub[*iukp];          /* Global block number of block U(k,j). */
++    *ljb = LBj (*jb, grid);     /* Local block number of U(k,j). */
++    *nsupc = SuperSize (*jb);
++    *iukp += UB_DESCRIPTOR;     /* Start fstnz of block U(k,j). */
++}
++
++
++typedef struct pair pair;
++
++int_t get_min (int_t * sums, int_t nprocs);
++
++int compare_pair (const void *a, const void *b);
++
++int_t static_partition (pair * work_load, int_t nwl, int_t * partition, int_t ldp,
++                  int_t * sums, int_t * counts, int nprocs);
++
++/*Divide CPU-GPU dgemm work here*/
++#ifdef PI_DEBUG
++int Ngem = 2;
++// int_t Ngem = 0;
++int min_gpu_col = 6;
++//#else
++// int_t Ngem = 0;
++#endif
++
++
++#ifdef GPU_ACC
++void gemm_division_cpu_gpu(
++    int* num_streams_used,  /*number of streams that will be used */
++    int* stream_end_col,    /*array holding last column blk for each partition */
++    int * ncpu_blks,        /*Number of CPU dgemm blks */
++    /*input */
++    int nbrow,              /*number of row in A matrix */
++    int ldu,                /*number of k in dgemm */
++    int nstreams, 
++    int* full_u_cols,       /*array containing prefix sum of work load */
++    int num_blks            /*Number of work load */
++);
++
++void gemm_division_new (int * num_streams_used,   /*number of streams that will be used */
++                   int * stream_end_col, /*array holding last column blk for each partition */
++                   int * ncpu_blks,  /*Number of CPU dgemm blks */
++                        /*input */
++                   int nbrow,    /*number of row in A matrix */
++                   int ldu,  /*number of k in dgemm */
++                   int nstreams,
++                   Ublock_info_t *Ublock_info,    /*array containing prefix sum of work load */
++                   int num_blks  /*Number of work load */
++    );
++
++#endif  /* defined GPU_ACC */
++
++#endif
+diff -u -r -N SuperLU_DIST_4.1/SRC/zreadMM.c SuperLU_DIST_4.1.patched/SRC/zreadMM.c
+--- SuperLU_DIST_4.1/SRC/zreadMM.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/zreadMM.c	2015-08-10 11:33:56.174600000 +0200
+@@ -1,5 +1,3 @@
+-
+-
+ /*! @file 
+  * \brief 
+  * Contributed by Francois-Henry Rouet.
+@@ -7,6 +5,7 @@
+  */
+ #include <ctype.h>
+ #include "superlu_zdefs.h"
++#include "zreadrhs.h"
+ 
+ #undef EXPAND_SYM
+ 
+@@ -211,20 +210,3 @@
+ #endif
+ 
+ }
+-
+-
+-void zreadrhs(int m, doublecomplex *b)
+-{
+-    FILE *fp, *fopen();
+-    int i;
+-
+-    if ( !(fp = fopen("b.dat", "r")) ) {
+-        fprintf(stderr, "zreadrhs: file does not exist\n");
+-	exit(-1);
+-    }
+-    for (i = 0; i < m; ++i)
+-      fscanf(fp, "%lf%lf\n", &b[i].r, &b[i].i);
+-    fclose(fp);
+-}
+-
+-
+diff -u -r -N SuperLU_DIST_4.1/SRC/zreadrhs.c SuperLU_DIST_4.1.patched/SRC/zreadrhs.c
+--- SuperLU_DIST_4.1/SRC/zreadrhs.c	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/zreadrhs.c	2015-08-10 11:33:41.616732000 +0200
+@@ -0,0 +1,16 @@
++#include "zreadrhs.h"
++
++void zreadrhs(int m, doublecomplex *b)
++{
++    FILE *fp, *fopen();
++    int i;
++
++    if ( !(fp = fopen("b.dat", "r")) ) {
++        fprintf(stderr, "zreadrhs: file does not exist\n");
++	exit(-1);
++    }
++    for (i = 0; i < m; ++i)
++      fscanf(fp, "%lf%lf\n", &(b[i].r), &(b[i].i));
++
++    fclose(fp);
++}
+diff -u -r -N SuperLU_DIST_4.1/SRC/zreadrhs.h SuperLU_DIST_4.1.patched/SRC/zreadrhs.h
+--- SuperLU_DIST_4.1/SRC/zreadrhs.h	1970-01-01 01:00:00.000000000 +0100
++++ SuperLU_DIST_4.1.patched/SRC/zreadrhs.h	2015-08-10 11:34:02.039547000 +0200
+@@ -0,0 +1,10 @@
++#ifndef _zreadrhs_h
++#define _zreadrhs_h
++
++#include <stdio.h>
++#include "superlu_zdefs.h"
++
++#undef EXPAND_SYM
++
++void zreadrhs(int m, doublecomplex *b);
++#endif
+diff -u -r -N SuperLU_DIST_4.1/SRC/zreadtriple.c SuperLU_DIST_4.1.patched/SRC/zreadtriple.c
+--- SuperLU_DIST_4.1/SRC/zreadtriple.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/zreadtriple.c	2015-08-10 11:35:45.910605000 +0200
+@@ -1,10 +1,10 @@
+-
+ /*! @file 
+  * \brief 
+  *
+  */
+ #include <stdio.h>
+ #include "superlu_zdefs.h"
++#include "zreadrhs.h"
+ 
+ #undef EXPAND_SYM
+ 
+@@ -147,21 +147,3 @@
+ #endif
+ 
+ }
+-
+-
+-void zreadrhs(int m, doublecomplex *b)
+-{
+-    FILE *fp, *fopen();
+-    int i;
+-
+-    if ( !(fp = fopen("b.dat", "r")) ) {
+-        fprintf(stderr, "zreadrhs: file does not exist\n");
+-	exit(-1);
+-    }
+-    for (i = 0; i < m; ++i)
+-      fscanf(fp, "%lf%lf\n", &(b[i].r), &(b[i].i));
+-
+-    fclose(fp);
+-}
+-
+-
+diff -u -r -N SuperLU_DIST_4.1/SRC/zscatter.c SuperLU_DIST_4.1.patched/SRC/zscatter.c
+--- SuperLU_DIST_4.1/SRC/zscatter.c	2015-07-18 04:54:17.000000000 +0200
++++ SuperLU_DIST_4.1.patched/SRC/zscatter.c	2015-08-10 13:48:05.990421000 +0200
+@@ -1,4 +1,3 @@
+-
+ /*! @file 
+  * \brief Scatter the computed blocks into LU destination.
+  *
+@@ -259,339 +258,4 @@
+ } /* zscatter_u */
+ 
+ 
+-static void
+-arrive_at_ublock (int_t j,      //block number 
+-                  int_t * iukp, // output 
+-                  int_t * rukp, int_t * jb, /* Global block number of block U(k,j). */
+-                  int_t * ljb,  /* Local block number of U(k,j). */
+-                  int_t * nsupc,    /*supernode size of destination block */
+-                  int_t iukp0,  //input
+-                  int_t rukp0, int_t * usub,    /*usub scripts */
+-                  int_t * perm_u,   /*permutation matrix */
+-                  int_t * xsup, /*for SuperSize and LBj */
+-                  gridinfo_t * grid)
+-{
+-    int_t jj;
+-    *iukp = iukp0;
+-    *rukp = rukp0;
+-
+-#ifdef ISORT
+-    for (jj = 0; jj < perm_u[j]; jj++)
+-#else
+-    for (jj = 0; jj < perm_u[2 * j + 1]; jj++)
+-#endif
+-    {
+-        /* reinitilize the pointers to the begining of the */
+-        /* kth column/row of L/U factors                   */
+-        // printf("iukp %d \n",*iukp );
+-        *jb = usub[*iukp];      /* Global block number of block U(k,j). */
+-        // printf("jb %d \n",*jb );
+-        *nsupc = SuperSize (*jb);
+-        // printf("nsupc %d \n",*nsupc );
+-        *iukp += UB_DESCRIPTOR; /* Start fstnz of block U(k,j). */
+-
+-        *rukp += usub[*iukp - 1];   /* Move to block U(k,j+1) */
+-        *iukp += *nsupc;
+-    }
+-
+-    /* reinitilize the pointers to the begining of the */
+-    /* kth column/row of L/U factors                   */
+-    *jb = usub[*iukp];          /* Global block number of block U(k,j). */
+-    *ljb = LBj (*jb, grid);     /* Local block number of U(k,j). */
+-    *nsupc = SuperSize (*jb);
+-    *iukp += UB_DESCRIPTOR;     /* Start fstnz of block U(k,j). */
+-}
+-
+-typedef struct pair pair;
+-
+-int_t
+-get_min (int_t * sums, int_t nprocs)
+-{
+-    int_t min_ind, min_val;
+-    min_ind = 0;
+-    min_val = 2147483647;
+-    for (int i = 0; i < nprocs; i++)
+-    {
+-        if (sums[i] < min_val)
+-        {
+-            min_val = sums[i];
+-            min_ind = i;
+-        }
+-    }
+-
+-    return min_ind;
+-}
+-
+-int
+-compare_pair (const void *a, const void *b)
+-{
+-    return (((pair *) a)->val - ((pair *) b)->val);
+-}
+-
+-int_t
+-static_partition (pair * work_load, int_t nwl, int_t * partition, int_t ldp,
+-                  int_t * sums, int_t * counts, int nprocs)
+-{
+-    //initialization loop
+-    for (int i = 0; i < nprocs; ++i)
+-    {
+-        counts[i] = 0;
+-        sums[i] = 0;
+-    }
+-    qsort (work_load, nwl, sizeof (pair), compare_pair);
+-    // for(int i=0;i<nwl;i++)
+-    for (int i = nwl - 1; i >= 0; i--)
+-    {
+-        int_t ind = get_min (sums, nprocs);
+-        // printf("ind %d\n",ind );
+-        partition[ldp * ind + counts[ind]] = work_load[i].ind;
+-        counts[ind]++;
+-        sums[ind] += work_load[i].val;
+-
+-    }
+-
+-    return 0;
+-}
+-
+-/*Divide CPU-GPU dgemm work here*/
+-#ifdef PI_DEBUG
+-int Ngem = 2;
+-// int_t Ngem = 0;
+-int min_gpu_col = 6;
+-#else
+-
+-    // int_t Ngem = 0;
+-
+-#endif
+-
+-
+-#ifdef GPU_ACC
+-
+-void
+-gemm_division_cpu_gpu(
+-    int* num_streams_used,  /*number of streams that will be used */
+-    int* stream_end_col,    /*array holding last column blk for each partition */
+-    int * ncpu_blks,        /*Number of CPU dgemm blks */
+-    /*input */
+-    int nbrow,              /*number of row in A matrix */
+-    int ldu,                /*number of k in dgemm */
+-    int nstreams, 
+-    int* full_u_cols,       /*array containing prefix sum of work load */
+-    int num_blks            /*Number of work load */
+-)
+-{
+-    int Ngem = sp_ienv(7);  /*get_mnk_dgemm ();*/
+-    int min_gpu_col = get_cublas_nb ();
+-
+-    // Ngem = 1000000000;
+-    /*
+-       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
+-       However since there is gpu latency of around 20,000 ns implying about
+-       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
+-       should be done in cpu to hide the latency; we Ngem =200,000/2 
+-     */
+-    int i, j;
+-
+-    // {
+-    //     *num_streams_used=0;
+-    //     *ncpu_blks = num_blks;
+-    //     return;
+-    // }
+-
+-    for (int i = 0; i < nstreams; ++i)
+-    {
+-        stream_end_col[i] = num_blks;
+-    }
+-
+-    *ncpu_blks = 0;
+-    /*easy returns -1 when number of column are less than threshold */
+-    if (full_u_cols[num_blks - 1] < (Ngem / (nbrow * ldu)) || num_blks == 1 )
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-#ifdef PI_DEBUG
+-        printf ("full_u_cols[num_blks-1] %d  %d \n",
+-                full_u_cols[num_blks - 1], (Ngem / (nbrow * ldu)));
+-        printf ("Early return \n");
+-#endif
+-        return;
+-
+-    }
+-
+-    /* Easy return -2 when number of streams =0 */
+-    if (nstreams == 0)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-        return;
+-        /* code */
+-    }
+-    /*find first block where count > Ngem */
+-
+-
+-    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
+-    {
+-        if (full_u_cols[i + 1] > Ngem / (nbrow * ldu))
+-            break;
+-    }
+-    *ncpu_blks = i + 1;
+-
+-    int_t cols_remain =
+-        full_u_cols[num_blks - 1] - full_u_cols[*ncpu_blks - 1];
+-
+-#ifdef PI_DEBUG
+-    printf ("Remaining cols %d num_blks %d cpu_blks %d \n", cols_remain,
+-            num_blks, *ncpu_blks);
+-#endif
+-    if (cols_remain > 0)
+-    {
+-        *num_streams_used = 1;  /* now atleast one stream would be used */
+-
+-#ifdef PI_DEBUG
+-        printf ("%d %d  %d %d \n", full_u_cols[num_blks - 1],
+-                full_u_cols[*ncpu_blks], *ncpu_blks, nstreams);
+-#endif
+-        int_t FP_MIN = 200000 / (nbrow * ldu);
+-        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
+-        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
+-#ifdef PI_DEBUG
+-        printf ("cols_per_stream :\t%d\n", cols_per_stream);
+-#endif
+-
+-        int_t cutoff = cols_per_stream + full_u_cols[*ncpu_blks - 1];
+-        for (int_t i = 0; i < nstreams; ++i)
+-        {
+-            stream_end_col[i] = num_blks;
+-        }
+-        j = *ncpu_blks;
+-        for (i = 0; i < nstreams - 1; ++i)
+-        {
+-            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
+-
+-            for (j = st; j < num_blks - 1; ++j)
+-            {
+-#ifdef PI_DEBUG
+-                printf ("i %d, j %d, %d  %d ", i, j, full_u_cols[j + 1],
+-                        cutoff);
+-#endif
+-                if (full_u_cols[j + 1] > cutoff)
+-                {
+-#ifdef PI_DEBUG
+-                    printf ("cutoff met \n");
+-#endif
+-                    cutoff = cols_per_stream + full_u_cols[j];
+-                    stream_end_col[i] = j + 1;
+-                    *num_streams_used += 1;
+-                    j++;
+-                    break;
+-                }
+-#ifdef PI_DEBUG
+-                printf ("\n");
+-#endif
+-            }
+-
+-        }
+-
+-    }
+-}
+-
+-void
+-gemm_division_new (int * num_streams_used,   /*number of streams that will be used */
+-                   int * stream_end_col, /*array holding last column blk for each partition */
+-                   int * ncpu_blks,  /*Number of CPU dgemm blks */
+-                        /*input */
+-                   int nbrow,    /*number of row in A matrix */
+-                   int ldu,  /*number of k in dgemm */
+-                   int nstreams,
+-                   Ublock_info_t *Ublock_info,    /*array containing prefix sum of work load */
+-                   int num_blks  /*Number of work load */
+-    )
+-{
+-    int Ngem = sp_ienv(7); /*get_mnk_dgemm ();*/
+-    int min_gpu_col = get_cublas_nb ();
+-
+-    Ngem = 1000000000;
+-    /*
+-       cpu is to gpu dgemm should be ideally 0:1 ratios to hide the total cost
+-       However since there is gpu latency of around 20,000 ns implying about
+-       200000 floating point calculation be done in that time so ~200,000/(2*nbrow*ldu)
+-       should be done in cpu to hide the latency; we Ngem =200,000/2 
+-     */
+-    int_t i, j;
+-
+-
+-    for (int i = 0; i < nstreams; ++i)
+-    {
+-        stream_end_col[i] = num_blks;
+-    }
+-
+-    *ncpu_blks = 0;
+-    /*easy returns -1 when number of column are less than threshold */
+-    if (Ublock_info[num_blks - 1].full_u_cols < (Ngem / (nbrow * ldu)) || num_blks == 1)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-
+-        return;
+-
+-    }
+-
+-    /* Easy return -2 when number of streams =0 */
+-    if (nstreams == 0)
+-    {
+-        *num_streams_used = 0;
+-        *ncpu_blks = num_blks;
+-        return;
+-        /* code */
+-    }
+-    /*find first block where count > Ngem */
+-
+-
+-    for (i = 0; i < num_blks - 1; ++i)  /*I can use binary search here */
+-    {
+-        if (Ublock_info[i + 1].full_u_cols > Ngem / (nbrow * ldu))
+-            break;
+-    }
+-    *ncpu_blks = i + 1;
+-
+-    int_t cols_remain =
+-       Ublock_info [num_blks - 1].full_u_cols - Ublock_info[*ncpu_blks - 1].full_u_cols;
+-
+-    if (cols_remain > 0)
+-    {
+-        *num_streams_used = 1;  /* now atleast one stream would be used */
+-
+-        int_t FP_MIN = 200000 / (nbrow * ldu);
+-        int_t cols_per_stream = SUPERLU_MAX (min_gpu_col, cols_remain / nstreams);
+-        cols_per_stream = SUPERLU_MAX (cols_per_stream, FP_MIN);
+-
+-        int_t cutoff = cols_per_stream + Ublock_info[*ncpu_blks - 1].full_u_cols;
+-        for (int_t i = 0; i < nstreams; ++i)
+-        {
+-            stream_end_col[i] = num_blks;
+-        }
+-        j = *ncpu_blks;
+-        for (i = 0; i < nstreams - 1; ++i)
+-        {
+-            int_t st = (i == 0) ? (*ncpu_blks) : stream_end_col[i - 1];
+-
+-            for (j = st; j < num_blks - 1; ++j)
+-            {
+-                if (Ublock_info[j + 1].full_u_cols > cutoff)
+-                {
+-
+-                    cutoff = cols_per_stream + Ublock_info[j].full_u_cols;
+-                    stream_end_col[i] = j + 1;
+-                    *num_streams_used += 1;
+-                    j++;
+-                    break;
+-                }
+-
+-            }
+-
+-        }
+-
+-    }
+-}
+-
+-#endif  /* defined GPU_ACC */
++#include "xscatter.h"

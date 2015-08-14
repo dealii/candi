@@ -1,9 +1,9 @@
-VERSION=3.4.4
+VERSION=3.6.1
 NAME=petsc-${VERSION}
 SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
 PACKING=.tar.gz
+CHECKSUM=28f842697159e16e2978732480571147
 #CHECKSUM=ignore
-CHECKSUM=7edbc68aa6d8d6a3295dd5f6c2f6979d
 BUILDCHAIN=custom
 
 CONFOPTS="
@@ -37,18 +37,6 @@ if [ "$F90" ]; then
     CONFOPTS="${CONFOPTS} F90=$F90"
 fi
 
-if [ "${TRILINOS_DIR}" ]; then
-    CONFOPTS="${CONFOPTS} --with-ml=1
-              --with-ml-lib=${TRILINOS_DIR}/lib/libml.so
-              --with-ml-include=${TRILINOS_DIR}/include"
-fi
-
-if [ "${CUDA_DIR}" ] && [ "${CUSP_DIR}" ]; then
-    CONFOPTS="${CONFOPTS} --with-cuda=1 --with-cuda-dir=${CUDA_DIR}
-    --with-cusp=1 --with-cusp-dir=${CUSP_DIR}
-    --with-thrust=1 --with-thrust-dir=${CUDA_DIR}/include"
-fi
-
 package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
@@ -61,4 +49,3 @@ package_specific_setup () {
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}/${NAME}
 }
-

@@ -1,4 +1,4 @@
-VERSION=v8.2.1
+VERSION=v8.3.0
 NAME=dealii.git
 EXTRACTSTO=deal.II-${VERSION}
 SOURCE=https://github.com/dealii/

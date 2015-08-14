@@ -1,10 +1,9 @@
-VERSION=11.12.1
+VERSION=12.2.1
 NAME=trilinos-${VERSION}-Source
-SOURCE=http://trilinos.org/oldsite/download/files/
-PACKING=.tar.gz
-CHECKSUM=26a07a4fe43e49a8208953dea5ab2652
-# 11.8.1  CHECKSUM=3c9465b6d63d824e9dc0365ca73c3370
-# 11.10.2 CHECKSUM=37bbbb30756e9cb2d35c092954d2f1eb
+SOURCE=http://trilinos.csbsju.edu/download/files/
+PACKING=.tar.bz2
+DOWNLOADER=curl
+CHECKSUM=760f14cbce482b4b9a41d1c18297b531
 BUILDCHAIN=cmake
 
 CONFOPTS="${TRILINOS_CONFOPTS} \
@@ -14,7 +13,8 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
-          -D Trilinos_ENABLE_MueLu:BOOL=OFF \
+          -D Trilinos_ENABLE_MueLu:BOOL=ON \
+          -D Trilinos_ENABLE_Amesos2:BOOL=OFF \
           -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
           -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
           -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
@@ -31,7 +31,7 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_setup() {
-    # Apply patch to let Trilinos/Amesos work with SuperLUDist_3.3
+    # Apply patch to let Trilinos/Amesos work with SuperLU_Dist v4.1
     cd ${UNPACK_PATH}/${EXTRACTSTO}/packages/amesos/src
     patch --forward Amesos_Superludist.cpp < ${ORIG_DIR}/${PROJECT}/patches/Amesos_Superludist.cpp.patch || true
 }

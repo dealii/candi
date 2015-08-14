@@ -1,16 +1,16 @@
-VERSION=3.3
+VERSION=4.1
 NAME=superlu_dist_${VERSION}
 EXTRACTSTO=SuperLU_DIST_${VERSION}
 SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 PACKING=.tar.gz
 DOWNLOADER=curl
-CHECKSUM=f4805659157d93a962500902c219046b
+CHECKSUM=4edee38cc29f687bd0c8eb361096a455
 BUILDCHAIN=custom
 
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_3.3.patch || true
+    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_4.1.patch || true
 
     mv make.inc make.inc.bak
     #create make.inc
@@ -33,6 +33,7 @@ BLASLIB         = -lblas
 ## parmetis 4.x.x
 METISLIB        = -L${PARMETIS_DIR}/lib -lmetis
 PARMETISLIB     = -L${PARMETIS_DIR}/lib -lparmetis
+I_PARMETIS      = -I${PARMETIS_DIR}/include
 
 # Define the required Fortran libraries, if you use C compiler to link
 #FLIBS          = -lpgf90 -lpgf90_rpm1
@@ -51,10 +52,10 @@ RANLIB          = ranlib
 ############################################################################
 # C compiler setup
 # CFLAGS should be set to be the C flags that include optimization
-CFLAGS          = -fPIC -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
+CFLAGS          = -fPIC -std=c99 \$(I_PARMETIS) -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
 #
 # NOOPTS should be set to be the C flags that turn off any optimization
-NOOPTS          = -fPIC -O0
+NOOPTS          = -fPIC -std=c99 -O0
 ############################################################################
 # FORTRAN compiler setup
 FORTRAN         = \$(FC)
