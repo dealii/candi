@@ -5,7 +5,9 @@ PACKING=.tar.bz2
 CHECKSUM=ignore
 BUILDCHAIN=autotools
 
-if [ ${GCC} = "4.9.3" ]; then
+if [ ${GCC} = "5.2.0" ]; then
+    CHECKSUM=a51bcfeb3da7dd4c623e27207ed43467
+elif [ ${GCC} = "4.9.3" ]; then
     CHECKSUM=6f831b4d251872736e8e9cc09746f327
 fi
 
