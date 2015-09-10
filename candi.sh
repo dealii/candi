@@ -34,6 +34,12 @@ else
     DATE_CMD=$(which date)
 fi
 
+if builtin command -v curl > /dev/null; then
+    CURL_DOWNLOADER_AVAILABLE=true
+else
+    CURL_DOWNLOADER_AVAILABLE=false
+fi
+
 # Start global timer
 TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
@@ -83,7 +89,7 @@ package_fetch () {
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         # Only download archives that do not exist
         if [ ! -e ${NAME}${PACKING} ]; then
-            if [ ${DOWNLOADER} = "curl" ]; then
+            if [ ${DOWNLOADER} = "curl" ] && [${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
                 curl -O ${SOURCE}${NAME}${PACKING}
             else
                 if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
