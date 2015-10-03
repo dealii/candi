@@ -10,7 +10,7 @@ package_specific_setup () {
     cd ${UNPACK_PATH}/${EXTRACTSTO}
     git submodule update --init; ./bootstrap
     cd ${ORIG_BUILD_DIR}
-    unset ${ORIG_BUILD_DIR}
+    unset ORIG_BUILD_DIR
 
     function bdie () {
         echo "Error: $@"
