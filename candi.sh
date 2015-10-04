@@ -259,8 +259,8 @@ package_build() {
 
     # Carry out any package-specific setup
     package_specific_setup
-    cd ${BUILDDIR}
     quit_if_fail "There was a problem in build setup for ${NAME}."
+    cd ${BUILDDIR}
 
     # Use the appropriate build system to compile and install the
     # package
