@@ -1,7 +1,7 @@
-NAME=boost_1_58_0
+NAME=boost_1_59_0
 SOURCE=http://downloads.sourceforge.net/boost/
 PACKING=.tar.gz
-CHECKSUM=5a5d5614d9a07672e1ab2a250b5defc5
+CHECKSUM=51528a0e3b33d9e10aaa311d9eb451e3
 BUILDCHAIN=custom
 
 package_specific_build () {
