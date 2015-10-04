@@ -89,13 +89,13 @@ package_fetch () {
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         # Only download archives that do not exist
         if [ ! -e ${NAME}${PACKING} ]; then
-            if [ ${DOWNLOADER} = "curl" ] && [${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
-                curl -O ${SOURCE}${NAME}${PACKING}
+            if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
+                curl -O ${SOURCE}${NAME}${PACKING} || { rm ${SOURCE}${NAME}${PACKING}; exit 1; }
             else
                 if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-                    wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+                    wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING} || { rm ${NAME}${PACKING}; exit 1; }
                 else
-                    wget --retry-connrefused --no-check-certificate -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING}
+                    wget --retry-connrefused --no-check-certificate -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING} || { rm ${NAME}${PACKING}; exit 1; }
                 fi
             fi
         fi
@@ -103,7 +103,7 @@ package_fetch () {
         # Download again when using snapshots and unstable packages, but
         # only when the timestamp has changed
         if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-            wget --timestamping --retry-connrefused --no-check-certificate ${SOURCE}${NAME}${PACKING}
+            wget --timestamping --retry-connrefused --no-check-certificate ${SOURCE}${NAME}${PACKING} || { rm ${SOURCE}${NAME}${PACKING}; exit 1; }
         fi
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
