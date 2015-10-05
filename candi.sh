@@ -539,8 +539,21 @@ if [ $# -eq 0 ]; then
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
 elif [ $# -eq 1 ]; then
-    PLATFORM=${1}
-    cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+    PLATFORM_SUPPORTED=${1}
+    if [ -e ${PLATFORM_SUPPORTED} ]; then
+      PLATFORM=${PLATFORM_SUPPORTED}
+      cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+      if [ "${PLATFORM}" = "deal.II/platforms/supported/linux_cluster.platform" ]; then
+        cecho ${WARN} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
+        cecho ${WARN} "if you want to use Trilinos."    
+      fi
+    else
+	    cecho ${BAD} "Error: Platform to build for not supported."
+	    echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
+	    echo "./candi.sh ${PROJECT}/platforms/supported/myplatform.platform"
+	    echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
+	    exit 1
+    fi
     
     echo "-------------------------------------------------------------------------------"
     # Show the initial comments in the platform file, as it often
