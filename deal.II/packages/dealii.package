@@ -52,13 +52,14 @@ fi
 if [ -z "${MODULEFILE_PATH}" ]; then
     MODULEFILE_PATH=${INSTALL_PATH#$PREFIX_PATH}
     MODULEFILE_PATH=${MODULEFILE_PATH%/$COMPILER}
+    MODULEFILE_PATH=${INSTALL_PATH}/share/modulefiles${MODULEFILE_PATH}
 fi
 
 if [ -z "${CONFIG_FILE}" ]; then
     CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
 fi
 
-CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /')
+CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
 
     # Generate modulefile
     
