@@ -680,6 +680,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Skip building this package if the user requests it
     SKIP=false
     case ${PACKAGE} in
+        load:*) SKIP=true; LOAD=true; PACKAGE=${PACKAGE#*:};;
         skip:*) SKIP=true;  PACKAGE=${PACKAGE#*:};;
         once:*) 
           # If the package is turned off in the deal.II configuration, do not
@@ -762,8 +763,14 @@ for PACKAGE in ${PACKAGES[@]}; do
         package_unpack
         package_build
     else
-        # Let the user know we're skipping the current package
-        cecho ${GOOD} "Skipping ${NAME}"
+        if [ ! -z "${LOAD}" ]; then
+            # Let the user know we're loading the current package
+            cecho ${GOOD} "Loading ${NAME}"
+            unset LOAD
+        else
+            # Let the user know we're skipping the current package
+            cecho ${GOOD} "Skipping ${NAME}"
+        fi
     fi
     package_register
     package_conf
