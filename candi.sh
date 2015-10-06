@@ -33,15 +33,15 @@ if builtin command -v gdate > /dev/null; then
 else
     DATE_CMD=$(which date)
 fi
+# Start global timer
+TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
+# Check if the curl download is available
 if builtin command -v curl > /dev/null; then
     CURL_DOWNLOADER_AVAILABLE=true
 else
     CURL_DOWNLOADER_AVAILABLE=false
 fi
-
-# Start global timer
-TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 # Colours for progress and error reporting
 BAD="\033[1;31m"
