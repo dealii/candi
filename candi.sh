@@ -45,8 +45,10 @@ for param in "$@"; do
         # Prefix path
         -p=*|--prefix=*|--PREFIX_PATH=*)
             PREFIX="${param#*=}"
+            # replace '~' by $HOME
+            PREFIX=${PREFIX/#~\//$HOME\/}
         ;;
-
+        
         #####################################
         # Number of maximum processes to use
         -np=*|--np=*|--procs=*|--PROCS=*)
@@ -56,7 +58,7 @@ for param in "$@"; do
         -j*)
             NP="${param#*j}"
         ;;
-
+        
         #####################################
         # Specific platform
         -pf=*|--platform=*)
