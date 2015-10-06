@@ -3,14 +3,10 @@ NAME=p4est-$VERSION
 EXTRACTSTO=p4est-${VERSION}
 SOURCE=https://p4est.github.io/release/
 PACKING=.tar.gz
+CHECKSUM=37ba7f4410958cfb38a2140339dbf64f
 BUILDCHAIN=custom
 
 package_specific_setup () {
-    ORIG_BUILD_DIR=`pwd`
-    cd ${UNPACK_PATH}/${EXTRACTSTO}
-    cd ${ORIG_BUILD_DIR}
-    unset ORIG_BUILD_DIR
-
     function bdie () {
         echo "Error: $@"
         exit 1
