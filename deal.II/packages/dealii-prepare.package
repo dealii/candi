@@ -23,9 +23,6 @@ if [[ ${PACKAGES_OFF} =~ 'METIS' ]]; then
   PACKAGES_OFF=${PACKAGES_OFF}' SUPERLU_DIST';
   ParMetis=OFF
   SuperLUDist=OFF
-else
-  ParMETIS=ON
-  SuperLUDist=ON
 fi
 
 # Transform upper case to lower case.
