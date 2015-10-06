@@ -766,6 +766,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         if [ ! -z "${LOAD}" ]; then
             # Let the user know we're loading the current package
             cecho ${GOOD} "Loading ${NAME}"
+            unset LOAD
         else
             # Let the user know we're skipping the current package
             cecho ${GOOD} "Skipping ${NAME}"
