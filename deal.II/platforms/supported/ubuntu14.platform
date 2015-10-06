@@ -11,7 +11,7 @@
 #
 # Define the packages this platform needs
 PACKAGES=(
-skip:dealii-prepare
+load:dealii-prepare
 once:parmetis
 once:superlu_dist
 once:hdf5
