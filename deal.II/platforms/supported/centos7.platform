@@ -3,20 +3,20 @@
 # This build script assumes that you have several packages already
 # installed via RHEL's yum using the following command:
 #
-# su -c 'yum install -y patch svn git wget \
+# sudo yum install -y patch svn git wget \
 # @development-tools gcc-c++ cmake \
 # openmpi openmpi-devel \
 # patch \
 # libtool libtool-ltdl libtool-ltdl-devel \
 # lua lua-devel \
 # blas blas-devel lapack lapack-devel \
-# doxygen graphviz graphviz-devel qt-devel '
+# doxygen graphviz graphviz-devel qt-devel
 # 
 # ARPACK: arpack arpack-devel
 # METIS: metis metis-devel
 # 
 # Load the openmpi compiler with (e.g. for 64bit systems)
-#   module load openmpi-x86_64
+#   module load mpi/openmpi-x86_64
 ##
 
 #
