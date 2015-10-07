@@ -1,5 +1,9 @@
 # ubuntu 14
 # 
+# WARNING: please install deal.II with
+#   STABLE_BUILD=false
+# since there is an issue with the stable build of deal.II v8.3.0.
+# 
 # This build script assumes that you have several packages already
 # installed via ubuntu's apt-get using the following commands:
 #
