@@ -39,7 +39,7 @@ if [ "$F90" ]; then
     CONFOPTS="${CONFOPTS} F90=$F90"
 fi
 
-if [ ! -z "${MKL_DIR}"]
+if [ ! -z "${MKL_DIR}" ]; then
     CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
 fi
 
