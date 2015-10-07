@@ -21,6 +21,13 @@ if [ ! -z "${LAPACK_DIR}" ]; then
 fi
 
 if [ ${MKL} = "ON" ]; then
+  if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then 
+    TRILINOS_CONFOPTS=" \
+    ${TRILINOS_CONFOPTS} \
+    -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
+    -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR} \
+    "
+  fi
   TRILINOS_CONFOPTS=" \
   ${TRILINOS_CONFOPTS} \
   -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
