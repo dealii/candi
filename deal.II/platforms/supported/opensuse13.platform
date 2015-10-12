@@ -19,6 +19,7 @@
 PACKAGES=(
 load:dealii-prepare
 #once:boost
+once:opencascade
 once:parmetis
 once:superlu_dist
 once:hdf5
