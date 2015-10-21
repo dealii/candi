@@ -25,6 +25,7 @@ set -a
 #          https://bitbucket.org/fenics-project/dorsal/src                     #
 #          master c667be2 2013-11-27                                           #
 
+################################################################################
 # The Unix date command does not work with nanoseconds, so use
 # the GNU date instead. This is available in the 'coreutils' package
 # from MacPorts.
@@ -33,22 +34,58 @@ if builtin command -v gdate > /dev/null; then
 else
     DATE_CMD=$(which date)
 fi
+# Start global timer
+TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
+################################################################################
+# Parse input parameters
+for param in "$@"; do
+    case $param in
+        #####################################
+        # Prefix path
+        -p=*|--prefix=*|--PREFIX_PATH=*)
+            PREFIX="${param#*=}"
+            # replace '~' by $HOME
+            PREFIX=${PREFIX/#~\//$HOME\/}
+        ;;
+        
+        #####################################
+        # Number of maximum processes to use
+        -np=*|--np=*|--procs=*|--PROCS=*)
+            NP="${param#*=}"
+        ;;
+        # Make styled processes
+        -j*)
+            NP="${param#*j}"
+        ;;
+        
+        #####################################
+        # Specific platform
+        -pf=*|--platform=*)
+            GIVEN_PLATFORM="${param#*=}"
+        ;;
+    esac
+done
+
+PREFIX_PATH=${PREFIX:-~/apps/candi}
+PROCS=${NP:-1}
+
+################################################################################
+# Check if the curl download is available
 if builtin command -v curl > /dev/null; then
     CURL_DOWNLOADER_AVAILABLE=true
 else
     CURL_DOWNLOADER_AVAILABLE=false
 fi
 
-# Start global timer
-TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
-
+################################################################################
 # Colours for progress and error reporting
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
 WARN="\033[1;34m"
 BOLD="\033[1m"
 
+################################################################################
 ### Define helper functions ###
 
 prettify_dir() {
@@ -298,9 +335,6 @@ package_build() {
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
         done
-#        for target in "${TARGETS[@]}"; do
-#            echo make -C ${BUILDDIR} ${MAKEOPTS} -j ${PROCS} $target >>candi_build
-#        done
     elif [ ${BUILDCHAIN} = "custom" ]; then
         # Write the function definition to file
         declare -f package_specific_build >>candi_build
@@ -419,12 +453,13 @@ fi
 
 # If any variables are missing, revert them to defaults
 default PROJECT=deal.II
-default DOWNLOAD_PATH=${HOME}/apps/candi/${PROJECT}/src
-default UNPACK_PATH=${HOME}/apps/candi/${PROJECT}/unpack
-default BUILD_PATH=${HOME}/apps/candi/${PROJECT}/build
+
+default DOWNLOAD_PATH=${PREFIX_PATH}/src
+default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}/unpack
+default BUILD_PATH=${PREFIX_PATH}/${PROJECT}/build
 default CLEAN_BUILD=false
-default INSTALL_PATH=${HOME}/apps/candi/${PROJECT}
-default PROCS=1
+default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
+
 default STABLE_BUILD=true
 default USE_SNAPSHOTS=false
 default PACKAGES_OFF=""
@@ -447,7 +482,7 @@ else
 fi
 
 # Check if candi.sh was invoked correctly
-if [ $# -eq 0 ]; then
+if [ -z "${GIVEN_PLATFORM}" ]; then
     PLATFORM_SUPPORTED=${PROJECT}/platforms/supported/`guess_platform`.platform
     PLATFORM_CONTRIBUTED=${PROJECT}/platforms/contributed/`guess_platform`.platform
     PLATFORM_DEPRECATED=${PROJECT}/platforms/deprecated/`guess_platform`.platform
@@ -465,7 +500,7 @@ if [ $# -eq 0 ]; then
     else
 	cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
 	echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-	echo "./candi.sh ${PROJECT}/platforms/supported/myplatform.platform"
+	echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
 	echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
 	exit 1
     fi
@@ -480,6 +515,8 @@ if [ $# -eq 0 ]; then
     echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
     echo "Building projects in:   $(prettify_dir ${BUILD_PATH})"
     echo "Installing projects in: $(prettify_dir ${INSTALL_PATH})"
+    echo
+    echo "Number of at most build processes to use: PROCS=${PROCS}"
     echo
     if [ ${STABLE_BUILD} = true ]; then
         echo "Building stable point-releases of ${PROJECT} projects."
@@ -538,19 +575,19 @@ if [ $# -eq 0 ]; then
     echo ""
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
-elif [ $# -eq 1 ]; then
-    PLATFORM_SUPPORTED=${1}
+elif [ ! -z "${GIVEN_PLATFORM}" ]; then
+    PLATFORM_SUPPORTED=${GIVEN_PLATFORM}
     if [ -e ${PLATFORM_SUPPORTED} ]; then
       PLATFORM=${PLATFORM_SUPPORTED}
       cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
       if [ "${PLATFORM}" = "deal.II/platforms/supported/linux_cluster.platform" ]; then
-        cecho ${WARN} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
-        cecho ${WARN} "if you want to use Trilinos."    
+        cecho ${BAD} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
+        cecho ${BAD} "if you want to use Trilinos."    
       fi
     else
 	    cecho ${BAD} "Error: Platform to build for not supported."
 	    echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-	    echo "./candi.sh ${PROJECT}/platforms/supported/myplatform.platform"
+	    echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
 	    echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
 	    exit 1
     fi
