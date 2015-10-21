@@ -6,6 +6,8 @@ CHECKSUM=28f842697159e16e2978732480571147
 #CHECKSUM=ignore
 BUILDCHAIN=custom
 
+#########################################################################
+
 CONFOPTS="
   --with-debugging=0
   --with-shared-libraries=1
@@ -37,6 +39,12 @@ if [ "$F90" ]; then
     CONFOPTS="${CONFOPTS} F90=$F90"
 fi
 
+if [ ! -z "${MKL_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
+fi
+
+#########################################################################
+
 package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
@@ -49,3 +57,4 @@ package_specific_setup () {
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}/${NAME}
 }
+

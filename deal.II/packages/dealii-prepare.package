@@ -28,18 +28,5 @@ fi
 # Transform upper case to lower case.
 PACKAGES_OFF=${PACKAGES_OFF,,}
 
-#########################################################################
-TRILINOS_CONFOPTS=" \
--D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR} \
--D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR} \
-"
-
-if [[ ${MKL} == ON ]]; then
-  TRILINOS_CONFOPTS=" \
-  ${TRILINOS_CONFOPTS} \
-  -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
-  -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64 \
-  "
-fi
-
 PACKAGE=dealii-prepare
+

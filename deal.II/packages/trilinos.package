@@ -6,6 +6,37 @@ DOWNLOADER=curl
 CHECKSUM=760f14cbce482b4b9a41d1c18297b531
 BUILDCHAIN=cmake
 
+#########################################################################
+
+if [ ! -z "${BLAS_DIR}" ]; then
+    TRILINOS_CONFOPTS="${TRILINOS_CONFOPTS} \
+                       -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR} \
+                      "
+fi
+
+if [ ! -z "${LAPACK_DIR}" ]; then
+    TRILINOS_CONFOPTS="${TRILINOS_CONFOPTS} \
+                       -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR} \
+                      "
+fi
+
+if [ ${MKL} = "ON" ]; then
+  if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then 
+    TRILINOS_CONFOPTS=" \
+    ${TRILINOS_CONFOPTS} \
+    -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
+    -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR} \
+    "
+  fi
+  TRILINOS_CONFOPTS=" \
+  ${TRILINOS_CONFOPTS} \
+  -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
+  -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64 \
+  "
+fi
+
+#########################################################################
+
 CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
