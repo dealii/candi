@@ -21,6 +21,7 @@ load:dealii-prepare
 once:zlib
 once:bzip2
 once:boost
+once:opencascade
 once:parmetis
 once:superlu_dist
 once:hdf5

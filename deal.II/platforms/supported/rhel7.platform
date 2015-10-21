@@ -20,6 +20,7 @@
 # Define the packages this platform needs
 PACKAGES=(
 load:dealii-prepare
+once:opencascade
 once:parmetis
 once:superlu_dist
 once:hdf5
