@@ -441,6 +441,9 @@ guess_architecture() {
 ###############################################################################
 # Start the build process
 
+# Set the default version of Trilinos to 12. This is overwritten for Ubuntu12
+TRILINOS_MAJOR_VERSION_AUTO=12
+
 export ORIG_DIR=`pwd`
 
 # Read configuration variables from candi.cfg
@@ -706,13 +709,8 @@ guess_architecture
 # Reset timings
 TIMINGS=""
 
-# If TRILINOS_MAJOR_VERSION is set to AUTO, pick Trilinos 11 except for Ubuntu 12
 if [[ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]]; then
-  if [[ ${PLATFORM} == *"ubuntu12"* ]]; then
-    TRILINOS_MAJOR_VERSION=11
-  else
-    TRILINOS_MAJOR_VERSION=12
-  fi
+  TRILINOS_MAJOR_VERSION=${TRILINOS_MAJOR_VERSION_AUTO}
 fi
 
 # Fetch and build individual packages
