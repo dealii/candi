@@ -1,9 +1,18 @@
-VERSION=12.2.1
+if [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
+  SOURCE=https://trilinos.org/oldsite/download/files/
+  VERSION=11.6.2
+  CHECKSUM=15ea6af5559f872919ff19fe5a322eb6
+fi
+
+if [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
+  SOURCE=http://trilinos.csbsju.edu/download/files/
+  VERSION=12.2.1
+  CHECKSUM=760f14cbce482b4b9a41d1c18297b531
+fi
+
 NAME=trilinos-${VERSION}-Source
-SOURCE=http://trilinos.csbsju.edu/download/files/
 PACKING=.tar.bz2
 DOWNLOADER=curl
-CHECKSUM=760f14cbce482b4b9a41d1c18297b531
 BUILDCHAIN=cmake
 
 #########################################################################
