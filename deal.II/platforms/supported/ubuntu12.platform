@@ -19,6 +19,7 @@
 #
 # Define the packages this platform needs
 PACKAGES=(
+once:cmake
 load:dealii-prepare
 once:opencascade
 once:parmetis
