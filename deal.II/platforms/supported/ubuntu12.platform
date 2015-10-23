@@ -24,5 +24,12 @@ once:slepc
 dealii
 )
 
+# The default compiler on ubuntu12 does not support Trilinos 12.
+# Anyhow, the user can decide to use Trilinos 11 or 12, if the
+# version number is not set to AUTO.
+# The last point is due to own compilers (e.g. intel) which support
+# Trilinos 12.
+if [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
+  TRILINOS_MAJOR_VERSION=11
+fi
 
-TRILINOS_MAJOR_VERSION_AUTO=11

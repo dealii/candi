@@ -1,3 +1,7 @@
+if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
+  TRILINOS_MAJOR_VERSION=12
+fi
+
 if [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
   SOURCE=https://trilinos.org/oldsite/download/files/
   VERSION=11.6.2
