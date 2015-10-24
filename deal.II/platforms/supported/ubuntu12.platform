@@ -14,6 +14,10 @@
 # Afterwards, you should set your compilers safely:
 # > export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
 # and rerun candi again.
+# 
+# To compile deal.II applications, you need to set the following variables
+# > export DEAL_II_DIR=${INSTALL_PATH} (see below for your settings)
+# > export PATH=$DEAL_II_DIR/bin:$PATH
 ##
 
 #
