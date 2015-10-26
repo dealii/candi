@@ -1,0 +1,47 @@
+# ubuntu 12
+# 
+# 
+# This build script assumes that you have several packages already
+# installed via ubuntu's apt-get using the following commands:
+#
+# > sudo apt-get install build-essential automake autoconf gfortran \
+#        openmpi-bin openmpi-common libopenmpi-dev cmake subversion \
+#        git libblas-dev liblapack-dev libblas3gf liblapack3gf splint \
+#        tcl tcl-dev libsuitesparse-dev libtool libboost-all-dev qt4-dev-tools
+# 
+# Then reboot.
+# 
+# Afterwards, you should set your compilers safely:
+# > export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+# and rerun candi again.
+# 
+# To compile deal.II applications, you need to set the following variables
+# > export DEAL_II_DIR=${INSTALL_PATH} (see below for your settings)
+# > export PATH=$DEAL_II_DIR/bin:$PATH
+##
+
+#
+# Define the packages this platform needs
+PACKAGES=(
+once:cmake
+load:dealii-prepare
+once:opencascade
+once:parmetis
+once:superlu_dist
+once:hdf5
+once:p4est
+once:trilinos
+once:petsc
+once:slepc
+dealii
+)
+
+# The default compiler on ubuntu12 does not support Trilinos 12.
+# Anyhow, the user can decide to use Trilinos 11 or 12, if the
+# version number is not set to AUTO.
+# The last point is due to own compilers (e.g. intel) which support
+# Trilinos 12.
+if [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
+  TRILINOS_MAJOR_VERSION=11
+fi
+

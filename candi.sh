@@ -415,7 +415,7 @@ guess_platform() {
         local CODENAME=$(lsb_release -c -s)
         local DESCRIPTION=$(lsb_release -d -s)
         case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-            *:*:*Ubuntu*\ 13*)     echo ubuntu13;;
+            *:*:*Ubuntu*\ 12*)     echo ubuntu12;;
             *:*:*Ubuntu*\ 14*)     echo ubuntu14;;
             *:*:*Ubuntu*\ 15*)     echo ubuntu15;;
             *:Tikanga*:*)          echo rhel5;;
@@ -440,7 +440,6 @@ guess_architecture() {
 
 ###############################################################################
 # Start the build process
-
 export ORIG_DIR=`pwd`
 
 # Read configuration variables from candi.cfg
