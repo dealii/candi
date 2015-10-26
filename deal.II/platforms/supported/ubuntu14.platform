@@ -1,13 +1,14 @@
 # ubuntu 14
 # 
-# WARNING: please install deal.II with
-#   STABLE_BUILD=false
-# since there is an issue with the stable build of deal.II v8.3.0.
 # 
 # This build script assumes that you have several packages already
 # installed via ubuntu's apt-get using the following commands:
 #
-# > sudo apt-get install build-essential automake autoconf gfortran openmpi-bin openmpi-common libopenmpi-dev cmake subversion git libblas-dev liblapack-dev libblas3gf liblapack3gf splint tcl tcl-dev environment-modules libsuitesparse-dev libtool libboost-all-dev qt4-dev-tools
+# > sudo apt-get install build-essential automake autoconf gfortran \
+#   openmpi-bin openmpi-common libopenmpi-dev cmake subversion \
+#   git libblas-dev liblapack-dev libblas3gf liblapack3gf splint \
+#   tcl tcl-dev environment-modules libsuitesparse-dev \
+#   libtool libboost-all-dev qt4-dev-tools
 # 
 # Then reboot and run candi again.
 ##
@@ -26,4 +27,16 @@ once:petsc
 once:slepc
 dealii
 )
+
+# The default compiler on ubuntu14 does not support Trilinos 12
+# together with deal.II v8.3.0.
+# Note: this issue is resolved in the current development trunc
+# of deal.II (v8.4pre).
+# Anyhow, the user can decide to use Trilinos 11 or 12, if the
+# version number is not set to AUTO.
+# The last point is due to own compilers (e.g. intel) which support
+# Trilinos 12.
+if [ ${STABLE_BUILD} == "true" ] && [ ${DEAL_II_VERSION} == "v8.3.0" ] && [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
+  TRILINOS_MAJOR_VERSION=11
+fi
 
