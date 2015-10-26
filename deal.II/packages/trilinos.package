@@ -5,8 +5,8 @@ if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" 
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
   SOURCE=https://trilinos.org/oldsite/download/files/
-  VERSION=11.6.2
-  CHECKSUM=15ea6af5559f872919ff19fe5a322eb6
+  VERSION=11.14.3
+  CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
 
 else
   cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
