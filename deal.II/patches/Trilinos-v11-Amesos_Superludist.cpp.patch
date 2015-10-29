@@ -1,0 +1,6 @@
+476,477c476,477
+<     else if( IterRefine_ == "DOUBLE" ) PrivateSuperluData_->options_.IterRefine = DOUBLE;
+<     else if( IterRefine_ == "EXTRA" ) PrivateSuperluData_->options_.IterRefine = EXTRA;
+---
+>     else if( IterRefine_ == "DOUBLE" ) PrivateSuperluData_->options_.IterRefine = SLU_DOUBLE;
+>     else if( IterRefine_ == "EXTRA" ) PrivateSuperluData_->options_.IterRefine = SLU_EXTRA;
