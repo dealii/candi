@@ -175,28 +175,41 @@ verify_archive() {
 
 download_archive () {
     ARCHIVE_FILE=$1
+
+    # Include (local) mirrors
+    if [ ! -z "${MIRROR}" ]; then
+        SOURCE="${MIRROR} ${SOURCE}"
+    fi
     
-    # Only download archives that do not exist
-    if [ ! -e ${ARCHIVE_FILE} ]; then
-        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
-            curl -O ${SOURCE}${ARCHIVE_FILE} || { rm ${SOURCE}${ARCHIVE_FILE}; exit 1; }
-        else
-            if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-                wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${ARCHIVE_FILE} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
+    for source in ${SOURCE}
+    do
+        # Set up complete url
+        url=${source}${ARCHIVE_FILE}
+        
+        # Only download archives that do not exist
+        if [ ! -e ${ARCHIVE_FILE} ]; then
+            if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
+                curl -O ${url} || { rm ${ARCHIVE_FILE}; exit 1; }
             else
-                wget --retry-connrefused --no-check-certificate -c ${SOURCE}${ARCHIVE_FILE} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
+                if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
+                    wget --retry-connrefused --no-check-certificate --server-response -c ${url} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
+                else
+                    wget --retry-connrefused --no-check-certificate -c ${url} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
+                fi
             fi
+        else
+            cecho ${GOOD} "Skipping download (archive file exists)"
         fi
-    else
-        cecho ${GOOD} "Skipping download (archive file exists)"
-    fi
-    
-    # Download again when using snapshots and unstable packages, but
-    # only when the timestamp has changed
-    if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-        wget --timestamping --retry-connrefused --no-check-certificate ${SOURCE}${ARCHIVE_FILE} || { rm ${SOURCE}${ARCHIVE_FILE}; exit 1; }
-        cecho ${GOOD} "Downloading new snap shot archive file..."
-    fi
+        
+        # Download again when using snapshots and unstable packages, but
+        # only when the timestamp has changed
+        if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
+            wget --timestamping --retry-connrefused --no-check-certificate ${url} || { rm ${ARCHIVE_FILE}; exit 1; }
+            cecho ${GOOD} "Downloading new snap shot archive file..."
+        fi
+        
+        unset url
+    done
 
     # Make sure the archive was downloaded
     if [ ! -e ${ARCHIVE_FILE} ]; then
