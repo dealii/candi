@@ -78,6 +78,24 @@ CONFOPTS="${CONFOPTS} \
           -D CMAKE_FORTRAN_FLAGS:STRING=-g -O5 \
           -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
 
+# Add ParMETIS, if present
+if [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
+        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so"
+fi
+
+# Add SuperLU_dist, if present
+if [ ! -z "${SuperLUDist}" ] && [ ${SuperLUDist} = "ON" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+          -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
+          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
+          -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
+          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
+fi
+
 #########################################################################
 # General Trilinos configuration
 
@@ -92,12 +110,6 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
           -D Trilinos_ENABLE_MueLu:BOOL=ON \
           -D Trilinos_ENABLE_Amesos2:BOOL=ON \
-          -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
-          -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
-          -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
-          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
-          -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
-          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
           -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
