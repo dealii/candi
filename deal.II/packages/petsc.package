@@ -49,9 +49,8 @@ package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
-    ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS}
-    
-    make all install
+    ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS} && \    
+        make all install
 }
 
 package_specific_register () {
