@@ -26,7 +26,7 @@ if [[ ${PACKAGES_OFF} =~ 'METIS' ]]; then
 fi
 
 # Turn on SuperLUDist and ParMETIS, if nothing else is specified so far.
-if [ ! -z "${SuperLUDist}" ]; then
+if [ -z "${SuperLUDist}" ]; then
     ParMETIS=ON
     SuperLUDist=ON
 fi
