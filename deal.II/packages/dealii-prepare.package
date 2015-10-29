@@ -5,9 +5,6 @@ BUILDCHAIN=ignore
 ### DO NOT MODIFY THE CODE BELOW ###
 ####################################
 
-ParMETIS=ON
-SuperLUDist=ON
-
 #########################################################################
 # Loop over the options in DEAL_CONFOPTS and if the package is turned off, add
 # it to the PACKAGES_OFF list.
@@ -27,6 +24,13 @@ if [[ ${PACKAGES_OFF} =~ 'METIS' ]]; then
     ParMETIS=OFF
     SuperLUDist=OFF
 fi
+
+# Turn on SuperLUDist and ParMETIS, if nothing else is specified so far.
+if [ ! -z "${SuperLUDist}" ]; then
+    ParMETIS=ON
+    SuperLUDist=ON
+fi
+
 
 # Transform upper case to lower case.
 PACKAGES_OFF=${PACKAGES_OFF,,}
