@@ -70,11 +70,11 @@ Read carefully the output of `./candi.sh` before running!
   $> ./candi.sh --prefix=Your/Prefix/Path
 ```
 
-#### CLO: Using multiple build processes `[-j<Number>]`, `[--PROCS=<Number>]`
+#### CLO: Using multiple build processes `[-j<N>]`, `[--PROCS=<N>]`
 ```bash
-  $> ./candi.sh -j<Number>
+  $> ./candi.sh -j<N>
 ```
-* Remark: there is no whitespace character allowed between `-j` and the number `<Number>`.
+* Remark: there is no whitespace character allowed between `-j` and the number `<N>`.
 * Example: using 2 build processes `./candi.sh -j2` or `./candi.sh --PROCS=2`.
 * Be careful with that! You need to have enough system memory (e.g. at least 8GB for using 2 or more processes).
 
