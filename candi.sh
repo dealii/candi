@@ -216,7 +216,7 @@ download_archive () {
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.
         if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
-            curl -O ${url} || continue
+            curl -k -O ${url} || continue
         else
             wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
         fi
