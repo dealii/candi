@@ -16,6 +16,6 @@ package_specific_build () {
 }
 
 package_specific_register () {
-    export BZIP2_INCLUDE=${INSTALL_PATH}/include
-    export BZIP2_LIBPATH=${INSTALL_PATH}/lib
+    export BZIP2_INCLUDE=${INSTALL_PATH}/${NAME}/include
+    export BZIP2_LIBPATH=${INSTALL_PATH}/${NAME}/lib
 }

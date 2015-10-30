@@ -5,6 +5,8 @@ SOURCE=https://github.com/dealii/
 PACKING=git
 BUILDCHAIN=cmake
 
+INSTALL_PATH=${INSTALL_PATH}/..
+
 CONFOPTS=" \
 ${DEAL_CONFOPTS} \
 "

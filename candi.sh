@@ -531,6 +531,8 @@ default STABLE_BUILD=true
 default USE_SNAPSHOTS=false
 default PACKAGES_OFF=""
 
+INSTALL_PATH=${INSTALL_PATH}/libs
+
 # Check if project was specified correctly
 if [ -d ${PROJECT} ]; then
     if [ -d ${PROJECT}/platforms -a -d ${PROJECT}/packages ]; then
