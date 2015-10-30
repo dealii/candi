@@ -1,9 +1,10 @@
 NAME=dealii-prepare
 BUILDCHAIN=ignore
 
-####################################
-### DO NOT MODIFY THE CODE BELOW ###
-####################################
+#########################################################################
+# Install third-party libraries in opt
+INSTALL_PATH=${INSTALL_PATH}/opt
+
 
 #########################################################################
 # Loop over the options in DEAL_CONFOPTS and if the package is turned off, add
