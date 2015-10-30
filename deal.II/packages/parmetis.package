@@ -18,4 +18,5 @@ package_specific_build() {
 
 package_specific_register () {
     export PARMETIS_DIR=${INSTALL_PATH}
+    export METIS_DIR=${INSTALL_PATH}
 }
