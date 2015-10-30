@@ -83,6 +83,7 @@ fi
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
 WARN="\033[1;34m"
+INFO="\033[1;34m"
 BOLD="\033[1m"
 
 ################################################################################
@@ -116,6 +117,131 @@ quit_if_fail() {
     fi
 }
 
+#verify_archive():
+#  return -1: internal error
+#  return 0: CHECKSUM is matching
+#  return 1: No checksum provided
+#  return 2: ARCHIVE_FILE not found
+#  return 3: CHECKSUM mismatch
+#  return 4: Neither md5 nor md5sum found, but ARCHIVE_FILE was found.
+verify_archive() {
+    ARCHIVE_FILE=$1
+    
+    # Check checksum has been specified for the package
+    if [ -z "${CHECKSUM}" ]; then
+        cecho ${WARN} "No checksum for ${ARCHIVE_FILE}"
+        return 1
+    fi
+    
+    # Skip checksum if asked to ignore
+    if [ "${CHECKSUM}" = "ignore" ]; then
+        cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
+        return 1
+    fi
+    
+    # Make sure the archive was downloaded
+    if [ ! -e ${ARCHIVE_FILE} ]; then
+        return 2
+    fi
+    
+    cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
+    
+    # Verify checksum using md5/md5sum
+    if builtin command -v md5 > /dev/null; then
+        test "${CHECKSUM}" = "$(md5 -q ${ARCHIVE_FILE})"
+        if [ $? = 0 ]; then
+            echo "${ARCHIVE_FILE}: OK"
+            return 0
+        else
+            echo "${ARCHIVE_FILE}: FAILED"
+            return 3
+        fi
+    
+    elif builtin command -v md5sum > /dev/null; then
+        echo "${CHECKSUM}  ${ARCHIVE_FILE}" | md5sum --check -
+        if [ $? = 0 ]; then
+            return 0
+        else
+            return 3
+        fi
+    
+    else
+        cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
+        return 4
+    fi
+    
+    # Internal error: we should never reach this point, but to be sure we
+    return -1
+}
+
+download_archive () {
+    ARCHIVE_FILE=$1
+    
+    # Include (local) mirrors
+    if [ ! -z "${MIRROR}" ]; then
+        SOURCE="${MIRROR} ${SOURCE}"
+    fi
+    
+    for source in ${SOURCE}
+    do
+        # verify_archive:
+        # * Skip loop if the ARCHIVE_FILE is already downloaded
+        # * Remove corrupted ARCHIVE_FILE
+        verify_archive ${ARCHIVE_FILE}
+        archive_state=$?
+        
+        if [ ${archive_state} = 0 ]; then
+             cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
+             return 0;
+        
+        elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
+             cecho ${INFO} "${ARCHIVE_FILE} already downloaded."
+             return 0;
+             
+        elif [ ${archive_state} = 3 ]; then
+            cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
+            
+            # Remove the file and check if that was successful
+            rm -f ${ARCHIVE_FILE}
+            if [ $? = 0 ]; then
+                cecho ${GOOD} "corrupted ${ARCHIVE_FILE} has been removed"
+            else
+                cecho ${BAD} "corrupted ${ARCHIVE_FILE} could not be removed."
+                cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
+                exit 1;
+            fi
+        fi
+        unset archive_state
+        
+        # Set up complete url
+        url=${source}${ARCHIVE_FILE}
+        cecho ${GOOD} "Trying to download ${url}"
+        
+        # Download.
+        # If curl or wget is failing, continue this loop for trying an other mirror.
+        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
+            curl -k -O ${url} || continue
+        else
+            wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
+        fi
+        
+        unset url
+        
+        # Verify the download
+        verify_archive ${ARCHIVE_FILE}
+        archive_state=$?
+        if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
+            # If the download was successful, and the CHECKSUM is matching, ignored, or not possible
+            return 0;
+        fi
+        unset archive_state
+    done
+    
+    # Unfortunately it seems that (all) download tryouts finally failed for some reason:
+    verify_archive ${ARCHIVE_FILE}
+    quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet.\nIf a corrupted file has been downloaded, please remove\n   ${DOWNLOAD_PATH}/${NAME}${PACKING}\nbefore you restart candi!"
+}
+
 package_fetch () {
     # First, make sure we're in the right directory before downloading
     cd ${DOWNLOAD_PATH}
@@ -124,24 +250,8 @@ package_fetch () {
 
     # Fetch the package appropriately from its source
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
-        # Only download archives that do not exist
-        if [ ! -e ${NAME}${PACKING} ]; then
-            if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
-                curl -O ${SOURCE}${NAME}${PACKING} || { rm ${SOURCE}${NAME}${PACKING}; exit 1; }
-            else
-                if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-                    wget --retry-connrefused --no-check-certificate --server-response -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING} || { rm ${NAME}${PACKING}; exit 1; }
-                else
-                    wget --retry-connrefused --no-check-certificate -c ${SOURCE}${NAME}${PACKING} -O ${NAME}${PACKING} || { rm ${NAME}${PACKING}; exit 1; }
-                fi
-            fi
-        fi
-        
-        # Download again when using snapshots and unstable packages, but
-        # only when the timestamp has changed
-        if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-            wget --timestamping --retry-connrefused --no-check-certificate ${SOURCE}${NAME}${PACKING} || { rm ${SOURCE}${NAME}${PACKING}; exit 1; }
-        fi
+        download_archive ${NAME}${PACKING}
+    
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -191,48 +301,6 @@ package_fetch () {
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error fetching ${NAME}."
 }
-
-package_verify() {
-    # First make sure we're in the right directory before verifying checksum
-    cd ${DOWNLOAD_PATH}
-
-    # Only need to verify archives
-    if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] ||  [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
-        cecho ${GOOD} "Verifying ${NAME}${PACKING}"
-      
-        # Check checksum has been specified for the package
-        if [ -z "${CHECKSUM}" ]; then
-            cecho ${WARN} "No checksum for ${NAME}${PACKING}"
-            return 1
-        fi
-        
-        # Skip checksum if asked to ignore
-        if [ "${CHECKSUM}" = "ignore" ]; then
-            cecho ${WARN} "Skipped checksum check for ${NAME}${PACKING}"
-            return 1
-        fi
-        
-        # Make sure the archive was downloaded
-        if [ ! -e ${NAME}${PACKING} ]; then
-            cecho ${BAD} "${NAME}${PACKING} does not exist. Please download first."
-            exit 1
-        fi
-        
-        # Verify checksum using md5/md5sum
-        if builtin command -v md5 > /dev/null; then
-            test "${CHECKSUM}" = "$(md5 -q ${NAME}${PACKING})" && echo "${NAME}${PACKING}: OK"
-        elif builtin command -v md5sum > /dev/null; then
-            echo "${CHECKSUM}  ${NAME}${PACKING}" | md5sum --check -
-        else
-            cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
-            return 1
-        fi
-    fi
-    
-    # Quit with a useful message if something goes wrong
-    quit_if_fail "Error verifying checksum for ${NAME}${PACKING}\nMake sure that you are connected to the internet.\nIf a corrupted file has been downloaded, please remove\n   ${DOWNLOAD_PATH}/${NAME}${PACKING}\nbefore you restart candi!"
-}
-
 
 package_unpack() {
     # First make sure we're in the right directory before unpacking
@@ -795,7 +863,6 @@ for PACKAGE in ${PACKAGES[@]}; do
     if [ ${SKIP} = false ]; then
         # Fetch, unpack and build the current package
         package_fetch
-        package_verify
         package_unpack
         package_build
     else
