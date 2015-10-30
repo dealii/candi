@@ -108,6 +108,8 @@ fi
 #########################################################################
 # General Trilinos configuration
 
+INSTALL_PATH=${INSTALL_PATH}/trilinos-${VERSION}
+
 CONFOPTS="${TRILINOS_CONFOPTS} \
           ${CONFOPTS} \
           -D TPL_ENABLE_MPI:BOOL=ON \
