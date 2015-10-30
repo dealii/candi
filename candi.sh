@@ -83,6 +83,7 @@ fi
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
 WARN="\033[1;34m"
+INFO="\033[1;34m"
 BOLD="\033[1m"
 
 ################################################################################
@@ -143,7 +144,7 @@ verify_archive() {
         return 2
     fi
     
-    cecho ${GOOD} "Verifying ${ARCHIVE_FILE}"
+    cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
     
     # Verify checksum using md5/md5sum
     if builtin command -v md5 > /dev/null; then
@@ -175,7 +176,7 @@ verify_archive() {
 
 download_archive () {
     ARCHIVE_FILE=$1
-
+    
     # Include (local) mirrors
     if [ ! -z "${MIRROR}" ]; then
         SOURCE="${MIRROR} ${SOURCE}"
@@ -183,41 +184,56 @@ download_archive () {
     
     for source in ${SOURCE}
     do
+        # verify_archive:
+        # * Skip loop if the ARCHIVE_FILE is already downloaded
+        # * Remove corrupted ARCHIVE_FILE
+        verify_archive ${ARCHIVE_FILE}
+        archive_state=$?
+        
+        if [ ${archive_state} = 0 ]; then
+             cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
+             return 0;
+        
+        elif [ ${archive_state} = 1 ]; then
+             cecho ${INFO} "${ARCHIVE_FILE} already downloaded."
+             return 0;
+             
+        elif [ ${archive_state} = 3 ]; then
+            cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
+            rm -f ${ARCHIVE_FILE}
+            
+            verify_archive ${ARCHIVE_FILE}
+            if [ $? = 2 ]; then
+                cecho ${GOOD} "corrupted ${ARCHIVE_FILE} has been removed"
+            fi
+        fi
+        unset archive_state
+        
         # Set up complete url
         url=${source}${ARCHIVE_FILE}
+        cecho ${GOOD} "Trying to download ${url}"
         
-        # Only download archives that do not exist
-        if [ ! -e ${ARCHIVE_FILE} ]; then
-            if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
-                curl -O ${url} || { rm ${ARCHIVE_FILE}; exit 1; }
-            else
-                if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-                    wget --retry-connrefused --no-check-certificate --server-response -c ${url} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
-                else
-                    wget --retry-connrefused --no-check-certificate -c ${url} -O ${ARCHIVE_FILE} || { rm ${ARCHIVE_FILE}; exit 1; }
-                fi
-            fi
+        # Download.
+        # If curl or wget is failing, continue this loop for trying an other mirror.
+        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
+            curl -O ${url} || continue
         else
-            cecho ${GOOD} "Skipping download (archive file exists)"
-        fi
-        
-        # Download again when using snapshots and unstable packages, but
-        # only when the timestamp has changed
-        if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ]; then
-            wget --timestamping --retry-connrefused --no-check-certificate ${url} || { rm ${ARCHIVE_FILE}; exit 1; }
-            cecho ${GOOD} "Downloading new snap shot archive file..."
+            wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
         fi
         
         unset url
+        
+        # Verify the download
+        verify_archive ${ARCHIVE_FILE}
+        archive_state=$?
+        if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ]; then
+            # If the download was successful, and the CHECKSUM is matching or ignored
+            return 0;
+        fi
+        unset archive_state
     done
-
-    # Make sure the archive was downloaded
-    if [ ! -e ${ARCHIVE_FILE} ]; then
-        cecho ${BAD} "${ARCHIVE_FILE} does not exist. Please download first."
-        exit 1
-    fi
     
-    # Verify the download
+    # Unfortunately it seems that (all) download tryouts finally failed for some reason:
     verify_archive ${ARCHIVE_FILE}
     quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet.\nIf a corrupted file has been downloaded, please remove\n   ${DOWNLOAD_PATH}/${NAME}${PACKING}\nbefore you restart candi!"
 }
