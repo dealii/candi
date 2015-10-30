@@ -121,9 +121,9 @@ quit_if_fail() {
 #  return -1: internal error
 #  return 0: CHECKSUM is matching
 #  return 1: No checksum provided
-#  return 2: Package not found
+#  return 2: ARCHIVE_FILE not found
 #  return 3: CHECKSUM mismatch
-#  return 4: Neither md5 nor md5sum found
+#  return 4: Neither md5 nor md5sum found, but ARCHIVE_FILE was found.
 verify_archive() {
     ARCHIVE_FILE=$1
     
@@ -194,17 +194,21 @@ download_archive () {
              cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
              return 0;
         
-        elif [ ${archive_state} = 1 ]; then
+        elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
              cecho ${INFO} "${ARCHIVE_FILE} already downloaded."
              return 0;
              
         elif [ ${archive_state} = 3 ]; then
             cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
-            rm -f ${ARCHIVE_FILE}
             
-            verify_archive ${ARCHIVE_FILE}
-            if [ $? = 2 ]; then
+            # Remove the file and check if that was successful
+            rm -f ${ARCHIVE_FILE}
+            if [ $? = 0 ]; then
                 cecho ${GOOD} "corrupted ${ARCHIVE_FILE} has been removed"
+            else
+                cecho ${BAD} "corrupted ${ARCHIVE_FILE} could not be removed."
+                cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
+                exit 1;
             fi
         fi
         unset archive_state
@@ -226,8 +230,8 @@ download_archive () {
         # Verify the download
         verify_archive ${ARCHIVE_FILE}
         archive_state=$?
-        if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ]; then
-            # If the download was successful, and the CHECKSUM is matching or ignored
+        if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
+            # If the download was successful, and the CHECKSUM is matching, ignored, or not possible
             return 0;
         fi
         unset archive_state
