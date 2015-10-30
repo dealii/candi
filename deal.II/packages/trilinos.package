@@ -1,16 +1,25 @@
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
-  SOURCE=http://trilinos.csbsju.edu/download/files/
-  VERSION=12.2.1
-  CHECKSUM=760f14cbce482b4b9a41d1c18297b531
+    SOURCE=http://trilinos.csbsju.edu/download/files/
+    VERSION=12.2.1
+    CHECKSUM=760f14cbce482b4b9a41d1c18297b531
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
-  SOURCE=https://trilinos.org/oldsite/download/files/
-  VERSION=11.14.3
-  CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
+    SOURCE=https://trilinos.org/oldsite/download/files/
+    VERSION=11.14.3
+    CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
+    
+    #Note: For Trilinos v11 we need to force SuperLUDist=OFF,
+    #      since only the deprecated SuperLUDist v3.3 together with an Amesos patch
+    #      (and not the current SuperLUDist v4.x with the same Amesos patch)
+    #      is working.
+    #Note: This issue is resolved by setting
+    #          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG
+    #      for Trilinos v12; this is neglegted by Trilinos v11 since it is unknown.
+    SuperLUDist=OFF
 
 else
-  cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
-  exit
+    cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
+    exit
 fi
 
 NAME=trilinos-${VERSION}-Source
@@ -19,37 +28,89 @@ DOWNLOADER=curl
 BUILDCHAIN=cmake
 
 #########################################################################
+# If you have further options for trilinos, please set:
+#TRILINOS_CONFOPTS=""
 
+#########################################################################
+# Please do not change the following options
+
+# Set blas and lapack directories
 if [ ! -z "${BLAS_DIR}" ]; then
-    TRILINOS_CONFOPTS="${TRILINOS_CONFOPTS} \
-                       -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR} \
-                      "
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR}"
 fi
 
 if [ ! -z "${LAPACK_DIR}" ]; then
-    TRILINOS_CONFOPTS="${TRILINOS_CONFOPTS} \
-                       -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR} \
-                      "
+    CONFOPTS="
+        ${CONFOPTS} \
+        -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
 fi
 
+# Set intel MKL options
 if [ ${MKL} = "ON" ]; then
-  if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then 
-    TRILINOS_CONFOPTS=" \
-    ${TRILINOS_CONFOPTS} \
-    -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
-    -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR} \
-    "
-  fi
-  TRILINOS_CONFOPTS=" \
-  ${TRILINOS_CONFOPTS} \
-  -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
-  -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64 \
-  "
+    if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then 
+        CONFOPTS=" \
+            ${CONFOPTS} \
+            -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
+            -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR}"
+    fi
+    
+    CONFOPTS=" \
+        ${CONFOPTS} \
+        -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
+        -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
+fi
+
+# Set compilers & compiler options
+if [ ! -z "${CC}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D CMAKE_C_COMPILER=${CC}"
+fi
+
+if [ ! -z "${CXX}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D CMAKE_CXX_COMPILER=${CXX}"
+fi
+
+if [ ! -z "${FC}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D CMAKE_Fortran_COMPILER=${FC}"
+fi
+
+CONFOPTS="${CONFOPTS} \
+          -D CMAKE_CXX_FLAGS:STRING=-fPIC -g -O3 \
+          -D CMAKE_C_FLAGS:STRING=-fPIC -g -O3 \
+          -D CMAKE_FORTRAN_FLAGS:STRING=-g -O5 \
+          -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
+
+# Add ParMETIS, if present
+if [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
+        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so"
+fi
+
+# Add SuperLU_dist, if present
+if [ ! -z "${SuperLUDist}" ] && [ ${SuperLUDist} = "ON" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+          -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
+          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
+          -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
+          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
 fi
 
 #########################################################################
+# General Trilinos configuration
 
 CONFOPTS="${TRILINOS_CONFOPTS} \
+          ${CONFOPTS} \
+          -D TPL_ENABLE_MPI:BOOL=ON \
           -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
           -D Trilinos_ENABLE_Didasko:BOOL=ON \
@@ -58,20 +119,9 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
           -D Trilinos_ENABLE_MueLu:BOOL=ON \
           -D Trilinos_ENABLE_Amesos2:BOOL=ON \
-          -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
-          -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so \
-          -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
-          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
-          -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
-          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
-          -D CMAKE_CXX_FLAGS:STRING=-fPIC -g -O3 \
-          -D CMAKE_C_FLAGS:STRING=-fPIC -g -O3 \
-          -D CMAKE_FORTRAN_FLAGS:STRING=-g -O5 \
-          -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
           -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
-          -D TPL_ENABLE_MPI:BOOL=ON \
           -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_register () {
