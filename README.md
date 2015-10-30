@@ -89,11 +89,13 @@ You can adapt several things to your personal needs here
 * the `UNPACK_PATH` folder of the downloaded packages (can be safely removed after installation),
 * the `BUILD_PATH` folder (can be safely removed after installation),
 * the `INSTALL_PATH` destination folder,
+
 and more options.
 
 Remarks. Please set the variables
 * `PREFIX_PATH`
 * `PROCS`
+
 via the command line options (CLO) as described above.
 
 Note: setting the denoted variables in the configuration file will fix them,
