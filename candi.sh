@@ -43,7 +43,7 @@ for param in "$@"; do
     case $param in
         #####################################
         # Prefix path
-        -p=*|--prefix=*|--PREFIX_PATH=*)
+        -p=*|--prefix=*)
             PREFIX="${param#*=}"
             # replace '~' by $HOME
             PREFIX=${PREFIX/#~\//$HOME\/}
@@ -51,7 +51,7 @@ for param in "$@"; do
         
         #####################################
         # Number of maximum processes to use
-        -np=*|--np=*|--procs=*|--PROCS=*)
+        --PROCS=*)
             NP="${param#*=}"
         ;;
         # Make styled processes
