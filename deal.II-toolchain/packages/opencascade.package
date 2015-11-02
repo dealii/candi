@@ -18,7 +18,7 @@ else
     # download release tarball
     
     VERSION=0.17
-    NAME=OCE-${VERSION}
+    NAME=oce-OCE-${VERSION}
     PACKING=.tar.gz
     SOURCE=https://github.com/tjhei/oce/releases/download/OCE-${VERSION}/
     CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
