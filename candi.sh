@@ -87,7 +87,7 @@ INFO="\033[1;34m"
 BOLD="\033[1m"
 
 ################################################################################
-### Define helper functions ###
+# Define candi helper functions
 
 prettify_dir() {
    # Make a directory name more readable by replacing homedir with "~"
@@ -117,6 +117,7 @@ quit_if_fail() {
     fi
 }
 
+################################################################################
 #verify_archive():
 #  return -1: internal error
 #  return 0: CHECKSUM is matching
