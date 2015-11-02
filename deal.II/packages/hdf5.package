@@ -7,6 +7,8 @@ BUILDCHAIN=autotools
 
 CONFOPTS="--enable-shared --enable-parallel"
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
+
 package_specific_register () {
     export HDF5_DIR=${INSTALL_PATH}
 }

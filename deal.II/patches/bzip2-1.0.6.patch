@@ -22,7 +22,7 @@
  
  # Where you want it installed when you do 'make install'
 -PREFIX=/usr/local
-+PREFIX=${INSTALL_PATH}
++PREFIX=${INSTALL_PATH}/${NAME}
  
  
  OBJS= blocksort.o  \
