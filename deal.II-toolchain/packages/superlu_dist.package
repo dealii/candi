@@ -72,6 +72,10 @@ LOADER          = \$(CC)
 CDEFS        = -DAdd_
 " >> make.inc
 
+    # prepare install dirs
+    mkdir -p ${INSTALL_PATH}
+    mkdir -p ${INSTALL_PATH}/lib
+    
     # now compile superlu_dist
     make superlulib
     mkdir -p ${INSTALL_PATH}/include/superlu
