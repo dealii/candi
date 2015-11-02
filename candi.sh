@@ -520,7 +520,7 @@ if [ -f local.cfg ]; then
 fi
 
 # If any variables are missing, revert them to defaults
-default PROJECT=deal.II
+default PROJECT=deal.II-toolchain
 
 default DOWNLOAD_PATH=${PREFIX_PATH}/src
 default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
