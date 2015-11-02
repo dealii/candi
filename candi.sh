@@ -523,8 +523,8 @@ fi
 default PROJECT=deal.II
 
 default DOWNLOAD_PATH=${PREFIX_PATH}/src
-default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}/unpack
-default BUILD_PATH=${PREFIX_PATH}/${PROJECT}/build
+default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
+default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
 default CLEAN_BUILD=false
 default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
 
@@ -581,8 +581,8 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
     echo
     echo "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
     echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
-    echo "Building projects in:   $(prettify_dir ${BUILD_PATH})"
-    echo "Installing projects in: $(prettify_dir ${INSTALL_PATH})"
+    echo "Building packages in:   $(prettify_dir ${BUILD_PATH})"
+    echo "Installing packages in: $(prettify_dir ${INSTALL_PATH})"
     echo
     echo "Number of at most build processes to use: PROCS=${PROCS}"
     echo
