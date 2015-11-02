@@ -89,20 +89,20 @@ CONFOPTS="${CONFOPTS} \
           -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
 
 # Add ParMETIS, if present
-if [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" ]; then
+if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
-        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libparmetis.so"
+        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so"
 fi
 
 # Add SuperLU_dist, if present
-if [ ! -z "${SuperLUDist}" ] && [ ${SuperLUDist} = "ON" ]; then
+if [ ! -z "${SUPERLU_DIR}" ] && [ ! -z "${SuperLUDist}" ] && [ ${SuperLUDist} = "ON" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
-          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${INSTALL_PATH}/lib/libsuperlu_dist.so \
-          -D SuperLUDist_INCLUDE_DIRS:PATH=${INSTALL_PATH}/include/superlu \
+          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.so \
+          -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include/superlu \
           -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
 fi
 
