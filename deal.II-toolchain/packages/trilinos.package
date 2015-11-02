@@ -93,7 +93,8 @@ if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" 
     CONFOPTS="\
         ${CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
-        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so"
+        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
+        -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
 fi
 
 # Add SuperLU_dist, if present
