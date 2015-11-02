@@ -2,9 +2,10 @@ VERSION=3.4.0-rc2-Linux-x86_64
 NAME=cmake-${VERSION}
 SOURCE=https://cmake.org/files/v3.4/
 PACKING=.tar.gz
+CHECKSUM=511db6fe363aa323905e1c06f7b22425
 BUILDCHAIN=custom
 
-CHECKSUM=511db6fe363aa323905e1c06f7b22425
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build () {
     cp -rf ${UNPACK_PATH}/${NAME}/* ${INSTALL_PATH}/
@@ -14,4 +15,3 @@ package_specific_build () {
 package_specific_register () {
     export PATH=${INSTALL_PATH}/bin:${PATH}
 }
-

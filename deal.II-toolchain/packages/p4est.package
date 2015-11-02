@@ -6,6 +6,8 @@ PACKING=.tar.gz
 CHECKSUM=37ba7f4410958cfb38a2140339dbf64f
 BUILDCHAIN=custom
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
+
 package_specific_setup () {
     function bdie () {
         echo "Error: $@"
@@ -31,8 +33,8 @@ package_specific_setup () {
     BUILD_DEBUG="${BUILD_PATH}/${NAME}/DEBUG"
 
     # choose names for fast and debug installation directories
-    INSTALL_FAST="${INSTALL_PATH}/${NAME}/FAST"
-    INSTALL_DEBUG="${INSTALL_PATH}/${NAME}/DEBUG"
+    INSTALL_FAST="${INSTALL_PATH}/FAST"
+    INSTALL_DEBUG="${INSTALL_PATH}/DEBUG"
     
     echo
     echo "This script tries configure and build the p4est library."
@@ -82,10 +84,10 @@ package_specific_setup () {
     echo
     
     cd "${BUILD_PATH}/${NAME}"
-    touch dorsal_successful_build
+    touch candi_successful_build
 }
 
 
 package_specific_register () {
-    export P4EST_DIR=${INSTALL_PATH}/${NAME}
+    export P4EST_DIR=${INSTALL_PATH}
 }

@@ -765,7 +765,6 @@ mkdir -p ${DOWNLOAD_PATH}
 mkdir -p ${UNPACK_PATH}
 mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
-mkdir -p ${INSTALL_PATH}/lib
 
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_PROCS=${PROCS}
@@ -828,7 +827,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     package_specific_install () { true; }
     package_specific_register () { true; }
     package_specific_conf() { true; }
-
+    
     # Fetch information pertinent to the package
     source ${PROJECT}/packages/${PACKAGE}.package
     
@@ -893,4 +892,3 @@ cecho ${GOOD} "Build finished in $((TOC_GLOBAL/1000000000)) seconds."
 echo
 echo "Summary of timings:"
 echo -e "$TIMINGS"
-
