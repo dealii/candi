@@ -5,7 +5,11 @@ SOURCE=https://github.com/dealii/
 PACKING=git
 BUILDCHAIN=cmake
 
-INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
+
+package_specific_setup () {
+    BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
+    INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
+}
 
 CONFOPTS=" \
 ${DEAL_CONFOPTS} \
