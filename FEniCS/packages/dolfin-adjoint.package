@@ -1,4 +1,0 @@
-NAME=dolfin-adjoint
-SOURCE=lp:
-PACKING=bzr
-BUILDCHAIN=python

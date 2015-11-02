@@ -1,6 +1,0 @@
-VERSION=1.4.0
-NAME=fiat-${VERSION}
-SOURCE=https://bitbucket.org/fenics-project/fiat/downloads/
-PACKING=.tar.gz
-CHECKSUM=da9c38cf394594091ec4ac2ff652e170
-

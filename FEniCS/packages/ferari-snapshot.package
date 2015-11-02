@@ -1,4 +1,0 @@
-VERSION=snapshot
-NAME=ferari-${VERSION}
-SOURCE=http://fenicsproject.org/pub/software/ferari/
-PACKING=.tar.gz

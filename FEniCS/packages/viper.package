@@ -1,4 +1,0 @@
-NAME=fenics-viper
-SOURCE=lp:
-PACKING=bzr
-BUILDCHAIN=python

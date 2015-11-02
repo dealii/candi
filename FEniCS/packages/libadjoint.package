@@ -1,6 +1,0 @@
-NAME=libadjoint
-SOURCE=https://bitbucket.org/dolfin-adjoint/
-PACKING=hg
-BUILDCHAIN=cmake
-CONFOPTS="-DBUILD_SHARED_LIBS:BOOL=ON"
-
