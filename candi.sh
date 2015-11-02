@@ -814,7 +814,6 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset BUILDDIR
     unset CONFOPTS
     unset MAKEOPTS
-    unset SCONSOPTS
     unset CONFIG_FILE
     DOWNLOADER=wget
     TARGETS=('' install)
