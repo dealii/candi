@@ -82,7 +82,7 @@ fi
 # Colours for progress and error reporting
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
-WARN="\033[1;34m"
+WARN="\033[1;31m"
 INFO="\033[1;34m"
 BOLD="\033[1m"
 
@@ -566,12 +566,13 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
         cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
         cecho ${BAD} "Warning: Platform is deprecated and will be removed shortly but may still work!"
     else
-	cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
-	echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-	echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
-	echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
-	exit 1
+        cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
+        echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
+        echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
+        echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
+        exit 1
     fi
+    
     echo "-------------------------------------------------------------------------------"
     # Show the initial comments in the platform file, as it often
     # contains instructions about packages that should be installed
@@ -597,9 +598,10 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
     fi
     echo "-------------------------------------------------------------------------------"
     cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-    cecho ${GOOD} "is ready for installing ${PROJECT}. We find it easiest to copy and paste"
-    cecho ${GOOD} "these instructions in another terminal window."
-
+    cecho ${GOOD} "is ready for installing ${PROJECT}."
+    cecho ${WARN} "If not, please abort the installer by pressing <CTRL> + <C> !"
+    cecho ${INFO} "Then copy and paste these instructions into this terminal."
+    
     if builtin command -v module > /dev/null; then
         echo ""
         echo "-------------------------------------------------------------------------------"
@@ -609,55 +611,97 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
 
     echo "-------------------------------------------------------------------------------"
     echo "Compiler Variables:"
+    ############################################################################
+    # Firstly test, if compiler variables are set,
+    #   and if not try to set the default mpi-compiler suite
+    # finally test, if compiler variables are useful.
+    
+    # CC test
+    if [ ! -n "$CC" ]; then
+        if builtin command -v mpicc > /dev/null; then
+            cecho ${WARN} "CC variable not set, but default mpicc found."
+            export CC=mpicc
+        fi
+    fi
+    
     if [ -n "$CC" ]; then
-        cecho ${WARN} "CC  = $(which $CC)"
+        cecho ${INFO} "CC  = $(which $CC)"
     else
         cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
     fi
-
+    
+    # CXX test
+    if [ ! -n "$CXX" ]; then
+        if builtin command -v mpicxx > /dev/null; then
+            cecho ${WARN} "CXX variable not set, but default mpicxx found."
+            export CXX=mpicxx
+        fi
+    fi
+    
     if [ -n "$CXX" ]; then
-        cecho ${WARN} "CXX = $(which $CXX)"
+        cecho ${INFO} "CXX = $(which $CXX)"
     else
         cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
     fi
-
+    
+    # FC test
+    if [ ! -n "$FC" ]; then
+        if builtin command -v mpif90 > /dev/null; then
+            cecho ${WARN} "FC variable not set, but default mpif90 found."
+            export FC=mpif90
+        fi
+    fi
+    
     if [ -n "$FC" ]; then
-        cecho ${WARN} "FC  = $(which $FC)"
+        cecho ${INFO} "FC  = $(which $FC)"
     else
         cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
     fi
-
+    
+    # FF test
+    if [ ! -n "$FF" ]; then
+        if builtin command -v mpif77 > /dev/null; then
+            cecho ${WARN} "FF variable not set, but default mpif77 found."
+            export FF=mpif77
+        fi
+    fi
+    
     if [ -n "$FF" ]; then
-        cecho ${WARN} "FF  = $(which $FF)"
+        cecho ${INFO} "FF  = $(which $FF)"
     else
         cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
     fi
     
+    # Final test for compiler variables
     if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
-        cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-        cecho ${BAD} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
+        cecho ${INFO} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${INFO} "Please read your platform information above carefully,"
+        cecho ${INFO} "  how you get those compilers installed and set up!"
+        cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
         cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
     fi
+    ############################################################################
     echo "-------------------------------------------------------------------------------"
     
     echo ""
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
+
 elif [ ! -z "${GIVEN_PLATFORM}" ]; then
     PLATFORM_SUPPORTED=${GIVEN_PLATFORM}
     if [ -e ${PLATFORM_SUPPORTED} ]; then
-      PLATFORM=${PLATFORM_SUPPORTED}
-      cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
-      if [ "${PLATFORM}" = "deal.II/platforms/supported/linux_cluster.platform" ]; then
-        cecho ${BAD} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
-        cecho ${BAD} "if you want to use Trilinos."    
-      fi
+        PLATFORM=${PLATFORM_SUPPORTED}
+        cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+        if [ "${PLATFORM}" = "deal.II/platforms/supported/linux_cluster.platform" ]; then
+            cecho ${BAD} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
+            cecho ${BAD} "if you want to use Trilinos."
+        fi
     else
-	    cecho ${BAD} "Error: Platform to build for not supported."
-	    echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-	    echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
-	    echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
-	    exit 1
+        cecho ${BAD} "Error: Platform to build for not supported."
+        echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
+        echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
+        echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
+        exit 1
     fi
     
     echo "-------------------------------------------------------------------------------"
@@ -683,8 +727,9 @@ elif [ ! -z "${GIVEN_PLATFORM}" ]; then
     fi
     echo "-------------------------------------------------------------------------------"
     cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-    cecho ${GOOD} "is ready for installing ${PROJECT}. We find it easiest to copy and paste"
-    cecho ${GOOD} "these instructions in another terminal window."
+    cecho ${GOOD} "is ready for installing ${PROJECT}."
+    cecho ${WARN} "If not, please abort the installer by pressing <CTRL> + <C> !"
+    cecho ${INFO} "Then copy and paste these instructions into this terminal."
     
     if builtin command -v module > /dev/null; then
         echo ""
@@ -695,41 +740,82 @@ elif [ ! -z "${GIVEN_PLATFORM}" ]; then
     
     echo "-------------------------------------------------------------------------------"
     echo "Compiler Variables:"
+    ############################################################################
+    # Firstly test, if compiler variables are set,
+    #   and if not try to set the default mpi-compiler suite
+    # finally test, if compiler variables are useful.
+    
+    # CC test
+    if [ ! -n "$CC" ]; then
+        if builtin command -v mpicc > /dev/null; then
+            cecho ${WARN} "CC variable not set, but default mpicc found."
+            export CC=mpicc
+        fi
+    fi
+    
     if [ -n "$CC" ]; then
-        cecho ${WARN} "CC  = $(which $CC)"
+        cecho ${INFO} "CC  = $(which $CC)"
     else
         cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
     fi
     
+    # CXX test
+    if [ ! -n "$CXX" ]; then
+        if builtin command -v mpicxx > /dev/null; then
+            cecho ${WARN} "CXX variable not set, but default mpicxx found."
+            export CXX=mpicxx
+        fi
+    fi
+    
     if [ -n "$CXX" ]; then
-        cecho ${WARN} "CXX = $(which $CXX)"
+        cecho ${INFO} "CXX = $(which $CXX)"
     else
         cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
     fi
     
+    # FC test
+    if [ ! -n "$FC" ]; then
+        if builtin command -v mpif90 > /dev/null; then
+            cecho ${WARN} "FC variable not set, but default mpif90 found."
+            export FC=mpif90
+        fi
+    fi
+    
     if [ -n "$FC" ]; then
-        cecho ${WARN} "FC  = $(which $FC)"
+        cecho ${INFO} "FC  = $(which $FC)"
     else
         cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
     fi
     
+    # FF test
+    if [ ! -n "$FF" ]; then
+        if builtin command -v mpif77 > /dev/null; then
+            cecho ${WARN} "FF variable not set, but default mpif77 found."
+            export FF=mpif77
+        fi
+    fi
+    
     if [ -n "$FF" ]; then
-        cecho ${WARN} "FF  = $(which $FF)"
+        cecho ${INFO} "FF  = $(which $FF)"
     else
         cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
     fi
     
+    # Final test for compiler variables
     if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
-        cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-        cecho ${BAD} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
+        cecho ${INFO} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+        cecho ${INFO} "Please read your platform information above carefully,"
+        cecho ${INFO} "  how you get those compilers installed and set up!"
+        cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
         cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
     fi
+    ############################################################################
     echo "-------------------------------------------------------------------------------"
     
     echo ""
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
-    
+
 elif [ $# -eq 2 ]; then
     # Check if the user wants to install a single package
     if [ ${1} == "install-package" ]; then
