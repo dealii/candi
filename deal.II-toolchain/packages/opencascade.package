@@ -1,28 +1,27 @@
 # CANDI_OPENCASCADE_FROM_GIT=1
 
-if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]
-then
-
-  # current dev snapshot from git (big repo)
-
-  #VERSION=master
-  VERSION=OCE-0.17
-  NAME=oce.git
-  EXTRACTSTO=oce
-  SOURCE=https://github.com/tpaviot/
-  PACKING=git
-
+if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]; then
+    # current dev snapshot from git (big repo)
+    VERSION=OCE-0.17
+    #VERSION=master
+    NAME=oce.git
+    
+    if [ ${VERSION} = "master" ]; then
+        EXTRACTSTO=OCE-master
+    else
+        EXTRACTSTO=${VERSION}
+    fi
+    
+    SOURCE=https://github.com/tpaviot/
+    PACKING=git
 else
-
-  # download release tarball
-
-  VERSION=OCE-0.17
-  NAME=oce-$VERSION
-  PACKING=.tar.gz
-  SOURCE=https://github.com/tjhei/oce/releases/download/$VERSION/
-  DOWNLOADER=wget
-  CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
-
+    # download release tarball
+    
+    VERSION=0.17
+    NAME=OCE-${VERSION}
+    PACKING=.tar.gz
+    SOURCE=https://github.com/tjhei/oce/releases/download/OCE-${VERSION}/
+    CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
 fi
 
 BUILDCHAIN=cmake
