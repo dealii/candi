@@ -1,8 +1,7 @@
 candi (Compile &amp; Install)
 =====
 
-* Downloads, configures, builds and install various FEM libraries, e.g. deal.II, FEniCS
-* Set up your own projects to get tools or toolchains compiled easily
+* Downloads, configures, builds and install deal.II
 
 General
 ----
@@ -104,19 +103,3 @@ via the command line options (CLO) as described above.
 
 Note: setting the denoted variables in the configuration file will fix them,
 and they cannot be overwritten by command line options anymore.
-
-
-Switching candi to other projects (e.g. FEniCS)
-----
-
-You can switch the current project to handle to your needs.
-For doing this, firstly find out which projects are currently bundled with candi by
-```bash
-  $> ls project-*.cfg
-```
-This gives you a list of the currently configured projects.
-
-If you want to switch to a currently configured project, e.g. to project-FEniCS.cfg, type
-```bash
-  $> ./switch-project-to FEniCS
-```
