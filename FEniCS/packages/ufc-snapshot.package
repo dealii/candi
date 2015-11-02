@@ -1,4 +1,0 @@
-VERSION=snapshot
-NAME=ufc-${VERSION}
-SOURCE=http://fenicsproject.org/pub/software/ufc/
-PACKING=.tar.gz

@@ -1,4 +1,0 @@
-VERSION=snapshot
-NAME=ufl-${VERSION}
-SOURCE=http://fenicsproject.org/pub/software/ufl/
-PACKING=.tar.gz

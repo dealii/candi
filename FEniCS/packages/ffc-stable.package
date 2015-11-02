@@ -1,5 +1,0 @@
-VERSION=1.4.0
-NAME=ffc-${VERSION}
-SOURCE=https://bitbucket.org/fenics-project/ffc/downloads/
-PACKING=.tar.gz
-CHECKSUM=cac802fbbf869911fdd82b72c51a7771

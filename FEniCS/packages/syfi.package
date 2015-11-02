@@ -1,8 +1,0 @@
-NAME=fenics-syfi
-SOURCE=lp:
-PACKING=bzr
-BUILDCHAIN=cmake
-
-if [ -x "${SWIG_EXECUTABLE}" ]; then
-    CONFOPTS="-D SWIG_EXECUTABLE:FILEPATH=${SWIG_EXECUTABLE}"
-fi

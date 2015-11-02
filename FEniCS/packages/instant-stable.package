@@ -1,5 +1,0 @@
-VERSION=1.4.0
-NAME=instant-${VERSION}
-SOURCE=https://bitbucket.org/fenics-project/instant/downloads/
-PACKING=.tar.gz
-CHECKSUM=e6fa58eb5df4401aac8542110dc1d220

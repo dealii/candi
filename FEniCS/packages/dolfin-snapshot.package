@@ -1,4 +1,0 @@
-VERSION=snapshot
-NAME=dolfin-${VERSION}
-SOURCE=http://fenicsproject.org/pub/software/dolfin/
-PACKING=.tar.gz

@@ -1,6 +1,0 @@
-VERSION=1.4.0
-NAME=dolfin-${VERSION}
-SOURCE=https://bitbucket.org/fenics-project/dolfin/downloads/
-PACKING=.tar.gz
-CHECKSUM=b736119d524590b6bd0484f09893e018
-
