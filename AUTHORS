@@ -1,12 +1,14 @@
-candi (compile&install) is a majorily tweaked DORSAL and
-maintained by:
-  Uwe Koecher           <uwe.koecher@hsu-hamburg.de>
-  Bruno Turcksin        (https://github.com/Rombur/candi)  
+candi (compile&install)
 
-NVRI.software/candi is a majorily tweaked DORSAL and maintained by:
   Uwe Koecher           <uwe.koecher@hsu-hamburg.de>
+  Bruno Turcksin        <bruno.turcksin@gmail.com>
+  Timo Heister          <timo.heister@gmail.com>
 
-The origin is Dorsal (licensed under the LGPL):
+
+===================================================================
+The origin is Dorsal, licensed under the
+  GNU Lesser General Public License Version 3,
+from
   https://bitbucket.org/fenics-project/dorsal/src
   master c667be2 2013-11-27
 
@@ -46,4 +48,3 @@ Minor contributors in chronological order include:
   Fredrik Valdmanis     <fredva@ifi.uio.no>
   Michele Marcionelli   <michele.marcionelli@math.ethz.ch>
 
-Missing or incorrect credits? Tell us and we will fix it!
