@@ -5,43 +5,62 @@ SOURCE=https://github.com/dealii/
 PACKING=git
 BUILDCHAIN=cmake
 
-INSTALL_PATH=${INSTALL_PATH}/..
+#########################################################################
+BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
+INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 
+#########################################################################
 CONFOPTS=" \
 ${DEAL_CONFOPTS} \
 "
 
-CONFOPTS="${CONFOPTS} \
--D ARPACK_DIR=${ARPACK_DIR}\
-"
+if [ ! -z "${ARPACK_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D ARPACK_DIR=${ARPACK_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D METIS_DIR=${METIS_DIR} \
-"
+if [ ! -z "${METIS_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D METIS_DIR=${METIS_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D MUMPS_DIR=${MUMPS_DIR} \
-"
+if [ ! -z "${MUMPS_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D MUMPS_DIR=${MUMPS_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D P4EST_DIR=${P4EST_DIR} \
-"
+if [ ! -z "${P4EST_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D P4EST_DIR=${P4EST_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D HDF5_DIR=${HDF5_DIR} \
-"
+if [ ! -z "${HDF5_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D HDF5_DIR=${HDF5_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D TRILINOS_DIR=${TRILINOS_DIR} \
-"
+if [ ! -z "${TRILINOS_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D TRILINOS_DIR=${TRILINOS_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D PETSC_DIR=${PETSC_DIR} \
-"
+if [ ! -z "${PETSC_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D PETSC_DIR=${PETSC_DIR}"
+fi
 
-CONFOPTS="${CONFOPTS} \
--D SLEPC_DIR=${SLEPC_DIR} \
-"
+if [ ! -z "${SLEPC_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D SLEPC_DIR=${SLEPC_DIR}"
+fi
 
 # **********************************************************************************
 package_specific_conf() {
@@ -90,4 +109,3 @@ setenv                  DEAL_II_DIR         ${INSTALL_PATH}
 
     export DEAL_II_DIR=${INSTALL_PATH}
 }
-

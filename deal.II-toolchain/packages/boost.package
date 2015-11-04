@@ -4,16 +4,18 @@ PACKING=.tar.gz
 CHECKSUM=51528a0e3b33d9e10aaa311d9eb451e3
 BUILDCHAIN=custom
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
+
 package_specific_build () {
     cp -rf ${UNPACK_PATH}/${NAME}/* .
-    ./bootstrap.sh --prefix=${INSTALL_PATH}/${NAME}
+    ./bootstrap.sh --prefix=${INSTALL_PATH}
     echo "using mpi ;" > user-config.jam
     ./b2 -j ${PROCS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
 }
 
 package_specific_register () {
-    export BOOST_ROOT=${INSTALL_PATH}/${NAME}
-    export BOOST_INCLUDEDIR=${INSTALL_PATH}/${NAME}/include
-    export BOOST_LIBRARYDIR=${INSTALL_PATH}/${NAME}/lib
+    export BOOST_ROOT=${INSTALL_PATH}
+    export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
+    export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
     export BOOST_USE_MULTITHREADED=OFF
 }

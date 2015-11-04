@@ -2,11 +2,6 @@ NAME=dealii-prepare
 BUILDCHAIN=ignore
 
 #########################################################################
-# Install third-party libraries in opt
-INSTALL_PATH=${INSTALL_PATH}/opt
-
-
-#########################################################################
 # Loop over the options in DEAL_CONFOPTS and if the package is turned off, add
 # it to the PACKAGES_OFF list.
 for PACKAGE in ${DEAL_CONFOPTS[@]}; do
@@ -37,4 +32,3 @@ fi
 PACKAGES_OFF=${PACKAGES_OFF,,}
 
 PACKAGE=dealii-prepare
-

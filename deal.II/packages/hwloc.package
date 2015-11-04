@@ -1,7 +1,0 @@
-VERSION=1.9
-NAME=hwloc-${VERSION}
-SOURCE=http://www.open-mpi.org/software/hwloc/v${VERSION}/downloads/
-PACKING=.tar.gz
-CHECKSUM=1f9f9155682fe8946a97c08896109508
-BUILDCHAIN=autotools
-

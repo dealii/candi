@@ -3,8 +3,9 @@ NAME=petsc-${VERSION}
 SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
 PACKING=.tar.gz
 CHECKSUM=28f842697159e16e2978732480571147
-#CHECKSUM=ignore
 BUILDCHAIN=custom
+
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 #########################################################################
 
@@ -49,11 +50,11 @@ package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
-    ./configure --prefix=${INSTALL_PATH}/${NAME} ${CONFOPTS} && \    
-        make all install
+    ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    make all install
 }
 
 package_specific_register () {
-    export PETSC_DIR=${INSTALL_PATH}/${NAME}
+    export PETSC_DIR=${INSTALL_PATH}
 }
 

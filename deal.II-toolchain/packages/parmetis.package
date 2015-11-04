@@ -4,6 +4,8 @@ PACKING=.tar.gz
 CHECKSUM=f69c479586bf6bb7aff6a9bc0c739628
 BUILDCHAIN=custom
 
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
+
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     cd metis
@@ -17,6 +19,6 @@ package_specific_build() {
 }
 
 package_specific_register () {
-    export PARMETIS_DIR=${INSTALL_PATH}
     export METIS_DIR=${INSTALL_PATH}
+    export PARMETIS_DIR=${INSTALL_PATH}
 }
