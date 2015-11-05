@@ -128,6 +128,11 @@ quit_if_fail() {
 verify_archive() {
     ARCHIVE_FILE=$1
     
+    # Make sure the archive was downloaded
+    if [ ! -e ${ARCHIVE_FILE} ]; then
+        return 2
+    fi
+    
     # Check checksum has been specified for the package
     if [ -z "${CHECKSUM}" ]; then
         cecho ${WARN} "No checksum for ${ARCHIVE_FILE}"
@@ -138,11 +143,6 @@ verify_archive() {
     if [ "${CHECKSUM}" = "ignore" ]; then
         cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
         return 1
-    fi
-    
-    # Make sure the archive was downloaded
-    if [ ! -e ${ARCHIVE_FILE} ]; then
-        return 2
     fi
     
     cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
