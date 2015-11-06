@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -a
 
-#  Copyright (C) 2013-2015 by Uwe Koecher                                      #
+#  Copyright (C) 2013-2015 by Uwe Koecher, the candi authors                   #
 #  AND by the DORSAL Authors, cf. the file AUTHORS for details                 #
 #                                                                              #
 #  This file is part of CANDI.                                                 #
@@ -9,7 +9,7 @@ set -a
 #  CANDI is free software: you can redistribute it and/or modify               #
 #  it under the terms of the GNU Lesser General Public License as              #
 #  published by the Free Software Foundation, either                           #
-#  version 2.1 of the License, or (at your option) any later version.          #
+#  version 3 of the License, or (at your option) any later version.            #
 #                                                                              #
 #  CANDI is distributed in the hope that it will be useful,                    #
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of              #
@@ -38,7 +38,7 @@ fi
 TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
-# Parse input parameters
+# Parse command line input parameters
 for param in "$@"; do
     case $param in
         #####################################
@@ -82,7 +82,7 @@ fi
 # Colours for progress and error reporting
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
-WARN="\033[1;31m"
+WARN="\033[1;33m"
 INFO="\033[1;34m"
 BOLD="\033[1m"
 
@@ -120,11 +120,11 @@ quit_if_fail() {
 ################################################################################
 #verify_archive():
 #  return -1: internal error
-#  return 0: CHECKSUM is matching
-#  return 1: No checksum provided
-#  return 2: ARCHIVE_FILE not found
-#  return 3: CHECKSUM mismatch
-#  return 4: Neither md5 nor md5sum found, but ARCHIVE_FILE was found.
+#  return 0: CHECKSUM is matching          (archive found & verified)
+#  return 1: No checksum provided          (archive found, but unable to verify)
+#  return 2: ARCHIVE_FILE not found        (archive NOT found)
+#  return 3: CHECKSUM mismatch             (archive file corrupted)
+#  return 4: Neither md5 nor md5sum found  (archive found, but unable to verify)
 verify_archive() {
     ARCHIVE_FILE=$1
     
@@ -133,13 +133,13 @@ verify_archive() {
         return 2
     fi
     
-    # Check checksum has been specified for the package
+    # Check CHECKSUM has been specified for the package
     if [ -z "${CHECKSUM}" ]; then
         cecho ${WARN} "No checksum for ${ARCHIVE_FILE}"
         return 1
     fi
     
-    # Skip checksum if asked to ignore
+    # Skip verifying archive, if CHECKSUM=ignore
     if [ "${CHECKSUM}" = "ignore" ]; then
         cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
         return 1
@@ -147,7 +147,7 @@ verify_archive() {
     
     cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
     
-    # Verify checksum using md5/md5sum
+    # Verify CHECKSUM using md5/md5sum
     if builtin command -v md5 > /dev/null; then
         test "${CHECKSUM}" = "$(md5 -q ${ARCHIVE_FILE})"
         if [ $? = 0 ]; then
@@ -178,13 +178,12 @@ verify_archive() {
 download_archive () {
     ARCHIVE_FILE=$1
     
-    # Include (local) mirrors
+    # Prepend MIRROR to SOURCE (to prefer) mirror source download
     if [ ! -z "${MIRROR}" ]; then
         SOURCE="${MIRROR} ${SOURCE}"
     fi
     
-    for source in ${SOURCE}
-    do
+    for source in ${SOURCE}; do
         # verify_archive:
         # * Skip loop if the ARCHIVE_FILE is already downloaded
         # * Remove corrupted ARCHIVE_FILE
@@ -196,9 +195,9 @@ download_archive () {
              return 0;
         
         elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
-             cecho ${INFO} "${ARCHIVE_FILE} already downloaded."
+             cecho ${WARN} "${ARCHIVE_FILE} already downloaded, but unable to be verified."
              return 0;
-             
+        
         elif [ ${archive_state} = 3 ]; then
             cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
             
@@ -240,15 +239,15 @@ download_archive () {
     
     # Unfortunately it seems that (all) download tryouts finally failed for some reason:
     verify_archive ${ARCHIVE_FILE}
-    quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet.\nIf a corrupted file has been downloaded, please remove\n   ${DOWNLOAD_PATH}/${NAME}${PACKING}\nbefore you restart candi!"
+    quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet."
 }
 
 package_fetch () {
     # First, make sure we're in the right directory before downloading
     cd ${DOWNLOAD_PATH}
-
+    
     cecho ${GOOD} "Fetching ${NAME}"
-
+    
     # Fetch the package appropriately from its source
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         download_archive ${NAME}${PACKING}
@@ -298,7 +297,7 @@ package_fetch () {
             cd ..
         fi
     fi
-
+    
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error fetching ${NAME}."
 }
@@ -307,7 +306,7 @@ package_unpack() {
     # First make sure we're in the right directory before unpacking
     cd ${UNPACK_PATH}
     FILE_TO_UNPACK=${DOWNLOAD_PATH}/${NAME}${PACKING}
-
+    
     # Only need to unpack archives
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         cecho ${GOOD} "Unpacking ${NAME}"
@@ -316,7 +315,7 @@ package_unpack() {
             cecho ${BAD} "${FILE_TO_UNPACK} does not exist. Please download first."
             exit 1
         fi
-
+        
         # Unpack the archive only if it isn't already or when using
         # snapshots and unstable packages
         if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ] || [ ! -d "${EXTRACTSTO}" ]; then
@@ -332,9 +331,9 @@ package_unpack() {
             fi
         fi
     fi
-
+    
     unset FILE_TO_UNPACK
-
+    
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error unpacking ${NAME}."
 }
@@ -395,7 +394,7 @@ package_build() {
     elif [ ${BUILDCHAIN} = "scons" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
         for target in "${TARGETS[@]}"; do
-            echo scons -j ${PROCS} ${SCONSOPTS} prefix=${INSTALL_PATH} $target >>candi_build
+            echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
         done
     elif [ ${BUILDCHAIN} = "cmake" ]; then
         rm -f ${BUILDDDIR}/CMakeCache.txt
@@ -561,11 +560,11 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
     elif [ -e ${PLATFORM_CONTRIBUTED} ]; then
         PLATFORM=${PLATFORM_CONTRIBUTED}
         cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
-        cecho ${BOLD} "Warning: Platform is not officially supported but may still work!"
+        cecho ${WARN} "Warning: Platform is not officially supported but may still work!"
     elif [ -e ${PLATFORM_DEPRECATED} ]; then
         PLATFORM=${PLATFORM_DEPRECATED}
         cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
-        cecho ${BAD} "Warning: Platform is deprecated and will be removed shortly but may still work!"
+        cecho ${WARN} "Warning: Platform is deprecated and will be removed shortly but may still work!"
     else
         cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
         echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
