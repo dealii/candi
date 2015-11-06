@@ -12,7 +12,10 @@ package_specific_setup () {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
     ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    quit_if_fail "slepc ./configure failed"
+    
     make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} all install
+    quit_if_fail "slepc make all install failed"
 }
 
 package_specific_register () {

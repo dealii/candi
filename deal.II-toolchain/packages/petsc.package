@@ -20,23 +20,23 @@ for external_pkg in hypre; do
     CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
 done
 
-if [ "$CC" ]; then
+if [ ! -z "$CC" ]; then
     CONFOPTS="${CONFOPTS} CC=$CC"
 fi
 
-if [ "$CXX" ]; then
+if [ ! -z "$CXX" ]; then
     CONFOPTS="${CONFOPTS} CXX=$CXX"
 fi
 
-if [ "$FC" ]; then
+if [ ! -z "$FC" ]; then
     CONFOPTS="${CONFOPTS} FC=$FC"
 fi
 
-if [ "$F77" ]; then
+if [ ! -z "$F77" ]; then
     CONFOPTS="${CONFOPTS} F77=$F77"
 fi
 
-if [ "$F90" ]; then
+if [ ! -z "$F90" ]; then
     CONFOPTS="${CONFOPTS} F90=$F90"
 fi
 
@@ -51,10 +51,12 @@ package_specific_setup () {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
     ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    quit_if_fail "petsc ./configure failed"
+    
     make all install
+    quit_if_fail "petsc make all install failed"
 }
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
 }
-
