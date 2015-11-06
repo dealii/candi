@@ -78,6 +78,8 @@ CDEFS        = -DAdd_
     
     # now compile superlu_dist
     make superlulib
+    quit_if_fail "superlu_dist make superlulib failed"
+    
     mkdir -p ${INSTALL_PATH}/include/superlu
     cp SRC/*.h ${INSTALL_PATH}/include/superlu
 }
@@ -85,4 +87,3 @@ CDEFS        = -DAdd_
 package_specific_register () {
     export SUPERLU_DIR=${INSTALL_PATH}
 }
-

@@ -31,7 +31,7 @@ package_specific_setup () {
     # choose names for fast and debug build directories
     BUILD_FAST="${BUILD_PATH}/${NAME}/FAST"
     BUILD_DEBUG="${BUILD_PATH}/${NAME}/DEBUG"
-
+    
     # choose names for fast and debug installation directories
     INSTALL_FAST="${INSTALL_PATH}/FAST"
     INSTALL_DEBUG="${INSTALL_PATH}/DEBUG"
@@ -43,7 +43,7 @@ package_specific_setup () {
     echo "Install FAST: $INSTALL_FAST"
     echo "Install DEBUG: $INSTALL_DEBUG"
     echo "Checking environment: CFLAGS P4EST_CFLAGS_FAST P4EST_CFLAGS_DEBUG"
-
+    
     test -f "${UNPACK_PATH}/${EXTRACTSTO}/src/p4est.h" || bdie "Main header file missing"
     test -f "${UNPACK_PATH}/${EXTRACTSTO}/configure" || bdie "Configure script missing"
     
@@ -53,8 +53,9 @@ package_specific_setup () {
     # remove old versions
     if test -d "${BUILD_PATH}/${NAME}"; then
         rm -rf "${BUILD_PATH}/${NAME}"
+        quit_if_fail "p4est: rm -rf ${BUILD_PATH}/${NAME} failed"
     fi
-
+    
     echo "Build FAST version in $BUILD_FAST"
     mkdir -p "$BUILD_FAST"
     cd "$BUILD_FAST"
@@ -86,7 +87,6 @@ package_specific_setup () {
     cd "${BUILD_PATH}/${NAME}"
     touch candi_successful_build
 }
-
 
 package_specific_register () {
     export P4EST_DIR=${INSTALL_PATH}

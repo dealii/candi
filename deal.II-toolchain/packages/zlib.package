@@ -9,9 +9,11 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 package_specific_build () {
     cp -rf ${UNPACK_PATH}/${NAME}/* .
     ./configure --prefix=${INSTALL_PATH}
+    quit_if_fail "zlib configure failed"
+    
     make install
+    quit_if_fail "zlib make install failed"
 }
-
 
 package_specific_register () {
     export ZLIB_DIR=${INSTALL_PATH}/

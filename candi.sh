@@ -205,7 +205,7 @@ download_archive () {
             # Remove the file and check if that was successful
             rm -f ${ARCHIVE_FILE}
             if [ $? = 0 ]; then
-                cecho ${GOOD} "corrupted ${ARCHIVE_FILE} has been removed"
+                cecho ${INFO} "corrupted ${ARCHIVE_FILE} has been removed"
             else
                 cecho ${BAD} "corrupted ${ARCHIVE_FILE} could not be removed."
                 cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
@@ -216,7 +216,7 @@ download_archive () {
         
         # Set up complete url
         url=${source}${ARCHIVE_FILE}
-        cecho ${GOOD} "Trying to download ${url}"
+        cecho ${INFO} "Trying to download ${url}"
         
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.

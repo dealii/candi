@@ -27,7 +27,6 @@ if [ -z "${SuperLUDist}" ]; then
     SuperLUDist=ON
 fi
 
-
 # Transform upper case to lower case.
 PACKAGES_OFF=${PACKAGES_OFF,,}
 

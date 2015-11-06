@@ -1,3 +1,7 @@
+if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
+    TRILINOS_MAJOR_VERSION=AUTO
+fi
+
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
     SOURCE=http://trilinos.csbsju.edu/download/files/
     VERSION=12.2.1
