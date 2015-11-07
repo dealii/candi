@@ -74,8 +74,24 @@ PROCS=${NP:-1}
 # Check if the curl download is available
 if builtin command -v curl > /dev/null; then
     CURL_DOWNLOADER_AVAILABLE=true
+    
+    # Set curl as the prefered download tool, if nothing else is specified
+    if [ -z ${DOWNLOADER} ]; then
+        DOWNLOADER=curl
+    fi
 else
     CURL_DOWNLOADER_AVAILABLE=false
+fi
+
+# Check if the wget download is available
+if builtin command -v wget > /dev/null; then
+    # Set wget as the prefered download tool, if nothing else is specified
+    if [ -z ${DOWNLOADER} ]; then
+        DOWNLOADER=wget
+    fi
+else
+    cecho ${BAD} "Please install wget or curl."
+    exit 1
 fi
 
 ################################################################################
@@ -98,6 +114,12 @@ cecho() {
     # Display messages in a specified colour
     COL=$1; shift
     echo -e "${COL}$@\033[0m"
+}
+
+cls() {
+    # clear screen
+    COL=$1; shift
+    echo -e "${COL}$@\033c"
 }
 
 default () {
@@ -219,7 +241,7 @@ download_archive () {
         
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.
-        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ] ; then
+        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ]; then
             curl -k -O ${url} || continue
         else
             wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
@@ -243,15 +265,38 @@ download_archive () {
 }
 
 package_fetch () {
-    # First, make sure we're in the right directory before downloading
-    cd ${DOWNLOAD_PATH}
-    
-    cecho ${GOOD} "Fetching ${NAME}"
+    cecho ${GOOD} "Fetching ${PACKAGE}"
     
     # Fetch the package appropriately from its source
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
+        cd ${DOWNLOAD_PATH}
         download_archive ${NAME}${PACKING}
+        quit_if_fail "candi: download_archive ${NAME}${PACKING} failed"
     
+    elif [ ${PACKING} = "git" ]; then
+        cd ${UNPACK_PATH}
+        # Suitably clone or update git repositories
+        if [ ! -d ${EXTRACTSTO} ]; then
+            git clone ${SOURCE}${NAME} ${EXTRACTSTO}
+            quit_if_fail "candi: git clone ${SOURCE}${NAME} ${EXTRACTSTO} failed"
+        else
+            cd ${EXTRACTSTO}
+            git checkout master --force
+            quit_if_fail "candi: git checkout master --force failed"
+            
+            git pull
+            quit_if_fail "candi: git pull failed"
+            cd ..
+        fi
+        
+        if [ ${STABLE_BUILD} = true ]; then
+            cd ${EXTRACTSTO}
+            git checkout ${VERSION} --force
+            quit_if_fail "candi: git checkout ${VERSION} --force failed"
+        fi
+    
+    # TODO: quit_if_fail for all download options (hg, ...)
+    # TODO: check hg, svn and bzr downloads
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -271,20 +316,6 @@ package_fetch () {
             cd ${NAME}
             svn up
             cd ..
-        fi
-    elif [ ${PACKING} = "git" ]; then
-        cd ${UNPACK_PATH}
-        # Suitably clone or update git repositories
-        if [ ! -d ${EXTRACTSTO} ]; then
-            git clone ${SOURCE}${NAME} ${EXTRACTSTO}
-        else
-            cd ${EXTRACTSTO}
-            git pull
-            cd ..
-        fi
-        if [ ${STABLE_BUILD} = true ]; then
-            cd ${EXTRACTSTO}
-            git checkout ${VERSION}
         fi
     elif [ ${PACKING} = "bzr" ]; then
         cd ${UNPACK_PATH}
@@ -332,10 +363,10 @@ package_unpack() {
         fi
     fi
     
-    unset FILE_TO_UNPACK
-    
     # Quit with a useful message if something goes wrong
-    quit_if_fail "Error unpacking ${NAME}."
+    quit_if_fail "Error unpacking ${FILE_TO_UNPACK}."
+    
+    unset FILE_TO_UNPACK
 }
 
 package_build() {
@@ -507,10 +538,20 @@ guess_architecture() {
     fi
 }
 
-###############################################################################
-# Start the build process
+################################################################################
+### candi script
+################################################################################
+
+cls
+echo "*******************************************************************************"
+cecho ${GOOD} "This is candi (compile and install)"
+echo
+
+# Keep the current work directory of candi.sh
+# WARNING: You should NEVER override this variable!
 export ORIG_DIR=`pwd`
 
+################################################################################
 # Read configuration variables from candi.cfg
 source candi.cfg
 
@@ -519,328 +560,250 @@ if [ -f local.cfg ]; then
     source local.cfg
 fi
 
-# If any variables are missing, revert them to defaults
+# If any variables are missing, set them to defaults
 default PROJECT=deal.II-toolchain
 
 default DOWNLOAD_PATH=${PREFIX_PATH}/src
 default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
 default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
-default CLEAN_BUILD=false
 default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
 
+default CLEAN_BUILD=false
 default STABLE_BUILD=true
 default USE_SNAPSHOTS=false
+
 default PACKAGES_OFF=""
 
+################################################################################
 # Check if project was specified correctly
 if [ -d ${PROJECT} ]; then
     if [ -d ${PROJECT}/platforms -a -d ${PROJECT}/packages ]; then
-        cecho ${GOOD} "Found configuration for project ${PROJECT}."
+        cecho ${INFO} "Project: ${PROJECT}: Found configuration."
     else
-        cecho ${BAD} "No subdirectories 'platforms' and 'packages' in ${PROJECT}."
-        echo "Please make sure there exists proper project configuration directory."
+        cecho ${BAD} "Please contact the authors, if you have not changed candi!"
+        cecho ${INFO} "candi: Internal error:"
+        cecho ${INFO} "No subdirectories 'platforms' and 'packages' in ${PROJECT}."
         exit 1
     fi
 else
-    cecho ${BAD} "Error: No project configuration directory found for project ${PROJECT}."
+    cecho ${BAD} "Please contact the authors, if you have not changed candi!"
+    cecho ${INFO} "candi: Internal error:"
+    cecho ${INFO} "Error: No project configuration directory found for project ${PROJECT}."
     echo "Please check if you have specified right project name in candi.cfg"
     echo "Please check if you have directory called ${PROJECT}"
     echo "with subdirectories ${PROJECT}/platforms and ${PROJECT}/packages"
     exit 1
 fi
 
-# Check if candi.sh was invoked correctly
+################################################################################
+# Operating system (PLATFORM) check
 if [ -z "${GIVEN_PLATFORM}" ]; then
+    # No platform is forced to use, try to find a platform file.
     PLATFORM_SUPPORTED=${PROJECT}/platforms/supported/`guess_platform`.platform
     PLATFORM_CONTRIBUTED=${PROJECT}/platforms/contributed/`guess_platform`.platform
     PLATFORM_DEPRECATED=${PROJECT}/platforms/deprecated/`guess_platform`.platform
+    
     if [ -e ${PLATFORM_SUPPORTED} ]; then
         PLATFORM=${PLATFORM_SUPPORTED}
-        cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+        cecho ${INFO} "using ./${PLATFORM}."
+    
     elif [ -e ${PLATFORM_CONTRIBUTED} ]; then
         PLATFORM=${PLATFORM_CONTRIBUTED}
-        cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+        cecho ${INFO} "using ./${PLATFORM}."
         cecho ${WARN} "Warning: Platform is not officially supported but may still work!"
+    
     elif [ -e ${PLATFORM_DEPRECATED} ]; then
         PLATFORM=${PLATFORM_DEPRECATED}
-        cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
+        cecho ${INFO} "using ./${PLATFORM}."
         cecho ${WARN} "Warning: Platform is deprecated and will be removed shortly but may still work!"
+    
     else
-        cecho ${BAD} "Error: Platform to build for not specified (and not automatically recognised)."
-        echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-        echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
-        echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
+        cecho ${BAD} "Error: Your operating system could not be automatically recognised."
+        echo "You may force a (similar) platform directly by:"
+        echo "./candi.sh --platform=${PROJECT}/platforms/ {supported|contributed|deprecated} / <FORCED>.platform"
         exit 1
     fi
     
-    echo "-------------------------------------------------------------------------------"
-    # Show the initial comments in the platform file, as it often
-    # contains instructions about packages that should be installed
-    # first, etc. Remove first field '#' so that cut-and-paste of
-    # e.g. apt-get commands is easy.
-    awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
-    echo
-    echo "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
-    echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
-    echo "Building packages in:   $(prettify_dir ${BUILD_PATH})"
-    echo "Installing packages in: $(prettify_dir ${INSTALL_PATH})"
-    echo
-    echo "Number of at most build processes to use: PROCS=${PROCS}"
-    echo
-    if [ ${STABLE_BUILD} = true ]; then
-        echo "Building stable point-releases of ${PROJECT} projects."
-    else
-        if [ ${USE_SNAPSHOTS} = true ]; then
-	    echo "Building development versions of ${PROJECT} projects (using snapshots)."
-        else
-            echo "Building development versions of ${PROJECT} projects."
-        fi
-    fi
-    echo "-------------------------------------------------------------------------------"
-    cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-    cecho ${GOOD} "is ready for installing ${PROJECT}."
-    cecho ${WARN} "If not, please abort the installer by pressing <CTRL> + <C> !"
-    cecho ${INFO} "Then copy and paste these instructions into this terminal."
-    
-    if builtin command -v module > /dev/null; then
-        echo ""
-        echo "-------------------------------------------------------------------------------"
-        cecho ${GOOD} "$(module list)"
-        echo "-------------------------------------------------------------------------------"
-    fi
+    unset PLATFORM_SUPPORTED
+    unset PLATFORM_CONTRIBUTED
+    unset PLATFORM_DEPRECATED
 
-    echo "-------------------------------------------------------------------------------"
-    echo "Compiler Variables:"
-    ############################################################################
-    # Firstly test, if compiler variables are set,
-    #   and if not try to set the default mpi-compiler suite
-    # finally test, if compiler variables are useful.
-    
-    # CC test
-    if [ ! -n "$CC" ]; then
-        if builtin command -v mpicc > /dev/null; then
-            cecho ${WARN} "CC variable not set, but default mpicc found."
-            export CC=mpicc
-        fi
-    fi
-    
-    if [ -n "$CC" ]; then
-        cecho ${INFO} "CC  = $(which $CC)"
-    else
-        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
-    fi
-    
-    # CXX test
-    if [ ! -n "$CXX" ]; then
-        if builtin command -v mpicxx > /dev/null; then
-            cecho ${WARN} "CXX variable not set, but default mpicxx found."
-            export CXX=mpicxx
-        fi
-    fi
-    
-    if [ -n "$CXX" ]; then
-        cecho ${INFO} "CXX = $(which $CXX)"
-    else
-        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
-    fi
-    
-    # FC test
-    if [ ! -n "$FC" ]; then
-        if builtin command -v mpif90 > /dev/null; then
-            cecho ${WARN} "FC variable not set, but default mpif90 found."
-            export FC=mpif90
-        fi
-    fi
-    
-    if [ -n "$FC" ]; then
-        cecho ${INFO} "FC  = $(which $FC)"
-    else
-        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
-    fi
-    
-    # FF test
-    if [ ! -n "$FF" ]; then
-        if builtin command -v mpif77 > /dev/null; then
-            cecho ${WARN} "FF variable not set, but default mpif77 found."
-            export FF=mpif77
-        fi
-    fi
-    
-    if [ -n "$FF" ]; then
-        cecho ${INFO} "FF  = $(which $FF)"
-    else
-        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
-    fi
-    
-    # Final test for compiler variables
-    if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
-        cecho ${INFO} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-        cecho ${INFO} "Please read your platform information above carefully,"
-        cecho ${INFO} "  how you get those compilers installed and set up!"
-        cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
-        cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
-    fi
-    ############################################################################
-    echo "-------------------------------------------------------------------------------"
-    
-    echo ""
-    cecho ${GOOD} "Once ready, hit enter to continue!"
-    read
-
-elif [ ! -z "${GIVEN_PLATFORM}" ]; then
-    PLATFORM_SUPPORTED=${GIVEN_PLATFORM}
-    if [ -e ${PLATFORM_SUPPORTED} ]; then
-        PLATFORM=${PLATFORM_SUPPORTED}
-        cecho ${GOOD} "Building ${PROJECT} using ${PLATFORM}."
-        if [ "${PLATFORM}" = "deal.II/platforms/supported/linux_cluster.platform" ]; then
-            cecho ${BAD} "BLAS_DIR and LAPACK_DIR need to be set in the configuration file" 
-            cecho ${BAD} "if you want to use Trilinos."
-        fi
-    else
-        cecho ${BAD} "Error: Platform to build for not supported."
-        echo "If you know the platform you are interested in (myplatform), please specify it directly, as:"
-        echo "./candi.sh --platform=${PROJECT}/platforms/supported/myplatform.platform"
-        echo "If you'd like to learn more, refer to the file USAGE for detailed usage instructions."
-        exit 1
-    fi
-    
-    echo "-------------------------------------------------------------------------------"
-    # Show the initial comments in the platform file, as it often
-    # contains instructions about packages that should be installed
-    # first, etc. Remove first field '#' so that cut-and-paste of
-    # e.g. apt-get commands is easy.
-    awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
-    echo
-    echo "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
-    echo "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
-    echo "Building projects in:   $(prettify_dir ${BUILD_PATH})"
-    echo "Installing projects in: $(prettify_dir ${INSTALL_PATH})"
-    echo
-    if [ ${STABLE_BUILD} = true ]; then
-        echo "Building stable point-releases of ${PROJECT} projects."
-    else
-        if [ ${USE_SNAPSHOTS} = true ]; then
-        echo "Building development versions of ${PROJECT} projects (using snapshots)."
-        else
-            echo "Building development versions of ${PROJECT} projects."
-        fi
-    fi
-    echo "-------------------------------------------------------------------------------"
-    cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-    cecho ${GOOD} "is ready for installing ${PROJECT}."
-    cecho ${WARN} "If not, please abort the installer by pressing <CTRL> + <C> !"
-    cecho ${INFO} "Then copy and paste these instructions into this terminal."
-    
-    if builtin command -v module > /dev/null; then
-        echo ""
-        echo "-------------------------------------------------------------------------------"
-        cecho ${GOOD} "$(module list)"
-        echo "-------------------------------------------------------------------------------"
-    fi
-    
-    echo "-------------------------------------------------------------------------------"
-    echo "Compiler Variables:"
-    ############################################################################
-    # Firstly test, if compiler variables are set,
-    #   and if not try to set the default mpi-compiler suite
-    # finally test, if compiler variables are useful.
-    
-    # CC test
-    if [ ! -n "$CC" ]; then
-        if builtin command -v mpicc > /dev/null; then
-            cecho ${WARN} "CC variable not set, but default mpicc found."
-            export CC=mpicc
-        fi
-    fi
-    
-    if [ -n "$CC" ]; then
-        cecho ${INFO} "CC  = $(which $CC)"
-    else
-        cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
-    fi
-    
-    # CXX test
-    if [ ! -n "$CXX" ]; then
-        if builtin command -v mpicxx > /dev/null; then
-            cecho ${WARN} "CXX variable not set, but default mpicxx found."
-            export CXX=mpicxx
-        fi
-    fi
-    
-    if [ -n "$CXX" ]; then
-        cecho ${INFO} "CXX = $(which $CXX)"
-    else
-        cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
-    fi
-    
-    # FC test
-    if [ ! -n "$FC" ]; then
-        if builtin command -v mpif90 > /dev/null; then
-            cecho ${WARN} "FC variable not set, but default mpif90 found."
-            export FC=mpif90
-        fi
-    fi
-    
-    if [ -n "$FC" ]; then
-        cecho ${INFO} "FC  = $(which $FC)"
-    else
-        cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
-    fi
-    
-    # FF test
-    if [ ! -n "$FF" ]; then
-        if builtin command -v mpif77 > /dev/null; then
-            cecho ${WARN} "FF variable not set, but default mpif77 found."
-            export FF=mpif77
-        fi
-    fi
-    
-    if [ -n "$FF" ]; then
-        cecho ${INFO} "FF  = $(which $FF)"
-    else
-        cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
-    fi
-    
-    # Final test for compiler variables
-    if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
-        cecho ${INFO} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-        cecho ${INFO} "Please read your platform information above carefully,"
-        cecho ${INFO} "  how you get those compilers installed and set up!"
-        cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
-        cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
-    fi
-    ############################################################################
-    echo "-------------------------------------------------------------------------------"
-    
-    echo ""
-    cecho ${GOOD} "Once ready, hit enter to continue!"
-    read
-
-elif [ $# -eq 2 ]; then
-    # Check if the user wants to install a single package
-    if [ ${1} == "install-package" ]; then
-        PACKAGE=${2}
-        # Check if the package exists
-        if [ ! -e ${PROJECT}/packages/${PACKAGE}.package ]; then
-            cecho ${BAD} "${PROJECT}/packages/${PACKAGE}.package does not exist yet. Please create it."
-            exit 1
-        fi
-        PACKAGES=(${PACKAGE})
-        PLATFORM="${PROJECT}/platforms/.single"
-    else
-        echo "If you'd like to install a single package, please use the syntax:"
-        echo "./candi.sh install-package foo"
-        exit 1
-    fi
-fi
-
-# Make sure the requested platform exists
-if [ -e "${PLATFORM}" ]; then
-    source ${PLATFORM}
 else
-    cecho ${BAD} "Platform set '${PLATFORM}' not found. Refer to the file README to check if your platform is supported."
-    exit 1
+    # Forced platform by the user, check if the given platform file is available.
+    if [ -e ${GIVEN_PLATFORM} ]; then
+        PLATFORM=${GIVEN_PLATFORM}
+        cecho ${BAD} "using (user-forced) ./${PLATFORM}."
+        
+        unset GIVEN_PLATFORM
+    
+    else
+        cecho ${BAD} "Error: Your forced platform file ${GIVEN_PLATFORM} does not exists"
+        exit 1
+    fi
 fi
+
+# Source PLATFORM variables if set up correctly
+if [ -z ${PLATFORM} ]; then
+    cecho ${BAD} "Please contact the authors, if you have not changed candi!"
+    cecho ${INFO} "candi: Internal error, no PLATFORM variable available."
+    exit 1
+else
+    # Load PLATFORM variables
+    source ${PLATFORM}
+fi
+echo
+
+# Output PLATFORM details
+echo "-------------------------------------------------------------------------------"
+cecho ${WARN} "Please read carefully your operating system notes below!"
+echo
+
+# Show the initial comments in the platform file until the pattern '##' appears.
+# Further, removes first field '#' before the output.
+awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
+echo
+
+# Let the user confirm now, that the PLATFORM is set up correctly
+echo "-------------------------------------------------------------------------------"
+cecho ${GOOD} "Please make sure you've read the instructions above and your system"
+cecho ${GOOD} "is ready for installing ${PROJECT}."
+cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
+cecho ${INFO} "Then copy and paste these instructions into this terminal."
+echo
+
+cecho ${GOOD} "Once ready, hit enter to continue!"
+read
+
+################################################################################
+# Output configuration details
+cls
+echo "*******************************************************************************"
+cecho ${GOOD} "candi tries now to download, configure, build and install:"
+echo
+cecho ${GOOD} "Project:  ${PROJECT}"
+cecho ${GOOD} "Platform: ${PLATFORM}"
+echo
+
+echo "-------------------------------------------------------------------------------"
+cecho ${INFO} "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
+cecho ${INFO} "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
+cecho ${INFO} "Building packages in:   $(prettify_dir ${BUILD_PATH})"
+cecho ${GOOD} "Installing packages in: $(prettify_dir ${INSTALL_PATH})"
+echo
+
+echo "-------------------------------------------------------------------------------"
+cecho ${INFO} "Number of (at most) build processes to use: PROCS=${PROCS}"
+echo
+
+echo "-------------------------------------------------------------------------------"
+if [ ${STABLE_BUILD} = true ]; then
+    cecho ${INFO} "Building stable releases of ${PROJECT} packages."
+else
+    cecho ${WARN} "Building development versions of ${PROJECT} packages."
+fi
+echo
+
+# if the program 'module' is available, output the currently loaded modulefiles
+if builtin command -v module > /dev/null; then
+    echo "-------------------------------------------------------------------------------"
+    cecho ${GOOD} Currently loaded modulefiles:
+    cecho ${INFO} "$(module list)"
+    echo
+fi
+
+############################################################################
+# Compiler variables check
+echo "Compiler Variables:"
+# Firstly test, if compiler variables are set,
+#   and if not try to set the default mpi-compiler suite
+# finally test, if compiler variables are useful.
+
+echo "-------------------------------------------------------------------------------"
+
+# CC test
+if [ ! -n "$CC" ]; then
+    if builtin command -v mpicc > /dev/null; then
+        cecho ${WARN} "CC variable not set, but default mpicc found."
+        export CC=mpicc
+    fi
+fi
+
+if [ -n "$CC" ]; then
+    cecho ${INFO} "CC  = $(which $CC)"
+else
+    cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
+fi
+
+# CXX test
+if [ ! -n "$CXX" ]; then
+    if builtin command -v mpicxx > /dev/null; then
+        cecho ${WARN} "CXX variable not set, but default mpicxx found."
+        export CXX=mpicxx
+    fi
+fi
+
+if [ -n "$CXX" ]; then
+    cecho ${INFO} "CXX = $(which $CXX)"
+else
+    cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
+fi
+
+# FC test
+if [ ! -n "$FC" ]; then
+    if builtin command -v mpif90 > /dev/null; then
+        cecho ${WARN} "FC variable not set, but default mpif90 found."
+        export FC=mpif90
+    fi
+fi
+
+if [ -n "$FC" ]; then
+    cecho ${INFO} "FC  = $(which $FC)"
+else
+    cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
+fi
+
+# FF test
+if [ ! -n "$FF" ]; then
+    if builtin command -v mpif77 > /dev/null; then
+        cecho ${WARN} "FF variable not set, but default mpif77 found."
+        export FF=mpif77
+    fi
+fi
+
+if [ -n "$FF" ]; then
+    cecho ${INFO} "FF  = $(which $FF)"
+else
+    cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
+fi
+echo
+
+# Final test for compiler variables
+if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
+    cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
+    cecho ${INFO} "Please read your platform information above carefully,"
+    cecho ${INFO} "  how you get those compilers installed and set up!"
+    cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
+    cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
+    echo
+fi
+
+################################################################################
+# Force the user to accept the current output
+echo "-------------------------------------------------------------------------------"
+cecho ${GOOD} "Once ready, hit enter to continue!"
+read
+
+################################################################################
+cls
+################################################################################
+# Output configuration details
+cls
+echo "*******************************************************************************"
+cecho ${GOOD} "candi tries now to download, configure, build and install:"
+echo
+cecho ${GOOD} "Project:  ${PROJECT}"
+cecho ${GOOD} "Platform: ${PLATFORM}"
+echo
 
 # If the platform doesn't override the system python by installing its
 # own, figure out the version of the existing python
@@ -851,6 +814,7 @@ mkdir -p ${DOWNLOAD_PATH}
 mkdir -p ${UNPACK_PATH}
 mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
+
 
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_PROCS=${PROCS}
@@ -864,7 +828,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Start timer
     TIC="$(${DATE_CMD} +%s%N)"
     
-    # Return to the main CANDI directory
+    # Return to the original CANDI directory
     cd ${ORIG_DIR}
     
     # Skip building this package if the user requests it
@@ -901,7 +865,6 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset CONFOPTS
     unset MAKEOPTS
     unset CONFIG_FILE
-    DOWNLOADER=wget
     TARGETS=('' install)
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
