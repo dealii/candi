@@ -1,4 +1,5 @@
-NAME=boost_1_59_0
+VERSION=1_59_0
+NAME=boost_${VERSION}
 SOURCE=http://downloads.sourceforge.net/boost/
 PACKING=.tar.gz
 CHECKSUM=51528a0e3b33d9e10aaa311d9eb451e3

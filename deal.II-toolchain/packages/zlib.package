@@ -1,4 +1,5 @@
-NAME=zlib-1.2.8
+VERSION=1.2.8
+NAME=zlib-${VERSION}
 SOURCE=http://zlib.net/
 PACKING=.tar.gz
 CHECKSUM=44d667c142d7cda120332623eab69f40
