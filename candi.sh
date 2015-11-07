@@ -226,9 +226,9 @@ download_archive () {
             # Remove the file and check if that was successful
             rm -f ${ARCHIVE_FILE}
             if [ $? = 0 ]; then
-                cecho ${INFO} "corrupted ${ARCHIVE_FILE} has been removed"
+                cecho ${INFO} "Corrupted ${ARCHIVE_FILE} has been removed!"
             else
-                cecho ${BAD} "corrupted ${ARCHIVE_FILE} could not be removed."
+                cecho ${BAD} "Corrupted ${ARCHIVE_FILE} could not be removed."
                 cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
                 exit 1;
             fi
@@ -265,7 +265,7 @@ download_archive () {
 }
 
 package_fetch () {
-    cecho ${GOOD} "Fetching ${PACKAGE}"
+    cecho ${GOOD} "Fetching ${PACKAGE} ${VERSION}"
     
     # Fetch the package appropriately from its source
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
@@ -295,8 +295,6 @@ package_fetch () {
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
         fi
     
-    # TODO: quit_if_fail for all download options (hg, ...)
-    # TODO: check hg, svn and bzr downloads
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -330,7 +328,7 @@ package_fetch () {
     fi
     
     # Quit with a useful message if something goes wrong
-    quit_if_fail "Error fetching ${NAME}."
+    quit_if_fail "Error fetching ${PACKAGE} ${VERSION} using ${PACKING}."
 }
 
 package_unpack() {
@@ -340,7 +338,7 @@ package_unpack() {
     
     # Only need to unpack archives
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
-        cecho ${GOOD} "Unpacking ${NAME}"
+        cecho ${GOOD} "Unpacking ${NAME}${PACKING}"
         # Make sure the archive was downloaded
         if [ ! -e ${FILE_TO_UNPACK} ]; then
             cecho ${BAD} "${FILE_TO_UNPACK} does not exist. Please download first."
@@ -371,7 +369,7 @@ package_unpack() {
 
 package_build() {
     # Get things ready for the compilation process
-    cecho ${GOOD} "Building ${NAME}"
+    cecho ${GOOD} "Building ${PACKAGE} ${VERSION}"
     if [ ! -d "${EXTRACTSTO}" ]; then
         cecho ${BAD} "${EXTRACTSTO} does not exist -- please unpack first."
         exit 1
@@ -395,7 +393,7 @@ package_build() {
 
     # Carry out any package-specific setup
     package_specific_setup
-    quit_if_fail "There was a problem in build setup for ${NAME}."
+    quit_if_fail "There was a problem in build setup for ${PACKAGE} ${VERSION}."
     cd ${BUILDDIR}
 
     # Use the appropriate build system to compile and install the
@@ -415,18 +413,11 @@ package_build() {
         if [ -f ${UNPACK_PATH}/${EXTRACTSTO}/configure ]; then
             echo ${UNPACK_PATH}/${EXTRACTSTO}/configure ${CONFOPTS} --prefix=${INSTALL_PATH} >>candi_configure
         fi
-
+        
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
         done
-    elif [ ${BUILDCHAIN} = "python" ]; then
-        echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
-        echo python setup.py install --prefix=${INSTALL_PATH} >>candi_build
-    elif [ ${BUILDCHAIN} = "scons" ]; then
-        echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
-        for target in "${TARGETS[@]}"; do
-            echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
-        done
+    
     elif [ ${BUILDCHAIN} = "cmake" ]; then
         rm -f ${BUILDDDIR}/CMakeCache.txt
         rm -rf ${BUILDDIR}/CMakeFiles
@@ -434,13 +425,31 @@ package_build() {
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
         done
+    
+    elif [ ${BUILDCHAIN} = "python" ]; then
+        echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
+        echo python setup.py install --prefix=${INSTALL_PATH} >>candi_build
+    
+    elif [ ${BUILDCHAIN} = "scons" ]; then
+        echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
+        for target in "${TARGETS[@]}"; do
+            echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
+        done
+    
     elif [ ${BUILDCHAIN} = "custom" ]; then
         # Write the function definition to file
         declare -f package_specific_build >>candi_build
         echo package_specific_build >>candi_build
+    
+    elif [ ${BUILDCHAIN} = "ignore" ]; then
+        cecho ${INFO} "Info: ${PACKAGE} has forced BUILDCHAIN=${BUILDCHAIN}."
+    
+    else
+        cecho ${BAD} "candi: internal error: BUILDCHAIN=${BUILDCHAIN} for ${PACKAGE} unknown."
+        exit 1
     fi
     echo "touch candi_successful_build" >> candi_build
-
+    
     # Run the generated build scripts
     if [ ${BASH_VERSINFO} -ge 3 ]; then
         set -o pipefail
@@ -448,41 +457,40 @@ package_build() {
     else
         ./candi_configure
     fi
-    quit_if_fail "There was a problem configuring ${NAME}."
-
+    quit_if_fail "There was a problem configuring ${PACKAGE} ${VERSION}."
+    
     if [ ${BASH_VERSINFO} -ge 3 ]; then
         set -o pipefail
         ./candi_build 2>&1 | tee candi_build.log
     else
         ./candi_build
     fi
-    quit_if_fail "There was a problem building ${NAME}."
-
+    quit_if_fail "There was a problem building ${PACKAGE} ${VERSION}."
+    
     # Carry out any package-specific post-build instructions
     package_specific_install
-    quit_if_fail "There was a problem in post-build instructions for ${NAME}."
+    quit_if_fail "There was a problem in post-build instructions for ${PACKAGE} ${VERSION}."
 }
 
 package_register() {
     # Set any package-specific environment variables
     package_specific_register
-    quit_if_fail "There was a problem setting environment variables for ${NAME}."
+    quit_if_fail "There was a problem setting environment variables for ${PACKAGE} ${VERSION}."
 }
 
 package_conf() {
     # Write any package-specific environment variables to a config file,
     # i.e. e.g. a modulefile or source-able *.conf file
     package_specific_conf
-    quit_if_fail "There was a problem creating the configfiles for ${NAME}."
+    quit_if_fail "There was a problem creating the configfiles for ${PACKAGE} ${VERSION}."
 }
 
 guess_platform() {
     # Try to guess the name of the platform we're running on
-    if [ -f /usr/bin/cygwin1.dll ]
-    then
+    if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-    elif [ -f /etc/fedora-release ]
-    then
+    
+    elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
             "Schrödinger’s Cat"*) echo fedora19;;
@@ -491,8 +499,8 @@ guess_platform() {
             "Twenty Two"*)        echo fedora22;;
             "Twenty Three"*)      echo fedora23;;
         esac
-    elif [ -f /etc/redhat-release ]
-    then
+    
+    elif [ -f /etc/redhat-release ]; then
         local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
         case ${RHELNAME} in
             "Tikanga"*) echo rhel5;;
@@ -500,8 +508,8 @@ guess_platform() {
             "Maipo"*) echo rhel7;;
             "Core"*) echo centos7;;
         esac
-    elif [ -x /usr/bin/sw_vers ]
-    then
+    
+    elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
             10.4*)    echo tiger;;
@@ -509,7 +517,8 @@ guess_platform() {
             10.6*)    echo snowleopard;;
             10.7*)    echo lion;;
             10.8*)    echo mountainlion;;
-    esac
+        esac
+    
     elif [ -x /usr/bin/lsb_release ]; then
         local DISTRO=$(lsb_release -i -s)
         local CODENAME=$(lsb_release -c -s)
@@ -883,8 +892,6 @@ for PACKAGE in ${PACKAGES[@]}; do
     # wants and it exists
     if [ ${STABLE_BUILD} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
         source ${PROJECT}/packages/${PACKAGE}-stable.package
-    elif [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-snapshot.package ]; then
-        source ${PROJECT}/packages/${PACKAGE}-snapshot.package
     fi
     
     # Ensure that the package file is sanely constructed
@@ -916,11 +923,11 @@ for PACKAGE in ${PACKAGES[@]}; do
     else
         if [ ! -z "${LOAD}" ]; then
             # Let the user know we're loading the current package
-            cecho ${GOOD} "Loading ${NAME}"
+            cecho ${GOOD} "Loading ${PACKAGE}"
             unset LOAD
         else
             # Let the user know we're skipping the current package
-            cecho ${GOOD} "Skipping ${NAME}"
+            cecho ${GOOD} "Skipping ${PACKAGE}"
         fi
     fi
     package_register
