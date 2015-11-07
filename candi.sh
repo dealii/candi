@@ -344,21 +344,6 @@ package_unpack() {
             cecho ${BAD} "${FILE_TO_UNPACK} does not exist. Please download first."
             exit 1
         fi
-        
-        # Unpack the archive only if it isn't already or when using
-        # snapshots and unstable packages
-        if [ ${STABLE_BUILD} = false ] && [ ${USE_SNAPSHOTS} = true ] || [ ! -d "${EXTRACTSTO}" ]; then
-            # Unpack the archive in accordance with its packing
-            if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tbz2" ]; then
-                tar xjf ${FILE_TO_UNPACK}
-            elif [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tgz" ]; then
-                tar xzf ${FILE_TO_UNPACK}
-            elif [ ${PACKING} = ".tar.xz" ]; then
-                tar xJf ${FILE_TO_UNPACK}
-            elif [ ${PACKING} = ".zip" ]; then
-                unzip ${FILE_TO_UNPACK}
-            fi
-        fi
     fi
     
     # Quit with a useful message if something goes wrong
@@ -579,7 +564,6 @@ default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
 
 default CLEAN_BUILD=false
 default STABLE_BUILD=true
-default USE_SNAPSHOTS=false
 
 default PACKAGES_OFF=""
 
