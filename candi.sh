@@ -334,6 +334,7 @@ package_fetch () {
 package_unpack() {
     # First make sure we're in the right directory before unpacking
     cd ${UNPACK_PATH}
+    echo "${UNPACK_PATH}"
     FILE_TO_UNPACK=${DOWNLOAD_PATH}/${NAME}${PACKING}
     
     # Only need to unpack archives
@@ -343,6 +344,25 @@ package_unpack() {
         if [ ! -e ${FILE_TO_UNPACK} ]; then
             cecho ${BAD} "${FILE_TO_UNPACK} does not exist. Please download first."
             exit 1
+        fi
+        
+        # remove old unpack (this might be corrupted)
+        if [ -d "${EXTRACTSTO}" ]; then
+            rm -rf ${EXTRACTSTO}
+            quit_if_fail "Removing of ${EXTRACTSTO} failed."
+        fi
+        
+        # Unpack the archive only if it isn't already
+        
+        # Unpack the archive in accordance with its packing
+        if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tbz2" ]; then
+            tar xjf ${FILE_TO_UNPACK}
+        elif [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tgz" ]; then
+            tar xzf ${FILE_TO_UNPACK}
+        elif [ ${PACKING} = ".tar.xz" ]; then
+            tar xJf ${FILE_TO_UNPACK}
+        elif [ ${PACKING} = ".zip" ]; then
+            unzip ${FILE_TO_UNPACK}
         fi
     fi
     
@@ -635,6 +655,13 @@ else
     fi
 fi
 
+# Source default PLATFORM variables, if present
+PLATFORM_DEFAULT=${PROJECT}/platforms/default.packages
+if [ -e ${PLATFORM_DEFAULT} ]; then
+    source ${PLATFORM_DEFAULT}
+fi
+
+
 # Source PLATFORM variables if set up correctly
 if [ -z ${PLATFORM} ]; then
     cecho ${BAD} "Please contact the authors, if you have not changed candi!"
@@ -786,8 +813,6 @@ echo "--------------------------------------------------------------------------
 cecho ${GOOD} "Once ready, hit enter to continue!"
 read
 
-################################################################################
-cls
 ################################################################################
 # Output configuration details
 cls
