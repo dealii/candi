@@ -334,7 +334,6 @@ package_fetch () {
 package_unpack() {
     # First make sure we're in the right directory before unpacking
     cd ${UNPACK_PATH}
-    echo "${UNPACK_PATH}"
     FILE_TO_UNPACK=${DOWNLOAD_PATH}/${NAME}${PACKING}
     
     # Only need to unpack archives
