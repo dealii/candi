@@ -14,21 +14,11 @@
 # 
 ##
 
+
 #
-# Define the packages this platform needs
-PACKAGES=(
-load:dealii-prepare
+# Define the additional packages for this platform.
+PACKAGES="
 once:zlib
 once:bzip2
 once:boost
-once:opencascade
-once:parmetis
-once:superlu_dist
-once:hdf5
-once:p4est
-once:trilinos
-once:petsc
-once:slepc
-dealii
-)
-
+${PACKAGES}"

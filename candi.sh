@@ -655,11 +655,10 @@ else
 fi
 
 # Source default PLATFORM variables, if present
-PLATFORM_DEFAULT=${PROJECT}/platforms/default.packages
-if [ -e ${PLATFORM_DEFAULT} ]; then
-    source ${PLATFORM_DEFAULT}
+DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
+if [ -e ${DEFAULT_PACKAGES} ]; then
+    source ${DEFAULT_PACKAGES}
 fi
-
 
 # Source PLATFORM variables if set up correctly
 if [ -z ${PLATFORM} ]; then
