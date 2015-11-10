@@ -1,17 +1,19 @@
 NAME=dealii-prepare
 BUILDCHAIN=ignore
 
-#########################################################################
+################################################################################
 # Loop over the options in DEAL_CONFOPTS and if the package is turned off, add
 # it to the PACKAGES_OFF list.
-for PACKAGE in ${DEAL_CONFOPTS[@]}; do
-    case ${PACKAGE} in
+for option in ${DEAL_CONFOPTS[@]}; do
+    case ${option} in
         *DEAL_II_WITH*:BOOL=OFF)
-        PACKAGE_NAME=${PACKAGE##*WITH_};
+        PACKAGE_NAME=${option##*WITH_};
         PACKAGE_NAME=${PACKAGE_NAME%%:BOOL*};
         PACKAGES_OFF=${PACKAGE_NAME}' '${PACKAGES_OFF};;
     esac
 done
+unset option
+unset PACKAGE_NAME
 
 # Turn off ParMETIS and SuperLU_dist if metis is off.
 if [[ ${PACKAGES_OFF} =~ 'METIS' ]]; then
@@ -29,5 +31,10 @@ fi
 
 # Transform upper case to lower case.
 PACKAGES_OFF=${PACKAGES_OFF,,}
+
+if [ ! -z "${PACKAGES_OFF}" ]; then
+    cecho ${INFO} "deal.II: forcing package skip for: ${PACKAGES_OFF}"
+    read
+fi
 
 PACKAGE=dealii-prepare
