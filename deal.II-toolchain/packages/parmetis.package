@@ -16,7 +16,7 @@ package_specific_build() {
     make config prefix=${INSTALL_PATH} shared=1
     quit_if_fail "parmetis/metis make config failed"
     
-    make -j ${PROCS}
+    make -j${PROCS}
     quit_if_fail "parmetis/metis make failed"
     
     make install
@@ -28,7 +28,7 @@ package_specific_build() {
     make config prefix=${INSTALL_PATH} shared=1
     quit_if_fail "parmetis make config failed"
     
-    make -j ${PROCS}
+    make -j${PROCS}
     quit_if_fail "parmetis make failed"
     
     make install
