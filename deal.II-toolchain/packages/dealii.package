@@ -70,6 +70,15 @@ if [ ! -z "${MUMPS_DIR}" ]; then
 fi
 
 # p4est
+if [[ ${PACKAGES_OFF} =~ 'p4est' ]]; then
+    # Disable p4est for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces p4est to be off
+    if [ ! -z "${P4EST_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset P4EST_DIR due to forced DEAL_II_WITH_P4EST:BOOL=OFF option"
+        unset P4EST_DIR
+    fi
+fi
+
 if [ ! -z "${P4EST_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with P4EST"
     CONFOPTS="\
@@ -79,6 +88,15 @@ if [ ! -z "${P4EST_DIR}" ]; then
 fi
 
 # hdf5
+if [[ ${PACKAGES_OFF} =~ 'hdf5' ]]; then
+    # Disable hdf5 for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces hdf5 to be off
+    if [ ! -z "${HDF5_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset HDF5_DIR due to forced DEAL_II_WITH_HDF5:BOOL=OFF option"
+        unset HDF5_DIR
+    fi
+fi
+
 if [ ! -z "${HDF5_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with HDF5"
     CONFOPTS="\
@@ -88,6 +106,15 @@ if [ ! -z "${HDF5_DIR}" ]; then
 fi
 
 # trilinos
+if [[ ${PACKAGES_OFF} =~ 'trilinos' ]]; then
+    # Disable trilinos for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces trilinos to be off
+    if [ ! -z "${TRILINOS_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset TRILINOS_DIR due to forced DEAL_II_WITH_TRILINOS:BOOL=OFF option"
+        unset TRILINOS_DIR
+    fi
+fi
+
 if [ ! -z "${TRILINOS_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with TRILINOS"
     CONFOPTS="\
@@ -97,6 +124,15 @@ if [ ! -z "${TRILINOS_DIR}" ]; then
 fi
 
 # petsc
+if [[ ${PACKAGES_OFF} =~ 'petsc' ]]; then
+    # Disable petsc for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces petsc to be off
+    if [ ! -z "${PETSC_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset PETSC_DIR due to forced DEAL_II_WITH_PETSC:BOOL=OFF option"
+        unset PETSC_DIR
+    fi
+fi
+
 if [ ! -z "${PETSC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with PETSC"
     CONFOPTS="\
@@ -106,6 +142,15 @@ if [ ! -z "${PETSC_DIR}" ]; then
 fi
 
 # slepc
+if [[ ${PACKAGES_OFF} =~ 'slepc' ]]; then
+    # Disable slepc for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces slepc to be off
+    if [ ! -z "${SLEPC_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset SLEPC_DIR due to forced DEAL_II_WITH_SLEPC:BOOL=OFF option"
+        unset SLEPC_DIR
+    fi
+fi
+
 if [ ! -z "${SLEPC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with SLEPC"
     CONFOPTS="\
