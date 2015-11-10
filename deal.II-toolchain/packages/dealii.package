@@ -26,8 +26,7 @@ ${DEAL_CONFOPTS} \
 -D DEAL_II_FORCE_BUNDLED_BOOST:BOOL=OFF \
 -D DEAL_II_WITH_ZLIB:BOOL=ON \
 -D DEAL_II_WITH_FUNCTIONPARSER:BOOL=ON \
--D DEAL_II_COMPONENT_MESH_CONVERTER:BOOL=ON \
-"
+-D DEAL_II_COMPONENT_MESH_CONVERTER:BOOL=ON"
 
 ################################################################################
 # Add additional packages, if present
@@ -90,7 +89,7 @@ fi
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
-        -D DEAL_II_WITH_OPENCASCADE:BOOL=ON \"
+        -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
 fi
 
 
