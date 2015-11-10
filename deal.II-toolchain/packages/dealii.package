@@ -5,24 +5,44 @@ SOURCE=https://github.com/dealii/
 PACKING=git
 BUILDCHAIN=cmake
 
-#########################################################################
+################################################################################
 BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
 INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 
-#########################################################################
+################################################################################
+#Choose configuration and components of deal.II
+
 CONFOPTS=" \
 ${DEAL_CONFOPTS} \
+-D CMAKE_BUILD_TYPE=DebugRelease \
+-D DEAL_II_WITH_MPI:BOOL=ON \
+-D DEAL_II_WITH_THREADS:BOOL=ON \
+-D DEAL_II_FORCE_BUNDLED_THREADS:BOOL=OFF \
+-D DEAL_II_COMPONENT_DOCUMENTATION:BOOL=OFF \
+-D DEAL_II_WITH_LAPACK:BOOL=ON \
+-D DEAL_II_WITH_UMFPACK:BOOL=ON \
+-D DEAL_II_FORCE_BUNDLED_UMFPACK:BOOL=OFF \
+-D DEAL_II_WITH_BOOST:BOOL=ON \
+-D DEAL_II_FORCE_BUNDLED_BOOST:BOOL=OFF \
+-D DEAL_II_WITH_ZLIB:BOOL=ON \
+-D DEAL_II_WITH_FUNCTIONPARSER:BOOL=ON \
+-D DEAL_II_COMPONENT_MESH_CONVERTER:BOOL=ON \
 "
+
+################################################################################
+# Add additional packages, if present
 
 if [ ! -z "${ARPACK_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_ARPACK:BOOL=ON \
         -D ARPACK_DIR=${ARPACK_DIR}"
 fi
 
 if [ ! -z "${METIS_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_METIS:BOOL=ON \
         -D METIS_DIR=${METIS_DIR}"
 fi
 
@@ -35,33 +55,47 @@ fi
 if [ ! -z "${P4EST_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_P4EST:BOOL=ON \
         -D P4EST_DIR=${P4EST_DIR}"
 fi
 
 if [ ! -z "${HDF5_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_HDF5:BOOL=ON \
         -D HDF5_DIR=${HDF5_DIR}"
 fi
 
 if [ ! -z "${TRILINOS_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_TRILINOS:BOOL=ON \
         -D TRILINOS_DIR=${TRILINOS_DIR}"
 fi
 
 if [ ! -z "${PETSC_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_PETSC:BOOL=ON \
         -D PETSC_DIR=${PETSC_DIR}"
 fi
 
 if [ ! -z "${SLEPC_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_SLEPC:BOOL=ON \
         -D SLEPC_DIR=${SLEPC_DIR}"
 fi
 
+if [ ! -z "${OPENCASCADE_DIR}" ]; then
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D DEAL_II_WITH_OPENCASCADE:BOOL=ON \"
+fi
+
+
+################################################################################
+################################################################################
 # **********************************************************************************
 package_specific_conf() {
 
