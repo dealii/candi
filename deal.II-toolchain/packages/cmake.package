@@ -12,5 +12,5 @@ package_specific_install () {
 }
 
 package_specific_register () {
-    export PATH=${INSTALL_PATH}/bin:${PATH}
+    export PATH=${INSTALL_PATH}/${EXTRACTSTO}/bin:${PATH}
 }
