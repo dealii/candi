@@ -8,7 +8,7 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build () {
-    cp -rf ${UNPACK_PATH}/${NAME}/* .
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     ./configure --prefix=${INSTALL_PATH}
     quit_if_fail "zlib configure failed"
     
