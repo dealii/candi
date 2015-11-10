@@ -19,7 +19,8 @@ elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
     #Note: This issue is resolved by setting
     #          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG
     #      for Trilinos v12; this is neglegted by Trilinos v11 since it is unknown.
-    SuperLUDist=OFF
+    cecho ${BAD} "trilinos: warning: forcing unset SUPERLU_DIR (not supported)"
+    unset SUPERLU_DIR
 
 else
     cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
@@ -98,7 +99,7 @@ CONFOPTS="${CONFOPTS} \
           -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
 
 # Add ParMETIS, if present
-if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ]; then
+if [ ! -z "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with ParMETIS"
     CONFOPTS="\
         ${CONFOPTS} \
@@ -108,7 +109,7 @@ if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ]; then
 fi
 
 # Add SuperLU_dist, if present
-if [ ! -z "${SUPERLU_DIR}" ] && [ ! -z "${SuperLUDist}" ]; then
+if [ ! -z "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
     CONFOPTS="\
         ${CONFOPTS} \
