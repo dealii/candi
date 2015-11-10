@@ -8,7 +8,7 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build () {
-    cp -rf ${UNPACK_PATH}/${NAME}/* .
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
     # patch the Makefile
     patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/bzip2-${VERSION}.patch || true
