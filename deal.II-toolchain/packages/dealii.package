@@ -31,12 +31,23 @@ ${DEAL_CONFOPTS} \
 ################################################################################
 # Add additional packages, if present
 
+# arpack
 if [ ! -z "${ARPACK_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with ARPACK"
     CONFOPTS="\
         ${CONFOPTS} \
         -D DEAL_II_WITH_ARPACK:BOOL=ON \
         -D ARPACK_DIR=${ARPACK_DIR}"
+fi
+
+# metis
+if [[ ${PACKAGES_OFF} =~ 'metis' ]]; then
+    # Disable METIS for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces metis to be off
+    if [ ! -z "${METIS_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset METIS_DIR due to forced DEAL_II_WITH_METIS:BOOL=OFF option"
+        unset METIS_DIR
+    fi
 fi
 
 if [ ! -z "${METIS_DIR}" ]; then
@@ -47,6 +58,7 @@ if [ ! -z "${METIS_DIR}" ]; then
         -D METIS_DIR=${METIS_DIR}"
 fi
 
+# mumps
 if [ ! -z "${MUMPS_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with MUMPS"
     CONFOPTS="\
@@ -54,6 +66,7 @@ if [ ! -z "${MUMPS_DIR}" ]; then
         -D MUMPS_DIR=${MUMPS_DIR}"
 fi
 
+# p4est
 if [ ! -z "${P4EST_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with P4EST"
     CONFOPTS="\
@@ -62,6 +75,7 @@ if [ ! -z "${P4EST_DIR}" ]; then
         -D P4EST_DIR=${P4EST_DIR}"
 fi
 
+# hdf5
 if [ ! -z "${HDF5_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with HDF5"
     CONFOPTS="\
@@ -70,6 +84,7 @@ if [ ! -z "${HDF5_DIR}" ]; then
         -D HDF5_DIR=${HDF5_DIR}"
 fi
 
+# trilinos
 if [ ! -z "${TRILINOS_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with TRILINOS"
     CONFOPTS="\
@@ -78,6 +93,7 @@ if [ ! -z "${TRILINOS_DIR}" ]; then
         -D TRILINOS_DIR=${TRILINOS_DIR}"
 fi
 
+# petsc
 if [ ! -z "${PETSC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with PETSC"
     CONFOPTS="\
@@ -86,6 +102,7 @@ if [ ! -z "${PETSC_DIR}" ]; then
         -D PETSC_DIR=${PETSC_DIR}"
 fi
 
+# slepc
 if [ ! -z "${SLEPC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with SLEPC"
     CONFOPTS="\
@@ -94,14 +111,13 @@ if [ ! -z "${SLEPC_DIR}" ]; then
         -D SLEPC_DIR=${SLEPC_DIR}"
 fi
 
+# opencascade
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with OPENCASCADE"
     CONFOPTS="\
         ${CONFOPTS} \
         -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
 fi
-
-read
 
 ################################################################################
 ################################################################################
