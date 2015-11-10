@@ -7,6 +7,11 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
+if [ -z "${PETSC_DIR}" ]; then
+    cecho ${BAD} "slepc: error petsc variable PETSC_DIR not found."
+    exit 1
+fi
+
 package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
