@@ -41,12 +41,14 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 # Set blas and lapack directories
 if [ ! -z "${BLAS_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with BLAS_DIR=${BLAS_DIR}"
     CONFOPTS="\
         ${CONFOPTS} \
         -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR}"
 fi
 
 if [ ! -z "${LAPACK_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with LAPACK_DIR=${LAPACK_DIR}"
     CONFOPTS="
         ${CONFOPTS} \
         -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
@@ -54,7 +56,10 @@ fi
 
 # Set intel MKL options
 if [ ${MKL} = "ON" ]; then
-    if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then 
+    cecho ${INFO} "trilinos: configuration with MKL"
+    if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then
+        cecho ${INFO} "trilinos: configuration with BLAS_DIR=${MKL_DIR}"
+        cecho ${INFO} "trilinos: configuration with LAPACK_DIR=${MKL_DIR}"
         CONFOPTS=" \
             ${CONFOPTS} \
             -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
@@ -93,7 +98,8 @@ CONFOPTS="${CONFOPTS} \
           -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
 
 # Add ParMETIS, if present
-if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" ]; then
+if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ]; then
+    cecho ${INFO} "trilinos: configuration with ParMETIS"
     CONFOPTS="\
         ${CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
@@ -102,7 +108,8 @@ if [ ! -z "${PARMETIS_DIR}" ] && [ ! -z "${ParMETIS}" ] && [ ${ParMETIS} = "ON" 
 fi
 
 # Add SuperLU_dist, if present
-if [ ! -z "${SUPERLU_DIR}" ] && [ ! -z "${SuperLUDist}" ] && [ ${SuperLUDist} = "ON" ]; then
+if [ ! -z "${SUPERLU_DIR}" ] && [ ! -z "${SuperLUDist}" ]; then
+    cecho ${INFO} "trilinos: configuration with SuperLU_dist"
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \

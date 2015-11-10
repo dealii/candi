@@ -41,6 +41,8 @@ if [ ! -z "$F90" ]; then
 fi
 
 if [ ! -z "${MKL_DIR}" ]; then
+    cecho ${INFO} "petsc: configuration with MKL"
+    cecho ${INFO} "petsc: configuration with blas-lapack-dir=${MKL_DIR}"
     CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
 fi
 
