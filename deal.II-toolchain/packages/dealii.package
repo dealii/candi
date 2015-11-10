@@ -10,7 +10,10 @@ BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
 INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 
 ################################################################################
-#Choose configuration and components of deal.II
+# Please do not change the line below!
+
+################################################################################
+#Choose general configuration and components of deal.II
 
 CONFOPTS=" \
 ${DEAL_CONFOPTS} \
@@ -112,6 +115,15 @@ if [ ! -z "${SLEPC_DIR}" ]; then
 fi
 
 # opencascade
+if [[ ${PACKAGES_OFF} =~ 'opencascade' ]]; then
+    # Disable OPENCASCADE for deal.II, if a special DEAL_CONFOPTS together with
+    # the dealii-prepare loop forces opencascade to be off
+    if [ ! -z "${OPENCASCADE_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset OPENCASCADE_DIR due to forced DEAL_II_WITH_OPENCASCADE:BOOL=OFF option"
+        unset OPENCASCADE_DIR
+    fi
+fi
+
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with OPENCASCADE"
     CONFOPTS="\
