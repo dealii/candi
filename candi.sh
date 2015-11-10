@@ -71,25 +71,24 @@ PREFIX_PATH=${PREFIX:-~/apps/candi}
 PROCS=${NP:-1}
 
 ################################################################################
+# Set download tool
+
+# Set given DOWNLOADER as preferred tool
+DOWNLOADERS="${DOWNLOADER}"
+
 # Check if the curl download is available
 if builtin command -v curl > /dev/null; then
-    CURL_DOWNLOADER_AVAILABLE=true
-    
     # Set curl as the prefered download tool, if nothing else is specified
-    if [ -z ${DOWNLOADER} ]; then
-        DOWNLOADER=curl
-    fi
-else
-    CURL_DOWNLOADER_AVAILABLE=false
+    DOWNLOADERS="${DOWNLOADERS} curl"
 fi
 
 # Check if the wget download is available
 if builtin command -v wget > /dev/null; then
     # Set wget as the prefered download tool, if nothing else is specified
-    if [ -z ${DOWNLOADER} ]; then
-        DOWNLOADER=wget
-    fi
-else
+    DOWNLOADERS="${DOWNLOADERS} wget"
+fi
+
+if [ -z "${DOWNLOADERS}" ]; then
     cecho ${BAD} "Please install wget or curl."
     exit 1
 fi
@@ -205,6 +204,7 @@ download_archive () {
         SOURCE="${MIRROR} ${SOURCE}"
     fi
     
+    for DOWNLOADER in ${DOWNLOADERS[@]}; do
     for source in ${SOURCE}; do
         # verify_archive:
         # * Skip loop if the ARCHIVE_FILE is already downloaded
@@ -241,10 +241,13 @@ download_archive () {
         
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.
-        if [ ${DOWNLOADER} = "curl" ] && [ ${CURL_DOWNLOADER_AVAILABLE} = "true" ]; then
+        if [ ${DOWNLOADER} = "curl" ]; then
             curl -k -O ${url} || continue
-        else
+        elif [ ${DOWNLOADER} = "wget" ]; then
             wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
+        else
+            cecho ${BAD} "candi: Unknown downloader: ${DOWNLOADER}"
+            exit 1
         fi
         
         unset url
@@ -257,6 +260,7 @@ download_archive () {
             return 0;
         fi
         unset archive_state
+    done
     done
     
     # Unfortunately it seems that (all) download tryouts finally failed for some reason:
@@ -654,10 +658,12 @@ else
     fi
 fi
 
-# Source default PLATFORM variables, if present
-DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
-if [ -e ${DEFAULT_PACKAGES} ]; then
-    source ${DEFAULT_PACKAGES}
+# Source default PACKAGES variables, if none were given so far
+if [ ! -z ${PACKAGES} ]; then
+    DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
+    if [ -e ${DEFAULT_PACKAGES} ]; then
+        source ${DEFAULT_PACKAGES}
+    fi
 fi
 
 # Source PLATFORM variables if set up correctly
@@ -712,6 +718,14 @@ echo
 echo "-------------------------------------------------------------------------------"
 cecho ${INFO} "Number of (at most) build processes to use: PROCS=${PROCS}"
 echo
+
+echo "-------------------------------------------------------------------------------"
+cecho ${INFO} "Packages:"
+for PACKAGE in ${PACKAGES[@]}; do
+    echo ${PACKAGE}
+done
+echo
+
 
 echo "-------------------------------------------------------------------------------"
 if [ ${STABLE_BUILD} = true ]; then
