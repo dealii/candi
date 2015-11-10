@@ -5,8 +5,6 @@ PACKING=.tar.gz
 CHECKSUM=511db6fe363aa323905e1c06f7b22425
 BUILDCHAIN=ignore
 
-INSTALL_PATH=${INSTALL_PATH}
-
 package_specific_install () {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
 }
