@@ -659,7 +659,7 @@ else
 fi
 
 # Source default PACKAGES variables, if none were given so far
-if [ ! -z ${PACKAGES} ]; then
+if [ ! -z "${PACKAGES}" ]; then
     DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
     if [ -e ${DEFAULT_PACKAGES} ]; then
         source ${DEFAULT_PACKAGES}
