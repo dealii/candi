@@ -535,6 +535,7 @@ guess_platform() {
             *:*:*Ubuntu*\ 12*)     echo ubuntu12;;
             *:*:*Ubuntu*\ 14*)     echo ubuntu14;;
             *:*:*Ubuntu*\ 15*)     echo ubuntu15;;
+            *:*:*Ubuntu*\ 16*)     echo ubuntu16;;
             *:Tikanga*:*)          echo rhel5;;
             *:Santiago*:*)         echo rhel6;;
             Scientific:Carbon*:*)  echo rhel6;;
