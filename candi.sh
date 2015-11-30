@@ -378,45 +378,46 @@ package_unpack() {
 package_build() {
     # Get things ready for the compilation process
     cecho ${GOOD} "Building ${PACKAGE} ${VERSION}"
-    if [ ! -d "${EXTRACTSTO}" ]; then
+    
+    if [ ! -d "${UNPACK_PATH}/${EXTRACTSTO}" ]; then
         cecho ${BAD} "${EXTRACTSTO} does not exist -- please unpack first."
         exit 1
     fi
-
+    
     # Set the BUILDDIR if nothing else was specified
     default BUILDDIR=${BUILD_PATH}/${NAME}
-
+    
     # Clean the build directory if specified
     if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = "true" ]; then
         rm -rf ${BUILDDIR}
     fi
-
+    
     # Create build directory if it does not exist
     if [ ! -d ${BUILDDIR} ]; then
         mkdir -p ${BUILDDIR}
     fi
-
+    
     # Move to the build directory
     cd ${BUILDDIR}
-
+    
     # Carry out any package-specific setup
     package_specific_setup
     quit_if_fail "There was a problem in build setup for ${PACKAGE} ${VERSION}."
     cd ${BUILDDIR}
-
+    
     # Use the appropriate build system to compile and install the
     # package
     for cmd_file in candi_configure candi_build; do
         echo "#!/usr/bin/env bash" >${cmd_file}
         chmod a+x ${cmd_file}
-
+        
         # Write variables to files so that they can be run stand-alone
         declare -x| grep -v "!::"| grep -v "ProgramFiles(x86)" >>${cmd_file}
-
+        
         # From this point in candi_*, errors are fatal
         echo "set -e" >>${cmd_file}
     done
-
+    
     if [ ${BUILDCHAIN} = "autotools" ]; then
         if [ -f ${UNPACK_PATH}/${EXTRACTSTO}/configure ]; then
             echo ${UNPACK_PATH}/${EXTRACTSTO}/configure ${CONFOPTS} --prefix=${INSTALL_PATH} >>candi_configure
@@ -589,6 +590,7 @@ default CONFIGURATION_PATH=${PREFIX_PATH}/${PROJECT}/share/configuration
 
 default CLEAN_BUILD=false
 default STABLE_BUILD=true
+default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
 
@@ -709,10 +711,22 @@ echo
 cecho ${GOOD} "Project:  ${PROJECT}"
 cecho ${GOOD} "Platform: ${PLATFORM}"
 echo
-
 echo "-------------------------------------------------------------------------------"
-cecho ${INFO} "Downloading files to:     $(prettify_dir ${DOWNLOAD_PATH})"
-cecho ${INFO} "Unpacking files to:       $(prettify_dir ${UNPACK_PATH})"
+
+if [ ${DEVELOPER_MODE} = "OFF" ]; then
+    cecho ${INFO} "Downloading files to:     $(prettify_dir ${DOWNLOAD_PATH})"
+    cecho ${INFO} "Unpacking files to:       $(prettify_dir ${UNPACK_PATH})"
+elif [ ${DEVELOPER_MODE} = "ON" ]; then
+    cecho ${BAD} "Warning: You are using the DEVELOPER_MODE"
+    cecho ${INFO} "Note: You need to have run candi with the same settings without this mode before!"
+    cecho ${BAD} "For packages not in the build mode={load|skip|once}, candi now use"
+    cecho ${BAD} "source files from: $(prettify_dir ${UNPACK_PATH})"
+    echo
+else
+    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={OFF|ON}; (your specified option is = ${DEVELOPER_MODE})"
+    exit 1
+fi
+
 cecho ${INFO} "Building packages in:     $(prettify_dir ${BUILD_PATH})"
 cecho ${GOOD} "Installing packages in:   $(prettify_dir ${INSTALL_PATH})"
 cecho ${GOOD} "Package configuration in: $(prettify_dir ${CONFIGURATION_PATH})"
@@ -849,10 +863,12 @@ mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
 mkdir -p ${CONFIGURATION_PATH}
 
-
+# Keep original variables
+# WARNING: do not overwrite this variables!
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_CONFIGURATION_PATH=${CONFIGURATION_PATH}
 ORIG_PROCS=${PROCS}
+
 guess_architecture
 
 # Reset timings
@@ -926,7 +942,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         cecho ${BAD} "${PACKAGE}.package is not properly formed. Please check that all necessary variables are defined."
         exit 1
     fi
-
+    
     if [ ! "${BUILDCHAIN}" = "ignore" ] ; then
         if [ ! "${NAME}" ] || [ ! "${SOURCE}" ] || [ ! "${PACKING}" ]; then
             cecho ${BAD} "${PACKAGE}.package is not properly formed. Please check that all necessary variables are defined."
@@ -943,9 +959,11 @@ for PACKAGE in ${PACKAGES[@]}; do
     
     # Fetch, unpack and build package
     if [ ${SKIP} = false ]; then
-        # Fetch, unpack and build the current package
-        package_fetch
-        package_unpack
+        if [ ${DEVELOPER_MODE} = "OFF" ]; then
+            # Fetch, unpack and build the current package
+            package_fetch
+            package_unpack
+        fi
         package_build
     else
         if [ ! -z "${LOAD}" ]; then
