@@ -585,6 +585,7 @@ default DOWNLOAD_PATH=${PREFIX_PATH}/src
 default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
 default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
 default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
+default CONFIGURATION_PATH=${PREFIX_PATH}/${PROJECT}/share/configuration
 
 default CLEAN_BUILD=false
 default STABLE_BUILD=true
@@ -710,10 +711,11 @@ cecho ${GOOD} "Platform: ${PLATFORM}"
 echo
 
 echo "-------------------------------------------------------------------------------"
-cecho ${INFO} "Downloading files to:   $(prettify_dir ${DOWNLOAD_PATH})"
-cecho ${INFO} "Unpacking files to:     $(prettify_dir ${UNPACK_PATH})"
-cecho ${INFO} "Building packages in:   $(prettify_dir ${BUILD_PATH})"
-cecho ${GOOD} "Installing packages in: $(prettify_dir ${INSTALL_PATH})"
+cecho ${INFO} "Downloading files to:     $(prettify_dir ${DOWNLOAD_PATH})"
+cecho ${INFO} "Unpacking files to:       $(prettify_dir ${UNPACK_PATH})"
+cecho ${INFO} "Building packages in:     $(prettify_dir ${BUILD_PATH})"
+cecho ${GOOD} "Installing packages in:   $(prettify_dir ${INSTALL_PATH})"
+cecho ${GOOD} "Package configuration in: $(prettify_dir ${CONFIGURATION_PATH})"
 echo
 
 echo "-------------------------------------------------------------------------------"
@@ -845,9 +847,11 @@ mkdir -p ${DOWNLOAD_PATH}
 mkdir -p ${UNPACK_PATH}
 mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
+mkdir -p ${CONFIGURATION_PATH}
 
 
 ORIG_INSTALL_PATH=${INSTALL_PATH}
+ORIG_CONFIGURATION_PATH=${CONFIGURATION_PATH}
 ORIG_PROCS=${PROCS}
 guess_architecture
 
@@ -899,6 +903,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     TARGETS=('' install)
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
+    CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
     
     # Reset package-specific functions
     package_specific_setup () { true; }

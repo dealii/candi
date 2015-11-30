@@ -62,3 +62,12 @@ package_specific_setup () {
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export PETSC_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

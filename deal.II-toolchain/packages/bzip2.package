@@ -21,3 +21,13 @@ package_specific_register () {
     export BZIP2_INCLUDE=${INSTALL_PATH}/include
     export BZIP2_LIBPATH=${INSTALL_PATH}/lib
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export BZIP2_INCLUDE=${INSTALL_PATH}/include
+export BZIP2_LIBPATH=${INSTALL_PATH}/lib
+" >> $CONFIG_FILE
+}

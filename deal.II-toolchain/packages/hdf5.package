@@ -12,3 +12,12 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 package_specific_register () {
     export HDF5_DIR=${INSTALL_PATH}
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export HDF5_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

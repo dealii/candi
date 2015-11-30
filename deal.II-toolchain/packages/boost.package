@@ -23,3 +23,15 @@ package_specific_register () {
     export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
     export BOOST_USE_MULTITHREADED=OFF
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export BOOST_ROOT=${INSTALL_PATH}
+export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
+export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
+export BOOST_USE_MULTITHREADED=OFF
+" >> $CONFIG_FILE
+}

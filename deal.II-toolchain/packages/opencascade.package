@@ -37,3 +37,12 @@ CONFOPTS="-D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
 package_specific_register () {
     export OPENCASCADE_DIR=${INSTALL_PATH}
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export OPENCASCADE_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

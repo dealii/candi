@@ -177,9 +177,10 @@ if [ ! -z "${OPENCASCADE_DIR}" ]; then
 fi
 
 ################################################################################
-################################################################################
-# **********************************************************************************
+
 package_specific_conf() {
+    ############################################################################
+    # Generate modulefile
 
 # Prepare modulefile path and config file name
 if [ -z "${COMPILER}" ]; then
@@ -192,9 +193,7 @@ if [ -z "${MODULEFILE_PATH}" ]; then
     MODULEFILE_PATH=${INSTALL_PATH}/share/modulefiles${MODULEFILE_PATH}
 fi
 
-if [ -z "${CONFIG_FILE}" ]; then
-    CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
-fi
+CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
 
 CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
 
@@ -224,4 +223,14 @@ setenv                  DEAL_II_DIR         ${INSTALL_PATH}
     echo
 
     export DEAL_II_DIR=${INSTALL_PATH}
+    
+    ############################################################################
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export DEAL_II_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
 }
+
+

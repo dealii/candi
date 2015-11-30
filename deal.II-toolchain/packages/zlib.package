@@ -21,3 +21,14 @@ package_specific_register () {
     export ZLIB_INCLUDE=${INSTALL_PATH}/include
     export ZLIB_LIBPATH=${INSTALL_PATH}/lib
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export ZLIB_DIR=${INSTALL_PATH}/
+export ZLIB_INCLUDE=${INSTALL_PATH}/include
+export ZLIB_LIBPATH=${INSTALL_PATH}/lib
+" >> $CONFIG_FILE
+}

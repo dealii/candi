@@ -39,3 +39,13 @@ package_specific_register () {
     export METIS_DIR=${INSTALL_PATH}
     export PARMETIS_DIR=${INSTALL_PATH}
 }
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export METIS_DIR=${INSTALL_PATH}
+export PARMETIS_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
