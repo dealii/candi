@@ -226,7 +226,7 @@ setenv                  DEAL_II_DIR         ${INSTALL_PATH}
     
     ############################################################################
     # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    CONFIG_FILE=${CONFIGURATION_PATH}/deal.II-${VERSION}
     rm -f $CONFIG_FILE
     echo "
 export DEAL_II_DIR=${INSTALL_PATH}
