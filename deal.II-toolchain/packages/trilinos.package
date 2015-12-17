@@ -103,7 +103,7 @@ if [ ! -z "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with ParMETIS"
     CONFOPTS="\
         ${CONFOPTS} \
-        -D TPL_ENABLE_ParMETIS:BOOL=${ParMETIS} \
+        -D TPL_ENABLE_ParMETIS:BOOL=ON \
         -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
         -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
 fi
@@ -113,7 +113,7 @@ if [ ! -z "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
     CONFOPTS="\
         ${CONFOPTS} \
-          -D TPL_ENABLE_SuperLUDist:BOOL=${SuperLUDist} \
+          -D TPL_ENABLE_SuperLUDist:BOOL=ON \
           -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.so \
           -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include/superlu \
           -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
