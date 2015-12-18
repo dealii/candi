@@ -9,8 +9,10 @@ if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" 
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
     SOURCE=https://trilinos.org/oldsite/download/files/
-    VERSION=11.14.3
-    CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
+#    VERSION=11.14.3
+#    CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
+    VERSION=11.12.1
+    CHECKSUM=13ec45c895d1c12b87f2d2286b27e09a
     
     #Note: For Trilinos v11 we need to force SuperLUDist=OFF,
     #      since only the deprecated SuperLUDist v3.3 together with an Amesos patch
@@ -19,8 +21,8 @@ elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
     #Note: This issue is resolved by setting
     #          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG
     #      for Trilinos v12; this is neglegted by Trilinos v11 since it is unknown.
-    cecho ${BAD} "trilinos: warning: forcing unset SUPERLU_DIR (not supported)"
-    unset SUPERLU_DIR
+#    cecho ${BAD} "trilinos: warning: forcing unset SUPERLU_DIR (not supported)"
+#    unset SUPERLU_DIR
 
 else
     cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
@@ -131,12 +133,20 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
-          -D Trilinos_ENABLE_MueLu:BOOL=ON \
-          -D Trilinos_ENABLE_Amesos2:BOOL=ON \
+          -D Trilinos_ENABLE_MueLu:BOOL=OFF \
+          -D Trilinos_ENABLE_Amesos2:BOOL=OFF \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
           -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
           -D BUILD_SHARED_LIBS:BOOL=ON"
+
+package_specific_setup() {
+    if [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
+        # Apply patch to let Trilinos/Amesos work with SuperLUDist_3.3
+        cd ${UNPACK_PATH}/${EXTRACTSTO}/packages/amesos/src
+        patch --forward Amesos_Superludist.cpp < ${ORIG_DIR}/${PROJECT}/patches/Trilinos-v11-Amesos_Superludist-v3.3.cpp.patch || true
+    fi
+}
 
 package_specific_register () {
     export TRILINOS_DIR=${INSTALL_PATH}
