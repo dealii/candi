@@ -89,7 +89,7 @@ if builtin command -v wget > /dev/null; then
 fi
 
 if [ -z "${DOWNLOADERS}" ]; then
-    cecho ${BAD} "Please install wget or curl."
+    echo "Please install wget or curl."
     exit 1
 fi
 
