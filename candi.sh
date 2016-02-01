@@ -863,6 +863,28 @@ mkdir -p ${BUILD_PATH}
 mkdir -p ${INSTALL_PATH}
 mkdir -p ${CONFIGURATION_PATH}
 
+# configuration script
+cat > ${CONFIGURATION_PATH}/enable.sh <<"EOF"
+#!/bin/bash
+# helper script to source all configuration files. Use
+#    source enable.sh
+# to load into your current shell.
+
+# find path of script:
+pushd . >/dev/null
+P="${BASH_SOURCE[0]}";cd `dirname $P`;P=`pwd`;
+popd >/dev/null
+
+for f in $P/*
+do
+  if [ "$f" != "$P/enable.sh" ]
+  then
+    source $f
+  fi
+done
+EOF
+
+
 # Keep original variables
 # WARNING: do not overwrite this variables!
 ORIG_INSTALL_PATH=${INSTALL_PATH}
