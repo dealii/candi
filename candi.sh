@@ -39,7 +39,8 @@ TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
 # Parse command line input parameters
-for param in "$@"; do
+while [ -n "$1" ]; do
+    param="$1"
     case $param in
         #####################################
         # Prefix path
@@ -54,7 +55,13 @@ for param in "$@"; do
         --PROCS=*)
             NP="${param#*=}"
         ;;
-        # Make styled processes
+
+        # Make styled processes with or without space
+	-j)
+	    shift
+            NP="${1}"
+	;;
+
         -j*)
             NP="${param#*j}"
         ;;
@@ -64,7 +71,9 @@ for param in "$@"; do
         -pf=*|--platform=*)
             GIVEN_PLATFORM="${param#*=}"
         ;;
+	
     esac
+    shift
 done
 
 PREFIX_PATH=${PREFIX:-~/apps/candi}
