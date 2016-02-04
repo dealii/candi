@@ -153,6 +153,11 @@ verify_archive() {
     if [ ! -e ${ARCHIVE_FILE} ]; then
         return 2
     fi
+
+    # empty file?
+    if [ ! -s ${ARCHIVE_FILE} ]; then
+        return 2
+    fi
     
     # Check CHECKSUM has been specified for the package
     if [ -z "${CHECKSUM}" ]; then
@@ -242,14 +247,14 @@ download_archive () {
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.
         if [ ${DOWNLOADER} = "curl" ]; then
-            curl -k -O ${url} || continue
+            curl -f -L -k -O ${url} || continue
         elif [ ${DOWNLOADER} = "wget" ]; then
             wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
         else
             cecho ${BAD} "candi: Unknown downloader: ${DOWNLOADER}"
             exit 1
         fi
-        
+
         unset url
         
         # Verify the download
