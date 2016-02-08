@@ -39,9 +39,26 @@ TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
 # Parse command line input parameters
+PREFIX=~/apps/candi
+PROCS=1
+
 while [ -n "$1" ]; do
     param="$1"
     case $param in
+
+	-h|--help)
+	    echo "candi (Compile & Install)"
+	    echo ""
+	    echo "Usage: $0 [options]"
+	    echo "Options:"
+	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
+	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
+	    echo "  --platform=<platform>       force usage of a particular platform file"
+	    echo ""
+	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
+	    exit 0
+	;;
+	
         #####################################
         # Prefix path
         -p=*|--prefix=*)
@@ -53,17 +70,17 @@ while [ -n "$1" ]; do
         #####################################
         # Number of maximum processes to use
         --PROCS=*)
-            NP="${param#*=}"
+            PROCS="${param#*=}"
         ;;
 
         # Make styled processes with or without space
 	-j)
 	    shift
-            NP="${1}"
+            PROCS="${1}"
 	;;
 
         -j*)
-            NP="${param#*j}"
+            PROCS="${param#*j}"
         ;;
         
         #####################################
@@ -77,7 +94,12 @@ while [ -n "$1" ]; do
 done
 
 PREFIX_PATH=${PREFIX:-~/apps/candi}
-PROCS=${NP:-1}
+
+RE='^[0-9]+$'
+if [[ ! "$PROCS" =~ $RE || $PROCS<1 ]] ; then
+  echo "ERROR: invalid number of build processes '$PROCS'"
+  exit 1
+fi
 
 ################################################################################
 # Set download tool

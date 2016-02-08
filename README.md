@@ -71,14 +71,13 @@ Adapting candi to your needs
   $> ./candi.sh --prefix=Your/Prefix/Path
 ```
 
-#### CLO: Multiple build processes: `[-j<N>]`, `[--PROCS=<N>]`
+#### CLO: Multiple build processes: `[-j <N>]`, `[-j<N>]`, `[--PROCS=<N>]`
 ```bash
-  $> ./candi.sh -j<N>
+  $> ./candi.sh -j <N>
 ```
 
-* Remark: there is no whitespace character allowed between `-j` and the number `<N>`.
-* Example: using 2 build processes type `./candi.sh -j2` or `./candi.sh --PROCS=2`.
-* Be careful with that! You need to have enough system memory (e.g. at least 8GB for using 2 or more processes).
+* Example: to use 2 build processes type `./candi.sh -j2`.
+* Be careful with this option! You need to have enough system memory (e.g. at least 8GB for 2 or more processes).
 
 ### Configuration file options (CFO)
 
