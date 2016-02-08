@@ -61,6 +61,10 @@ while [ -n "$1" ]; do
 	
         #####################################
         # Prefix path
+        -p)
+	    shift
+            PREFIX="${1}"
+        ;;
         -p=*|--prefix=*)
             PREFIX="${param#*=}"
             # replace '~' by $HOME
@@ -93,7 +97,8 @@ while [ -n "$1" ]; do
     shift
 done
 
-PREFIX_PATH=${PREFIX:-~/apps/candi}
+# replace '~' by $HOME:
+PREFIX_PATH=${PREFIX/#~\//$HOME\/}
 
 RE='^[0-9]+$'
 if [[ ! "$PROCS" =~ $RE || $PROCS<1 ]] ; then
