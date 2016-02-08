@@ -93,6 +93,9 @@ while [ -n "$1" ]; do
             GIVEN_PLATFORM="${param#*=}"
         ;;
 	
+	*)
+	    echo "invalid command line option. See -h for more information."
+	    exit 1
     esac
     shift
 done
