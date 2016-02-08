@@ -877,7 +877,7 @@ popd >/dev/null
 
 for f in $P/*
 do
-  if [ "$f" != "$P/enable.sh" ]
+  if [ "$f" != "$P/enable.sh" ] && [ -f "$f" ]
   then
     source $f
   fi
