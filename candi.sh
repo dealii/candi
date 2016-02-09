@@ -39,10 +39,32 @@ TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
 # Parse command line input parameters
-for param in "$@"; do
+PREFIX=~/apps/candi
+PROCS=1
+
+while [ -n "$1" ]; do
+    param="$1"
     case $param in
+
+	-h|--help)
+	    echo "candi (Compile & Install)"
+	    echo ""
+	    echo "Usage: $0 [options]"
+	    echo "Options:"
+	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
+	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
+	    echo "  --platform=<platform>       force usage of a particular platform file"
+	    echo ""
+	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
+	    exit 0
+	;;
+	
         #####################################
         # Prefix path
+        -p)
+	    shift
+            PREFIX="${1}"
+        ;;
         -p=*|--prefix=*)
             PREFIX="${param#*=}"
             # replace '~' by $HOME
@@ -52,11 +74,17 @@ for param in "$@"; do
         #####################################
         # Number of maximum processes to use
         --PROCS=*)
-            NP="${param#*=}"
+            PROCS="${param#*=}"
         ;;
-        # Make styled processes
+
+        # Make styled processes with or without space
+	-j)
+	    shift
+            PROCS="${1}"
+	;;
+
         -j*)
-            NP="${param#*j}"
+            PROCS="${param#*j}"
         ;;
         
         #####################################
@@ -64,11 +92,22 @@ for param in "$@"; do
         -pf=*|--platform=*)
             GIVEN_PLATFORM="${param#*=}"
         ;;
+	
+	*)
+	    echo "invalid command line option. See -h for more information."
+	    exit 1
     esac
+    shift
 done
 
-PREFIX_PATH=${PREFIX:-~/apps/candi}
-PROCS=${NP:-1}
+# replace '~' by $HOME:
+PREFIX_PATH=${PREFIX/#~\//$HOME\/}
+
+RE='^[0-9]+$'
+if [[ ! "$PROCS" =~ $RE || $PROCS<1 ]] ; then
+  echo "ERROR: invalid number of build processes '$PROCS'"
+  exit 1
+fi
 
 ################################################################################
 # Set download tool
