@@ -111,9 +111,13 @@ fi
 # Add SuperLU_dist, if present
 if [ ! -z "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
+
+    # we need to disable complex support in teuchos, see https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
+
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \
+	  -D Teuchos_ENABLE_COMPLEX:BOOL=OFF \
           -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.so \
           -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include/superlu \
           -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
