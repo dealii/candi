@@ -630,7 +630,7 @@ default DOWNLOAD_PATH=${PREFIX_PATH}/src
 default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
 default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
 default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
-default CONFIGURATION_PATH=${PREFIX_PATH}/${PROJECT}/share/configuration
+default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
 default CLEAN_BUILD=false
 default STABLE_BUILD=true
