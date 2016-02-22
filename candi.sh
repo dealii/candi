@@ -1049,6 +1049,13 @@ for PACKAGE in ${PACKAGES[@]}; do
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC/1000000000)) s"
 done
 
+# print information about enable.sh
+echo
+echo To export environment variables for all installed libraries execute:
+echo
+cecho ${GOOD} "    source ${CONFIGURATION_PATH}/enable.sh"
+echo
+
 # Stop global timer
 TOC_GLOBAL="$(($(${DATE_CMD} +%s%N)-TIC_GLOBAL))"
 

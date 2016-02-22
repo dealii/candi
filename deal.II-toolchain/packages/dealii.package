@@ -231,6 +231,11 @@ setenv                  DEAL_II_DIR         ${INSTALL_PATH}
     echo "
 export DEAL_II_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
+
+    echo "If you are not using modules, execute the following command instead:"
+    echo
+    cecho ${GOOD} "    source $CONFIG_FILE"
+    echo
 }
 
 
