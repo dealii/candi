@@ -51,12 +51,21 @@ You run the installer by
 ```
 Hit return and wait.
 
-#### Install deal.II on ubuntu 12.04, 14.xx, 15.xx :
+#### Install deal.II on ubuntu 12.04, 14.xx, 15.xx:
 ```bash
   $> export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
   $> ./candi.sh
 ```
 Hit return and wait.
+
+#### Install deal.II on a generic Linux cluster:
+```bash
+  $> export CC=mpicc, export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+  $> ./candi.sh --platform=./deal.II-toolchain/platforms/supported/linux_cluster.platform
+```
+Hit return and wait.
+Note that you probably also want to change the prefix path (see below) and 
+the path to BLAS and LAPACK in the configuration file (see below).
 
 Adapting candi to your needs
 ----
