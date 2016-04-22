@@ -1,5 +1,0 @@
-#!/bin/bash
-project="$1"
-rm -f ./candi.cfg
-ln -s ./project-${project}.cfg candi.cfg
-
