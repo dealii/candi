@@ -39,7 +39,7 @@ TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
 # Parse command line input parameters
-PREFIX=~/apps/candi
+PREFIX=~/deal.ii-candi
 PROCS=1
 
 while [ -n "$1" ]; do
@@ -626,10 +626,10 @@ fi
 # If any variables are missing, set them to defaults
 default PROJECT=deal.II-toolchain
 
-default DOWNLOAD_PATH=${PREFIX_PATH}/src
-default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
-default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
-default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
+default DOWNLOAD_PATH=${PREFIX_PATH}/tmp/src
+default UNPACK_PATH=${PREFIX_PATH}/tmp/unpack
+default BUILD_PATH=${PREFIX_PATH}/tmp/build
+default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
 default CLEAN_BUILD=false
