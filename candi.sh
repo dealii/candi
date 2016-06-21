@@ -39,8 +39,9 @@ TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
 
 ################################################################################
 # Parse command line input parameters
-PREFIX=~/apps/candi
+PREFIX=~/deal.ii-candi
 PROCS=1
+CMD_PACKAGES=""
 
 while [ -n "$1" ]; do
     param="$1"
@@ -54,6 +55,7 @@ while [ -n "$1" ]; do
 	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
 	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
 	    echo "  --platform=<platform>       force usage of a particular platform file"
+	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
 	    echo ""
 	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
 	    exit 0
@@ -69,6 +71,12 @@ while [ -n "$1" ]; do
             PREFIX="${param#*=}"
             # replace '~' by $HOME
             PREFIX=${PREFIX/#~\//$HOME\/}
+        ;;
+
+        #####################################
+        # overwrite package list
+        --packages=*)
+            CMD_PACKAGES="${param#*=}"
         ;;
         
         #####################################
@@ -626,10 +634,10 @@ fi
 # If any variables are missing, set them to defaults
 default PROJECT=deal.II-toolchain
 
-default DOWNLOAD_PATH=${PREFIX_PATH}/src
-default UNPACK_PATH=${PREFIX_PATH}/${PROJECT}-unpack
-default BUILD_PATH=${PREFIX_PATH}/${PROJECT}-build
-default INSTALL_PATH=${PREFIX_PATH}/${PROJECT}
+default DOWNLOAD_PATH=${PREFIX_PATH}/tmp/src
+default UNPACK_PATH=${PREFIX_PATH}/tmp/unpack
+default BUILD_PATH=${PREFIX_PATH}/tmp/build
+default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
 default CLEAN_BUILD=false
@@ -637,6 +645,10 @@ default STABLE_BUILD=true
 default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
+
+if [ -n "$CMD_PACKAGES" ]; then
+    PACKAGES=$CMD_PACKAGES
+fi
 
 ################################################################################
 # Check if project was specified correctly
