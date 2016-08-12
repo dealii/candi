@@ -1,14 +1,14 @@
-VERSION=3.6.3
+VERSION=3.6.4
+CHECKSUM=e7a5253621253eef8f5a19ddc03dd0d4
 
-NAME=petsc-${VERSION}
+NAME=petsc-lite-${VERSION}
 SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
 PACKING=.tar.gz
 
-CHECKSUM=91dd3522de5a5ef039ff8f50800db606
-
+EXTRACTSTO=petsc-${VERSION}
 BUILDCHAIN=custom
 
-INSTALL_PATH=${INSTALL_PATH}/${NAME}
+INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 #########################################################################
 
@@ -17,6 +17,7 @@ CONFOPTS="
   --with-shared-libraries=1
   --with-mpi=1
   --with-x=0
+  --with-64-bit-indices=0
 "
 
 for external_pkg in hypre; do
@@ -49,6 +50,19 @@ if [ ! -z "${MKL_DIR}" ]; then
     CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
 fi
 
+# Add ParMETIS, if present
+if [ ! -z "${PARMETIS_DIR}" ]; then
+    cecho ${INFO} "PETSc: configuration with ParMETIS"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        --with-parmetis-dir=${PARMETIS_DIR} \
+	--with-metis-dir=${PARMETIS_DIR}"
+
+    for external_pkg in scalapack mumps; do
+        CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
+    done
+fi
+
 #########################################################################
 
 package_specific_setup () {
@@ -68,7 +82,7 @@ package_specific_register () {
 
 package_specific_conf () {
     # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
     rm -f $CONFIG_FILE
     echo "
 export PETSC_DIR=${INSTALL_PATH}
