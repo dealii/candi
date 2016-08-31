@@ -559,6 +559,7 @@ guess_platform() {
             "Twenty One"*)        echo fedora21;;
             "Twenty Two"*)        echo fedora22;;
             "Twenty Three"*)      echo fedora23;;
+            "Twenty Four"*)       echo fedora24;;
         esac
     
     elif [ -f /etc/redhat-release ]; then
