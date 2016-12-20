@@ -1,88 +1,18 @@
-VERSION=4.1
+VERSION=5.1.2
 NAME=superlu_dist_${VERSION}
 EXTRACTSTO=SuperLU_DIST_${VERSION}
 SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 PACKING=.tar.gz
-CHECKSUM=4edee38cc29f687bd0c8eb361096a455
-BUILDCHAIN=custom
+CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
 
+BUILDCHAIN=cmake
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_build() {
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-
-    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/SuperLU_DIST_4.1.patch || true
-
-    mv make.inc make.inc.bak
-    #create make.inc
-echo "#  The machine (platform) identifier to append to the library names
-#
-PLAT            = _x86_64
-
-#
-#  The name of the libraries to be created/linked to
-#
-DSuperLUroot    = ${INSTALL_PATH}
-DSUPERLULIBNAME = libsuperlu_dist
-DSUPERLULIBDIR  = \$(DSuperLUroot)/lib
-DSUPERLULIB     = \$(DSUPERLULIBDIR)/\$(DSUPERLULIBNAME)
-
-#
-BLASDEF         = -DUSE_VENDOR_BLAS
-BLASLIB         = -lblas
-
-## parmetis 4.x.x
-METISLIB        = -L${PARMETIS_DIR}/lib -lmetis
-PARMETISLIB     = -L${PARMETIS_DIR}/lib -lparmetis
-I_PARMETIS      = -I${PARMETIS_DIR}/include
-
-# Define the required Fortran libraries, if you use C compiler to link
-#FLIBS          = -lpgf90 -lpgf90_rpm1
-
-# Define all the libraries
-LIBS            = \$(DSUPERLULIB) \$(BLASLIB) \$(PARMETISLIB) \$(METISLIB) \$(FLIBS)
-
-#
-#  The archiver and the flag(s) to use when building archive (library)
-#  If your system has no ranlib, set RANLIB = echo.
-#
-ARCH            = ar
-ARCHFLAGS	= cr
-RANLIB          = ranlib
-
-############################################################################
-# C compiler setup
-# CFLAGS should be set to be the C flags that include optimization
-CFLAGS          = -fPIC -std=c99 \$(I_PARMETIS) -DDEBUGlevel=0 -DPRNTlevel=1 -DPROFlevel=0
-#
-# NOOPTS should be set to be the C flags that turn off any optimization
-NOOPTS          = -fPIC -std=c99 -O0
-############################################################################
-# FORTRAN compiler setup
-FORTRAN         = \$(FC)
-#F90FLAGS	= -fast -Mipa=fast,safe
-############################################################################
-LOADER          = \$(CC)
-#LOADOPTS	= -fast
-############################################################################
-#  C preprocessor defs for compilation (-DNoChange, -DAdd_, or -DUpCase)
-#
-#  Need follow the convention of how C calls a Fortran routine.
-#
-CDEFS        = -DAdd_
-" >> make.inc
-
-    # prepare install dirs
-    mkdir -p ${INSTALL_PATH}
-    mkdir -p ${INSTALL_PATH}/lib
-    
-    # now compile superlu_dist
-    make superlulib
-    quit_if_fail "superlu_dist make superlulib failed"
-    
-    mkdir -p ${INSTALL_PATH}/include/superlu
-    cp SRC/*.h ${INSTALL_PATH}/include/superlu
-}
+CONFOPTS=" \
+    -D TPL_PARMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include \
+    -D TPL_PARMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
+    -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
+    -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_register () {
     export SUPERLU_DIR=${INSTALL_PATH}
