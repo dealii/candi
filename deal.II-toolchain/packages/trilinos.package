@@ -136,9 +136,10 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
           -D Trilinos_ENABLE_MueLu:BOOL=ON \
-          -D Trilinos_ENABLE_Amesos2:BOOL=ON \
+          -D Trilinos_ENABLE_Amesos2:BOOL=OFF \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
+          -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=ON \
           -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
           -D BUILD_SHARED_LIBS:BOOL=ON"
 
