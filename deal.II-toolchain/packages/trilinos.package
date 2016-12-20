@@ -99,14 +99,14 @@ CONFOPTS="${CONFOPTS} \
           -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
 
 # Add ParMETIS, if present
-if [ ! -z "${PARMETIS_DIR}" ]; then
-    cecho ${INFO} "trilinos: configuration with ParMETIS"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D TPL_ENABLE_ParMETIS:BOOL=ON \
-        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
-        -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
-fi
+#if [ ! -z "${PARMETIS_DIR}" ]; then
+#    cecho ${INFO} "trilinos: configuration with ParMETIS"
+#    CONFOPTS="\
+#        ${CONFOPTS} \
+#        -D TPL_ENABLE_ParMETIS:BOOL=ON \
+#        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
+#        -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
+#fi
 
 # Add SuperLU_dist, if present
 if [ ! -z "${SUPERLU_DIR}" ]; then
