@@ -5,7 +5,7 @@
 #
 # > sudo apt-get install build-essential automake autoconf gfortran \
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion git \
-#   libblas-dev liblapack-dev libblas3gf liblapack3gf splint tcl tcl-dev \
+#   libblas-dev liblapack-dev libblas3 liblapack3 splint tcl tcl-dev \
 #   environment-modules libsuitesparse-dev libtool libboost-all-dev \
 #   qt4-dev-tools
 #
