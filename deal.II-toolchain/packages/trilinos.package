@@ -3,14 +3,15 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
-    SOURCE=http://trilinos.csbsju.edu/download/files/
-    VERSION=12.4.2
-    CHECKSUM=6256264c5c8bc47253dbb38eb6ba26d1
+    VERSION=12-10-1
+    CHECKSUM=40f28628b63310f9bd17c26d9ebe32b1
+    
+    #VERSION=12-4-2
+    #CHECKSUM=4c25a757d86bde3531090bd900a2cea8
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
-    SOURCE=https://trilinos.org/oldsite/download/files/
-    VERSION=11.14.3
-    CHECKSUM=b6e5d6b71f6e554de220aeda51794ffb
+    VERSION=11-14-3
+    CHECKSUM=dea62e57ebe51a886bee0b10a2176969
     
     #Note: For Trilinos v11 we need to force SuperLUDist=OFF,
     #      since only the deprecated SuperLUDist v3.3 together with an Amesos patch
@@ -27,8 +28,11 @@ else
     exit
 fi
 
-NAME=trilinos-${VERSION}-Source
-PACKING=.tar.bz2
+SOURCE=https://github.com/trilinos/Trilinos/archive/
+NAME=trilinos-release-${VERSION}
+EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+PACKING=.tar.gz
+
 BUILDCHAIN=cmake
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
