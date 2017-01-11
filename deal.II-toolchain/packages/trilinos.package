@@ -121,10 +121,11 @@ if [ ! -z "${SUPERLU_DIR}" ]; then
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \
-	  -D Teuchos_ENABLE_COMPLEX:BOOL=OFF \
+          -D Teuchos_ENABLE_COMPLEX:BOOL=OFF \
           -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.so \
-          -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include/superlu \
-          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON"
+          -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include \
+          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON \
+          -D HAVE_SUPERLUDIST_ENUM_NAMESPACE:BOOL=ON"
 fi
 
 #########################################################################
@@ -135,15 +136,15 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D TPL_ENABLE_MPI:BOOL=ON \
           -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
-          -D Trilinos_ENABLE_Didasko:BOOL=ON \
+          -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
           -D Trilinos_ENABLE_Sacado:BOOL=ON \
           -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
           -D Trilinos_ENABLE_Belos:BOOL=ON \
           -D Trilinos_ENABLE_MueLu:BOOL=ON \
           -D Trilinos_ENABLE_Amesos2:BOOL=ON \
+          -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION:BOOL=ON \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
-          -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
           -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_register () {
