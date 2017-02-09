@@ -144,7 +144,7 @@ fi
 # Colours for progress and error reporting
 BAD="\033[1;31m"
 GOOD="\033[1;32m"
-WARN="\033[1;33m"
+WARN="\033[1;35m"
 INFO="\033[1;34m"
 BOLD="\033[1m"
 
