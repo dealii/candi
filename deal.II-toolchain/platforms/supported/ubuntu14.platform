@@ -3,18 +3,14 @@
 # This build script assumes that you have several packages already
 # installed via ubuntu's apt-get using the following commands:
 #
-# > sudo apt-get install build-essential automake autoconf gfortran \
+# > sudo apt-get install build-essential wget automake autoconf gfortran \
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion \
-#   git libblas-dev liblapack-dev libblas3gf liblapack3gf splint \
-#   tcl tcl-dev environment-modules libsuitesparse-dev \
-#   libtool libboost-all-dev qt4-dev-tools
+#   git libblas-dev liblapack-dev libblas3gf liblapack3gf \
+#   libsuitesparse-dev libtool libboost-all-dev \
+#   splint tcl tcl-dev environment-modulesqt4-dev-tools
 #
-# Then reboot and run candi again.
+# Then run candi again.
 ##
-
-#
-# Define the additional packages for this platform.
-#PACKAGES="once:cmake ${PACKAGES}"
 
 # The default compiler on ubuntu14 does not support Trilinos 12
 # together with deal.II v8.3.0.
