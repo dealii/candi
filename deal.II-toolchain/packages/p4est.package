@@ -14,6 +14,12 @@ package_specific_setup () {
         exit 1
     }
 
+    # export zlib if we installed it ourselves
+    if [ ! -z "${ZLIB_DIR}" ]; then
+      LIBS="-L${ZLIB_LIBPATH}"
+      CFLAGS="$CFLAGS -I${ZLIB_INCLUDE}"
+    fi
+
     if test -z "$CFLAGS" -a -z "$P4EST_CFLAGS_FAST" ; then
         export CFLAGS_FAST="-O2"
     else
@@ -81,6 +87,7 @@ package_specific_setup () {
     make -C sc -j${PROCS} > make.output || bdie "Error in make sc"
     make -j${PROCS} >> make.output || bdie "Error in make p4est"
     make install >> make.output || bdie "Error in make install"
+    grep -q "#define P4EST_HAVE_ZLIB" $INSTALL_DEBUG/include/p4est_config.h || bdie "Error: p4est couldn't find zlib"
     echo "DEBUG version installed in $INSTALL_DEBUG"
     echo
     
