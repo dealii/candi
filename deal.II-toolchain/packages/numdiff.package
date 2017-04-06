@@ -1,0 +1,23 @@
+VERSION=5.9.0
+NAME=numdiff-${VERSION}
+SOURCE=https://download-mirror.savannah.gnu.org/releases/numdiff/
+PACKING=.tar.gz
+CHECKSUM=794461a7285d8b9b1f2c4a8149889ea6
+BUILDCHAIN=autotools
+
+CONFOPTS=""
+
+INSTALL_PATH=${INSTALL_PATH}/${NAME}/bin
+
+package_specific_register () {
+    export PATH=${INSTALL_PATH}:$PATH
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export PATH=${INSTALL_PATH}:$PATH
+" >> $CONFIG_FILE
+}
