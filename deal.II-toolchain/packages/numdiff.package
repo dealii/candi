@@ -7,10 +7,10 @@ BUILDCHAIN=autotools
 
 CONFOPTS=""
 
-INSTALL_PATH=${INSTALL_PATH}/${NAME}/bin
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_register () {
-    export PATH=${INSTALL_PATH}:$PATH
+    export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
 package_specific_conf () {
