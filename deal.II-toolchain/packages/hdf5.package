@@ -1,8 +1,10 @@
-VERSION=1.8.15-patch1
+MAJORVER=1.10
+MINORVER=0-patch1
+VERSION=${MAJORVER}.${MINORVER}
 NAME=hdf5-${VERSION}
-SOURCE=http://www.hdfgroup.org/ftp/HDF5/releases/${NAME}/src/
+SOURCE=http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-${MAJORVER}/${NAME}/src/
 PACKING=.tar.gz
-CHECKSUM=4467c25ed9c0b126b194a4d9d66c29ac
+CHECKSUM=9180ff0ef8dc2ef3f61bd37a7404f295
 BUILDCHAIN=autotools
 
 CONFOPTS="--enable-shared --enable-parallel"
@@ -21,3 +23,4 @@ package_specific_conf () {
 export HDF5_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }
+
