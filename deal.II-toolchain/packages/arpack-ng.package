@@ -1,0 +1,26 @@
+VERSION=master
+EXTRACTSTO=arpack-ng
+NAME=arpack-ng.git
+PACKING=git
+SOURCE=https://github.com/opencollab/
+
+BUILDCHAIN=cmake
+INSTALL_PATH=${INSTALL_PATH}/arpack-ng-${VERSION}
+
+CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+ -D EXAMPLES=ON \
+ -D MPI=ON \
+ -D BUILD_SHARED_LIBS=ON"
+
+package_specific_register () {
+    export ARPACK_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export ARPACK_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
