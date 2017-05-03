@@ -35,7 +35,7 @@ else
     DATE_CMD=$(which date)
 fi
 # Start global timer
-TIC_GLOBAL="$(${DATE_CMD} +%s%N)"
+TIC_GLOBAL="$(${DATE_CMD} +%s)"
 
 ################################################################################
 # Parse command line input parameters
@@ -551,6 +551,9 @@ guess_platform() {
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
     
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+	echo macosx
+
     elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
@@ -957,7 +960,7 @@ TIMINGS=""
 # Fetch and build individual packages
 for PACKAGE in ${PACKAGES[@]}; do
     # Start timer
-    TIC="$(${DATE_CMD} +%s%N)"
+    TIC="$(${DATE_CMD} +%s)"
     
     # Return to the original CANDI directory
     cd ${ORIG_DIR}
@@ -1059,8 +1062,8 @@ for PACKAGE in ${PACKAGES[@]}; do
     package_conf
     
     # Store timing
-    TOC="$(($(${DATE_CMD} +%s%N)-TIC))"
-    TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC/1000000000)) s"
+    TOC="$(($(${DATE_CMD} +%s)-TIC))"
+    TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
 done
 
 # print information about enable.sh
@@ -1071,11 +1074,11 @@ cecho ${GOOD} "    source ${CONFIGURATION_PATH}/enable.sh"
 echo
 
 # Stop global timer
-TOC_GLOBAL="$(($(${DATE_CMD} +%s%N)-TIC_GLOBAL))"
+TOC_GLOBAL="$(($(${DATE_CMD} +%s)-TIC_GLOBAL))"
 
 # Display a summary
 echo
-cecho ${GOOD} "Build finished in $((TOC_GLOBAL/1000000000)) seconds."
+cecho ${GOOD} "Build finished in $((TOC_GLOBAL)) seconds."
 echo
 echo "Summary of timings:"
 echo -e "$TIMINGS"
