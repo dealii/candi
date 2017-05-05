@@ -2,3 +2,4 @@
 /src/
 /deal.II-toolchain-build/
 /deal.II-toolchain-unpack/
+*.DS_Store
