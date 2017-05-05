@@ -1,0 +1,8 @@
+# macOS 10.11 (El Capitan)
+#
+# Mac support is experimental and requires:
+# - a recent version of xcode with command line tools
+# - openmpi installed using homebrew
+# - cmake
+#
+##
