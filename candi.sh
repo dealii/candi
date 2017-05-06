@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -a
 
-#  Copyright (C) 2013-2015 by Uwe Koecher, the candi authors                   #
-#  AND by the DORSAL Authors, cf. the file AUTHORS for details                 #
+#  Copyright (C) 2013-2017 by Uwe Koecher, Bruno Turcksin, Timo Heister,       #
+#  the candi authors AND by the DORSAL Authors, cf. AUTHORS file for details.  #
 #                                                                              #
 #  This file is part of CANDI.                                                 #
 #                                                                              #
@@ -550,7 +550,7 @@ guess_platform() {
     # Try to guess the name of the platform we're running on
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-
+    
     elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
@@ -566,17 +566,17 @@ guess_platform() {
     elif [ -f /etc/redhat-release ]; then
         local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
         case ${RHELNAME} in
-            "Tikanga"*) echo rhel5;;
-            "Santiago"*) echo rhel6;;
-            "Maipo"*) echo rhel7;;
-            "Core"*) echo centos7;;
+            "Tikanga"*)           echo rhel5;;
+            "Santiago"*)          echo rhel6;;
+            "Maipo"*)             echo rhel7;;
+            "Core"*)              echo centos7;;
         esac
     
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
-		    10.11*)   echo macosx;;
-            10.12*)   echo sierra;;
+            10.11*)                echo elcapitan;;
+            10.12*)                echo sierra;;
         esac
     
     elif [ -x /usr/bin/lsb_release ]; then
@@ -603,9 +603,9 @@ guess_ostype() {
     # Try to guess the operating system type (ostype)
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-
+    
     elif [ -f /etc/fedora-release ]; then
-	    echo linux
+        echo linux
     
     elif [ -f /etc/redhat-release ]; then
         echo linux
@@ -770,10 +770,10 @@ fi
 # Guess dynamic shared library file extension -> LDSUFFIX
 if [ ${PLATFORM_OSTYPE} == "linux" ]; then
     LDSUFFIX=so
-
+    
 elif [ ${PLATFORM_OSTYPE} == "macos" ]; then
     LDSUFFIX=dylib
-
+	
 elif [ ${PLATFORM_OSTYPE} == "cygwin" ]; then
     LDSUFFIX=dll
 fi

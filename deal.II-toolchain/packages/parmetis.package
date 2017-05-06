@@ -7,12 +7,6 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-# check candi environment
-if [ -z "${PLATFORM_OSTYPE}" ]; then
-    cecho ${BAD} "Error: (internal): variable PLATFORM_OSTYPE not set or empty"
-	exit 1
-fi
-
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
@@ -45,9 +39,9 @@ package_specific_register () {
     export METIS_DIR=${INSTALL_PATH}
     export PARMETIS_DIR=${INSTALL_PATH}
 
-	if [ ${PLATFORM_OSTYPE} == macos ]; then
+    if [ ${PLATFORM_OSTYPE} == macos ]; then
         export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
-	fi
+    fi
 }
 
 package_specific_conf () {
@@ -60,7 +54,7 @@ export PARMETIS_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 
     if [ ${PLATFORM_OSTYPE} == macos ]; then
-	    echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+        echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
 " >> $CONFIG_FILE
-	fi
+    fi
 }

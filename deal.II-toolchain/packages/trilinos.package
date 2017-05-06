@@ -105,32 +105,24 @@ CONFOPTS="${CONFOPTS} \
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with ParMETIS"
-
-    if [ -z "${LDSUFFIX}" ]; then
-        cecho ${BAD} "Error: (internal): variable LDSUFFIX not set or empty"
-	    exit 1
-    fi
-
+    
+    # NOTE: if parmetis v4.0.3 is not found, but installed, add
+    #  -D HAVE_PARMETIS_VERSION_4_0_3=ON"
+    	
     CONFOPTS="\
         ${CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=ON \
         -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
         -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
-###### TODO?  -D HAVE_PARMETIS_VERSION_4_0_3=ON"
 fi
 
 # Add SuperLU_dist, if present
 if [ ! -z "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
-
-    if [ -z "${LDSUFFIX}" ]; then
-        cecho ${BAD} "Error: (internal): variable LDSUFFIX not set or empty"
-	    exit 1
-    fi
-
+    
     # we need to disable complex support in teuchos, see
-	#   https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
-
+    #   https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
+    
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \

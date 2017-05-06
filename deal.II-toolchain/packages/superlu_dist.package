@@ -8,18 +8,6 @@ CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
 BUILDCHAIN=cmake
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-# check candi environment
-if [ -z "${LDSUFFIX}" ]; then
-    cecho ${BAD} "Error: (internal): variable LDSUFFIX not set or empty"
-	exit 1
-fi
-
-if [ -z "${PLATFORM_OSTYPE}" ]; then
-    cecho ${BAD} "Error: (internal): variable PLATFORM_OSTYPE not set or empty"
-	exit 1
-fi
-
-# set up
 CONFOPTS=" \
     $CONFOPTS \
     -D TPL_PARMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include \
@@ -30,9 +18,9 @@ CONFOPTS=" \
 package_specific_register () {
     export SUPERLU_DIR=${INSTALL_PATH}
 
-	if [ ${PLATFORM_OSTYPE} == macos ]; then
+    if [ ${PLATFORM_OSTYPE} == macos ]; then
         export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
-	fi
+    fi
 }
 
 package_specific_conf () {
@@ -44,7 +32,7 @@ export SUPERLU_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 
     if [ ${PLATFORM_OSTYPE} == macos ]; then
-	    echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+        echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
 " >> $CONFIG_FILE
-	fi
+    fi
 }
