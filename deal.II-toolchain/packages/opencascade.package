@@ -1,32 +1,58 @@
-# CANDI_OPENCASCADE_FROM_GIT=1
+# NOTE: uncomment the following line to use the git repository
+#       and not a release tarball:
+#CANDI_OPENCASCADE_FROM_GIT=1
+
+if [ "${PLATFORM_OSTYPE}" = "macos" ]; then
+    # For macOS we currently need to install a patched v0.18
+    # from the git repository.
+    CANDI_OPENCASCADE_FROM_GIT=1
+fi
 
 if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]; then
-    # current dev snapshot from git (big repo)
-    VERSION=OCE-0.17
-    #VERSION=master
-    NAME=oce.git
+    # download git repository (huge download)
+    # if possible, try to download a release tarball (see below)
     
-    if [ ${VERSION} = "master" ]; then
-        EXTRACTSTO=OCE-master
-    else
+    # checkout specific release version
+    VERSION=OCE-0.18
+    if [ "${PLATFORM_OSTYPE}" = "macos" ]; then
+        # v0.18 with fixed t_clock_id bug for macOS
+        VERSION=cbfdba8762e0a3787c7669977e8883366cf2b3e5
+        EXTRACTSTO=OCE-0.18
+    fi
+    
+    if [ -z ${EXTRACTSTO} ]; then
         EXTRACTSTO=${VERSION}
     fi
     
-    SOURCE=https://github.com/tpaviot/
+    # checkout current development version (master)
+    #VERSION=master
+    if [ "${VERSION}" = "master" ]; then
+        EXTRACTSTO=OCE-master
+    fi
+    
+    # set up git repository
+    NAME=oce.git
     PACKING=git
+    SOURCE=https://github.com/tpaviot/
+    
 else
     # download release tarball
     
     VERSION=0.17
+    CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
+    
     NAME=oce-OCE-${VERSION}
     PACKING=.tar.gz
     SOURCE=https://github.com/tjhei/oce/releases/download/OCE-${VERSION}/
-    CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
+    
+    EXTRACTSTO=oce-OCE-${VERSION}
 fi
+unset CANDI_OPENCASCADE_FROM_GIT
 
 BUILDCHAIN=cmake
 
-INSTALL_PATH=${INSTALL_PATH}/${NAME}
+BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
+INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 CONFOPTS="-D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
  -D OCE_VISUALISATION=OFF \
