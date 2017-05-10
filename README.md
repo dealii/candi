@@ -34,6 +34,11 @@ Follow the instructions on the screen
   ./candi.sh
 ```
 
+#### Install deal.II on macOS (10.11), 10.12
+```bash
+   ./candi.sh
+```
+
 #### Install deal.II on a generic Linux system or cluster:
 ```bash
   export CC=mpicc, export CXX=mpicxx; export FC=mpif90; export FF=mpif77
