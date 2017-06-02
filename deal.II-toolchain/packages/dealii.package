@@ -16,7 +16,6 @@ INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 #Choose general configuration and components of deal.II
 
 CONFOPTS=" \
-${DEAL_CONFOPTS} \
 -D CMAKE_BUILD_TYPE=DebugRelease \
 -D DEAL_II_WITH_MPI:BOOL=ON \
 -D DEAL_II_WITH_THREADS:BOOL=ON \
@@ -29,7 +28,8 @@ ${DEAL_CONFOPTS} \
 -D DEAL_II_FORCE_BUNDLED_BOOST:BOOL=OFF \
 -D DEAL_II_WITH_ZLIB:BOOL=ON \
 -D DEAL_II_WITH_FUNCTIONPARSER:BOOL=ON \
--D DEAL_II_COMPONENT_MESH_CONVERTER:BOOL=ON"
+-D DEAL_II_COMPONENT_MESH_CONVERTER:BOOL=ON \
+${DEAL_CONFOPTS}"
 
 ################################################################################
 # Add additional packages, if present
