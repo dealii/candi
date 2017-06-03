@@ -1,13 +1,15 @@
-# Lonestar 5
+# Cray XC40 - Lonestar 5
 # 
-# This build script requires that you have set up the following environment (either
-# once for the current terminal session, or for every session by including the commands
-# into the appropriate section of ~/.bashrc). To successfully compile you will also need
-# access to the cray modules, that are by default disabled on Lonestar 5. You can activate
-# these modules by creating an empty file named .use_cray_modules in your $HOME directory.
-# Additionally the provided cmake version on Lonestar 5 is insufficient, therefore you
-# will need to download and compile any version > 2.8.12. Make sure the compiled binary
-# is in your $PATH variable, so that the terminal command 'cmake --version' works correctly
+# This build script requires that you have set up the following environment
+# (either once for the current terminal session, or for every session by
+# including the commands into the appropriate section of ~/.bashrc). To
+# successfully compile you will also need access to the cray modules, that are
+# disabled on Lonestar 5, but are available by default on other Cray systems.
+# You can activate these modules on Lonestar 5 by creating an empty file named
+# .use_cray_modules in your $HOME directory. Additionally the provided cmake
+# version on Lonestar 5 is insufficient, therefore you will need to download and
+# compile any version >= 2.8.12. Make sure the compiled binary is in your $PATH
+# variable, so that the terminal command 'cmake --version' works correctly
 # independently of the directory you are in.
 #   
 #   Necessary module commands:
@@ -24,7 +26,7 @@
 # 
 ##
 
-PACKAGES="load:dealii-prepare once:p4est once:trilinos once:petsc once:dealii"
+PACKAGES="load:dealii-prepare once:p4est once:trilinos once:petsc dealii"
 
 TRILINOS_CONFOPTS="-DBUILD_SHARED_LIBS=ON -D BLAS_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D BLAS_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D BLAS_LIBRARY_NAMES=sci_gnu -D LAPACK_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D LAPACK_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D LAPACK_LIBRARY_NAMES=sci_gnu"
 
