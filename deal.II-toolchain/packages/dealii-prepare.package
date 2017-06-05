@@ -16,7 +16,7 @@ unset option
 unset PACKAGE_NAME
 
 # Transform upper case to lower case.
-PACKAGES_OFF=${PACKAGES_OFF,,}
+PACKAGES_OFF=`echo "$PACKAGES_OFF" | tr '[:upper:]' '[:lower:]'`
 
 if [ ! -z "${PACKAGES_OFF}" ]; then
     cecho ${WARN} "deal.II: forcing package skip for: ${PACKAGES_OFF}"
