@@ -38,6 +38,10 @@ package_specific_build() {
 package_specific_register () {
     export METIS_DIR=${INSTALL_PATH}
     export PARMETIS_DIR=${INSTALL_PATH}
+
+    if [ ${PLATFORM_OSTYPE} == macos ]; then
+        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+    fi
 }
 
 package_specific_conf () {
@@ -48,4 +52,9 @@ package_specific_conf () {
 export METIS_DIR=${INSTALL_PATH}
 export PARMETIS_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
+
+    if [ ${PLATFORM_OSTYPE} == macos ]; then
+        echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+" >> $CONFIG_FILE
+    fi
 }

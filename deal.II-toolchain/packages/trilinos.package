@@ -105,24 +105,29 @@ CONFOPTS="${CONFOPTS} \
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with ParMETIS"
+    
+    # NOTE: if parmetis v4.0.3 is not found, but installed, add
+    #  -D HAVE_PARMETIS_VERSION_4_0_3=ON"
+    	
     CONFOPTS="\
         ${CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=ON \
-        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.so \
+        -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
         -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
 fi
 
 # Add SuperLU_dist, if present
 if [ ! -z "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
-
-    # we need to disable complex support in teuchos, see https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
-
+    
+    # we need to disable complex support in teuchos, see
+    #   https://trilinos.org/pipermail/trilinos-users/2015-March/004802.html
+    
     CONFOPTS="\
         ${CONFOPTS} \
           -D TPL_ENABLE_SuperLUDist:BOOL=ON \
           -D Teuchos_ENABLE_COMPLEX:BOOL=OFF \
-          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.so \
+          -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.${LDSUFFIX} \
           -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include \
           -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON \
           -D HAVE_SUPERLUDIST_ENUM_NAMESPACE:BOOL=ON"

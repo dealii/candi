@@ -1,8 +1,0 @@
-# Mac OSX
-#
-# Mac support is experimental and requires:
-# - a recent version of xcode with command line tools
-# - openmpi (ideally with gcc) installed using homebrew
-# - cmake
-#
-##

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -a
 
-#  Copyright (C) 2013-2015 by Uwe Koecher, the candi authors                   #
-#  AND by the DORSAL Authors, cf. the file AUTHORS for details                 #
+#  Copyright (C) 2013-2017 by Uwe Koecher, Bruno Turcksin, Timo Heister,       #
+#  the candi authors AND by the DORSAL Authors, cf. AUTHORS file for details.  #
 #                                                                              #
 #  This file is part of CANDI.                                                 #
 #                                                                              #
@@ -551,9 +551,6 @@ guess_platform() {
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
     
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-	echo macosx
-
     elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
@@ -569,20 +566,17 @@ guess_platform() {
     elif [ -f /etc/redhat-release ]; then
         local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
         case ${RHELNAME} in
-            "Tikanga"*) echo rhel5;;
-            "Santiago"*) echo rhel6;;
-            "Maipo"*) echo rhel7;;
-            "Core"*) echo centos7;;
+            "Tikanga"*)           echo rhel5;;
+            "Santiago"*)          echo rhel6;;
+            "Maipo"*)             echo rhel7;;
+            "Core"*)              echo centos7;;
         esac
     
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
-            10.4*)    echo tiger;;
-            10.5*)    echo leopard;;
-            10.6*)    echo snowleopard;;
-            10.7*)    echo lion;;
-            10.8*)    echo mountainlion;;
+            10.11*)                echo elcapitan;;
+            10.12*)                echo sierra;;
         esac
     
     elif [ -x /usr/bin/lsb_release ]; then
@@ -601,6 +595,40 @@ guess_platform() {
             *:*:*CentOS*\ 6*)      echo rhel6;;
             *:*:*openSUSE\ 12*)    echo opensuse12;;
             *:*:*openSUSE\ 13*)    echo opensuse13;;
+        esac
+    fi
+}
+
+guess_ostype() {
+    # Try to guess the operating system type (ostype)
+    if [ -f /usr/bin/cygwin1.dll ]; then
+        echo cygwin
+    
+    elif [ -f /etc/fedora-release ]; then
+        echo linux
+    
+    elif [ -f /etc/redhat-release ]; then
+        echo linux
+    
+    elif [ -x /usr/bin/sw_vers ]; then
+        echo macos
+    
+    elif [ -x /usr/bin/lsb_release ]; then
+        local DISTRO=$(lsb_release -i -s)
+        local CODENAME=$(lsb_release -c -s)
+        local DESCRIPTION=$(lsb_release -d -s)
+        case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
+            *:*:*Ubuntu*\ 12*)     echo linux;;
+            *:*:*Ubuntu*\ 14*)     echo linux;;
+            *:*:*Ubuntu*\ 15*)     echo linux;;
+            *:xenial*:*Ubuntu*)    echo linux;;
+            *:Tikanga*:*)          echo linux;;
+            *:Santiago*:*)         echo linux;;
+            Scientific:Carbon*:*)  echo linux;;
+            *:*:*CentOS*\ 5*)      echo linux;;
+            *:*:*CentOS*\ 6*)      echo linux;;
+            *:*:*openSUSE\ 12*)    echo linux;;
+            *:*:*openSUSE\ 13*)    echo linux;;
         esac
     fi
 }
@@ -721,6 +749,41 @@ else
         cecho ${BAD} "Error: Your forced platform file ${GIVEN_PLATFORM} does not exists"
         exit 1
     fi
+fi
+echo
+
+# Guess the operating system type -> PLATFORM_OSTYPE
+PLATFORM_OSTYPE=`guess_ostype`
+if [ -z "${PLATFORM_OSTYPE}" ]; then
+    cecho ${WARN} "WARNING: could not determine your Operating System Type (assuming linux)"
+    PLATFORM_OSTYPE=linux
+fi
+
+cecho ${INFO} "Operating System Type detected as: ${PLATFORM_OSTYPE}"
+
+if [ -z "${PLATFORM_OSTYPE}" ]; then
+    # check if PLATFORM_OSTYPE is set and not empty failed
+    cecho ${BAD} "Error: (internal) could not set PLATFORM_OSTYPE"
+	exit 1
+fi
+
+# Guess dynamic shared library file extension -> LDSUFFIX
+if [ ${PLATFORM_OSTYPE} == "linux" ]; then
+    LDSUFFIX=so
+    
+elif [ ${PLATFORM_OSTYPE} == "macos" ]; then
+    LDSUFFIX=dylib
+	
+elif [ ${PLATFORM_OSTYPE} == "cygwin" ]; then
+    LDSUFFIX=dll
+fi
+
+cecho ${INFO} "Dynamic shared library file extension detected as: *.${LDSUFFIX}"
+
+if [ -z "${LDSUFFIX}" ]; then
+    # check if PLATFORM_OSTYPE is set and not empty failed
+    cecho ${BAD} "Error: (internal) could not set LDSUFFIX"
+	exit 1
 fi
 
 # Source default PACKAGES variables, if none were given so far
