@@ -550,7 +550,7 @@ guess_platform() {
     # Try to guess the name of the platform we're running on
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-    
+
     elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
@@ -578,6 +578,9 @@ guess_platform() {
             10.11*)                echo elcapitan;;
             10.12*)                echo sierra;;
         esac
+
+    elif [[ $CRAYOS_VERSION ]]; then
+        echo cray    
     
     elif [ -x /usr/bin/lsb_release ]; then
         local DISTRO=$(lsb_release -i -s)

@@ -1,0 +1,32 @@
+# Cray
+#
+# Your environment was identified as running the Cray operating system. Note
+# that Cray clusters are usually heavily individualized so this platform file
+# can only act as a guide. It was validated on two different Cray XC40 systems.
+# This build script requires that you have set up the following environment
+# (either once for the current terminal session, or for every session by
+# including the commands into the appropriate section of ~/.bashrc). To
+# successfully compile you will also need access to the cray modules.
+# Additionally you will need any cmake version >= 2.8.12. If there is no
+# such version or module on your system add "once:cmake" to the list of 
+# packages in deal.II-toolchain/platforms/contributed/cray.platform.
+#
+#   Necessary module commands:
+#   module load PrgEnv-gnu cray-libsci
+#   module unload atp # this module caused linker errors on some systems
+#
+#   Necessary environment variables:
+#   export CRAYPE_LINK_TYPE=dynamic
+#   export CC=cc
+#   export CXX=CC
+#   export FC=ftn
+#   export FF=ftn
+#   export F77=ftn
+# 
+##
+
+PACKAGES="load:dealii-prepare once:p4est once:trilinos once:petsc dealii"
+
+TRILINOS_CONFOPTS="-DBUILD_SHARED_LIBS=ON -D BLAS_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D BLAS_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D BLAS_LIBRARY_NAMES=sci_gnu -D LAPACK_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D LAPACK_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D LAPACK_LIBRARY_NAMES=sci_gnu"
+
+DEAL_CONFOPTS=" -D DEAL_II_WITH_LAPACK=OFF -D DEAL_II_WITH_BLAS=OFF -D DEAL_II_WITH_GSL=OFF  -D DEAL_II_WITH_BZIP2=OFF -D DEAL_II_FORCE_BUNDLED_BOOST=ON -D DEAL_II_WITH_UMFPACK=OFF -D MPI_INCLUDE_PATH=$MPICH_DIR/include -D MPI_CXX_LIBRARIES=\"$MPICH_DIR/lib/libmpichcxx.so;$MPICH_DIR/lib/libmpich.so\" "
