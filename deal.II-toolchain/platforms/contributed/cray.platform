@@ -7,9 +7,6 @@
 # (either once for the current terminal session, or for every session by
 # including the commands into the appropriate section of ~/.bashrc). To
 # successfully compile you will also need access to the cray modules.
-# Additionally you will need any cmake version >= 2.8.12. If there is no
-# such version or module on your system add "once:cmake" to the list of 
-# packages in deal.II-toolchain/platforms/contributed/cray.platform.
 #
 #   Necessary module commands:
 #   module load PrgEnv-gnu cray-libsci
@@ -25,7 +22,7 @@
 # 
 ##
 
-PACKAGES="load:dealii-prepare once:p4est once:trilinos once:petsc dealii"
+PACKAGES="load:dealii-prepare once:cmake once:p4est once:trilinos once:parmetis once:petsc dealii"
 
 TRILINOS_CONFOPTS="-DBUILD_SHARED_LIBS=ON -D BLAS_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D BLAS_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D BLAS_LIBRARY_NAMES=sci_gnu -D LAPACK_LIBRARY_DIRS=$CRAY_LIBSCI_PREFIX_DIR/lib -D LAPACK_INCLUDE_DIRS=$CRAY_LIBSCI_PREFIX_DIR/include -D LAPACK_LIBRARY_NAMES=sci_gnu"
 
