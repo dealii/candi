@@ -9,11 +9,11 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
+
     # Firstly build metis
     cd metis
     
-    make config prefix=${INSTALL_PATH} shared=1
+    CFLAGS="${CFLAGS} -fPIC" make config prefix=${INSTALL_PATH} shared=1
     quit_if_fail "parmetis/metis make config failed"
     
     make -j${PROCS}
@@ -25,7 +25,7 @@ package_specific_build() {
     # Secondly build parmetis
     cd ..
     
-    make config prefix=${INSTALL_PATH} shared=1
+    CFLAGS="${CFLAGS} -fPIC" make config prefix=${INSTALL_PATH} shared=1
     quit_if_fail "parmetis make config failed"
     
     make -j${PROCS}
