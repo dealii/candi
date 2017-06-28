@@ -5,7 +5,7 @@ CHECKSUM=c7edcb13e0b19e2cf263301962b38f75
 #CHECKSUM=560a634369fdab3fcaeea35c2cbab6f1
 
 NAME=slepc-${VERSION}
-SOURCE=http://www.grycap.upv.es/slepc/download/download.php?filename=
+SOURCE=http://slepc.upv.es/download/distrib/
 PACKING=.tar.gz
 
 BUILDCHAIN=custom
