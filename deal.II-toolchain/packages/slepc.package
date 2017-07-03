@@ -21,6 +21,9 @@ package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
+    # make sure no other invalid SLEPC_DIR is set:
+    unset SLEPC_DIR
+
     ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
     quit_if_fail "slepc ./configure failed"
     
