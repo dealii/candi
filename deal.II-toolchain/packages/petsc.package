@@ -72,6 +72,9 @@ fi
 package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+
+    # make sure no other invalid PETSC_DIR is set:
+    unset PETSC_DIR
     
     ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
     quit_if_fail "petsc ./configure failed"
