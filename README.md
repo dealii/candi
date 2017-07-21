@@ -1,8 +1,9 @@
 candi (Compile &amp; Install)
 =====
 
-The ``candi.sh`` shell script downloads, configures, builds, and installs deal.II
-with common dependencies on linux-based systems.
+The ``candi.sh`` shell script downloads, configures, builds, and installs
+[deal.II](https://github.com/dealii/dealii) with common dependencies on
+linux-based systems.
 
 Quickstart
 ----
@@ -79,7 +80,7 @@ You can combine the command line options given below.
 
 If you want to change the set of packages to be installed,
 you can enable or disable a package in the configuration file
-``candi.cfg``.
+[candi.cfg](candi.cfg).
 This file is a simple text file and can be changed with any text editor.
 
 Currently, we provide the packages
@@ -91,7 +92,7 @@ Currently, we provide the packages
 * hdf5
 * opencascade
 
-for instance.
+and others. For a complete list see [deal.II-toolchain/packages](deal.II-toolchain/packages).
 
 There are several other options within the configuration file, e.g.
 
@@ -117,7 +118,7 @@ for instance, or a set of packages by
 
 Our installer provides a software developer mode by setting
 ``DEVELOPER_MODE=ON``
-within ``candi.cfg``.
+within [candi.cfg](candi.cfg).
 
 More precisely, the developer mode skips the package ``fetch`` and ``unpack``,
 everything else (package configuration, building and installation) is done
