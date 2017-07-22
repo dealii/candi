@@ -49,6 +49,20 @@ Note that you probably also want to change the prefix path, or
 the path to ``BLAS`` and ``LAPACK`` in the configuration file
 (see documentation below).
 
+#### Install deal.II on a system without pre-installed git:
+
+```bash
+ wget https://github.com/dealii/candi/archive/master.tar.gz
+ tar -xzf master.tar.gz
+ cd candi-master
+ ./candi.sh
+```
+
+Note that in this case you will need to activate the installation of git by
+uncommenting the line `#PACKAGES="${PACKAGES} once:git"` in
+[candi.cfg](candi.cfg).
+
+
 Advanced Configuration
 ----
 
