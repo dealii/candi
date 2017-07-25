@@ -12,10 +12,6 @@
 # Then run candi again.
 ##
 
-#
-# Define the additional packages for this platform.
-PACKAGES="once:cmake ${PACKAGES}"
-
 # The default compiler on ubuntu12 does not support Trilinos 12.
 # Anyhow, the user can decide to use Trilinos 11 or 12, if the
 # version number is not set to AUTO.
@@ -24,3 +20,8 @@ PACKAGES="once:cmake ${PACKAGES}"
 if [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
   TRILINOS_MAJOR_VERSION=11
 fi
+
+#
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
+

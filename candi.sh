@@ -550,7 +550,17 @@ guess_platform() {
     # Try to guess the name of the platform we're running on
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-
+    
+    elif [ -x /usr/bin/sw_vers ]; then
+        local MACOSVER=$(sw_vers -productVersion)
+        case ${MACOSVER} in
+            10.11*)               echo elcapitan;;
+            10.12*)               echo sierra;;
+        esac
+    
+    elif [ ! -z "$CRAYOS_VERSION" ]; then
+        echo cray
+    
     elif [ -f /etc/fedora-release ]; then
         local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
         case ${FEDORANAME} in
@@ -561,43 +571,29 @@ guess_platform() {
             "Twenty Three"*)      echo fedora23;;
             "Twenty Four"*)       echo fedora24;;
             "Twenty Five"*)       echo fedora25;;
+            "Twenty Six"*)        echo fedora26;;
         esac
     
     elif [ -f /etc/redhat-release ]; then
         local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
         case ${RHELNAME} in
-            "Tikanga"*)           echo rhel5;;
-            "Santiago"*)          echo rhel6;;
             "Maipo"*)             echo rhel7;;
             "Core"*)              echo centos7;;
         esac
-    
-    elif [ -x /usr/bin/sw_vers ]; then
-        local MACOSVER=$(sw_vers -productVersion)
-        case ${MACOSVER} in
-            10.11*)                echo elcapitan;;
-            10.12*)                echo sierra;;
-        esac
-
-    elif [[ $CRAYOS_VERSION ]]; then
-        echo cray    
     
     elif [ -x /usr/bin/lsb_release ]; then
         local DISTRO=$(lsb_release -i -s)
         local CODENAME=$(lsb_release -c -s)
         local DESCRIPTION=$(lsb_release -d -s)
         case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-            *:*:*Ubuntu*\ 12*)     echo ubuntu12;;
-            *:*:*Ubuntu*\ 14*)     echo ubuntu14;;
-            *:*:*Ubuntu*\ 15*)     echo ubuntu15;;
-            *:xenial*:*Ubuntu*)    echo ubuntu16;;
-            *:Tikanga*:*)          echo rhel5;;
-            *:Santiago*:*)         echo rhel6;;
-            Scientific:Carbon*:*)  echo rhel6;;
-            *:*:*CentOS*\ 5*)      echo rhel5;;
-            *:*:*CentOS*\ 6*)      echo rhel6;;
-            *:*:*openSUSE\ 12*)    echo opensuse12;;
-            *:*:*openSUSE\ 13*)    echo opensuse13;;
+            *:*:*Debian*9*)       echo debian9;;
+            *:*:*Ubuntu*\ 12*)    echo ubuntu12;;
+            *:*:*Ubuntu*\ 14*)    echo ubuntu14;;
+            *:*:*Ubuntu*\ 15*)    echo ubuntu15;;
+            *:xenial*:*Ubuntu*)   echo ubuntu16;;
+            *:zesty*:*Ubuntu*)    echo ubuntu17;;
+            *:*:*openSUSE\ 12*)   echo opensuse12;;
+            *:*:*openSUSE\ 13*)   echo opensuse13;;
         esac
     fi
 }
@@ -607,32 +603,17 @@ guess_ostype() {
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
     
+    elif [ -x /usr/bin/sw_vers ]; then
+        echo macos
+    
     elif [ -f /etc/fedora-release ]; then
         echo linux
     
     elif [ -f /etc/redhat-release ]; then
         echo linux
     
-    elif [ -x /usr/bin/sw_vers ]; then
-        echo macos
-    
     elif [ -x /usr/bin/lsb_release ]; then
-        local DISTRO=$(lsb_release -i -s)
-        local CODENAME=$(lsb_release -c -s)
-        local DESCRIPTION=$(lsb_release -d -s)
-        case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-            *:*:*Ubuntu*\ 12*)     echo linux;;
-            *:*:*Ubuntu*\ 14*)     echo linux;;
-            *:*:*Ubuntu*\ 15*)     echo linux;;
-            *:xenial*:*Ubuntu*)    echo linux;;
-            *:Tikanga*:*)          echo linux;;
-            *:Santiago*:*)         echo linux;;
-            Scientific:Carbon*:*)  echo linux;;
-            *:*:*CentOS*\ 5*)      echo linux;;
-            *:*:*CentOS*\ 6*)      echo linux;;
-            *:*:*openSUSE\ 12*)    echo linux;;
-            *:*:*openSUSE\ 13*)    echo linux;;
-        esac
+        echo linux
     fi
 }
 

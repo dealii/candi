@@ -23,3 +23,8 @@
 if [ ${STABLE_BUILD} == "true" ] && [ ${DEAL_II_VERSION} == "v8.3.0" ] && [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
   TRILINOS_MAJOR_VERSION=11
 fi
+
+#
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
+
