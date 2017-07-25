@@ -560,27 +560,30 @@ guess_platform() {
     
     elif [ ! -z "$CRAYOS_VERSION" ]; then
         echo cray
-    
-    elif [ -f /etc/fedora-release ]; then
-        echo fedora`lsb_release -r -s`
-    
-    elif [ -f /etc/redhat-release ]; then
-        local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
-        case ${RHELNAME} in
-            "Maipo"*)             echo rhel7;;
-            "Core"*)              echo centos7;;
-        esac
-    
+
     elif [ -x /usr/bin/lsb_release ]; then
-        local DISTRO=$(lsb_release -i -s)
-        local CODENAME=$(lsb_release -c -s)
-        local DESCRIPTION=$(lsb_release -d -s)
-        case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-            *:*:*Debian*9*)       echo debian9;;
-            *:*:*Ubuntu*)         echo ubuntu`lsb_release -r -s`;;
-            *:*:*openSUSE\ 12*)   echo opensuse12;;
-            *:*:*openSUSE\ 13*)   echo opensuse13;;
-        esac
+        local OSVER=$(lsb_release -r -s  |grep -o -E '[0-9]+' |head -n 1)
+        
+        if [ -f /etc/fedora-release ]; then
+            echo fedora${OSVER}
+        
+        elif [ -f /etc/centos-release ]; then
+            echo centos${OSVER}
+        
+        elif [ -f /etc/redhat-release ]; then
+            echo rhel${OSVER}
+        
+        else
+            local DISTRO=$(lsb_release -i -s)
+            local CODENAME=$(lsb_release -c -s)
+            local DESCRIPTION=$(lsb_release -d -s)
+            case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
+                *:*:*Debian*9*)       echo debian9;;
+                *:*:*Ubuntu*)         echo ubuntu${OSVER};;
+                *:*:*openSUSE\ 12*)   echo opensuse12;;
+                *:*:*openSUSE\ 13*)   echo opensuse13;;
+            esac
+        fi
     fi
 }
 
