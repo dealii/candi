@@ -562,17 +562,7 @@ guess_platform() {
         echo cray
     
     elif [ -f /etc/fedora-release ]; then
-        local FEDORANAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/fedora-release`
-        case ${FEDORANAME} in
-            "Schrödinger’s Cat"*) echo fedora19;;
-            "Heisenbug"*)         echo fedora20;;
-            "Twenty One"*)        echo fedora21;;
-            "Twenty Two"*)        echo fedora22;;
-            "Twenty Three"*)      echo fedora23;;
-            "Twenty Four"*)       echo fedora24;;
-            "Twenty Five"*)       echo fedora25;;
-            "Twenty Six"*)        echo fedora26;;
-        esac
+        echo fedora`lsb_release -r -s`
     
     elif [ -f /etc/redhat-release ]; then
         local RHELNAME=`gawk '{if (match($0,/\((.*)\)/,f)) print f[1]}' /etc/redhat-release`
@@ -587,11 +577,7 @@ guess_platform() {
         local DESCRIPTION=$(lsb_release -d -s)
         case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
             *:*:*Debian*9*)       echo debian9;;
-            *:*:*Ubuntu*\ 12*)    echo ubuntu12;;
-            *:*:*Ubuntu*\ 14*)    echo ubuntu14;;
-            *:*:*Ubuntu*\ 15*)    echo ubuntu15;;
-            *:xenial*:*Ubuntu*)   echo ubuntu16;;
-            *:zesty*:*Ubuntu*)    echo ubuntu17;;
+            *:*:*Ubuntu*)         echo ubuntu`lsb_release -r -s`;;
             *:*:*openSUSE\ 12*)   echo opensuse12;;
             *:*:*openSUSE\ 13*)   echo opensuse13;;
         esac
