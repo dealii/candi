@@ -1,4 +1,4 @@
-# ubuntu 16 LTS
+# ubuntu 17
 #
 # This build script assumes that you have several packages already
 # installed via ubuntu's apt-get using the following commands:

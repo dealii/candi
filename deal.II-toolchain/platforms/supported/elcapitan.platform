@@ -31,3 +31,8 @@
 # and follow the activation notes to use the modulefile configuration.
 # 
 ##
+
+#
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
+
