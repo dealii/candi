@@ -928,7 +928,7 @@ if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
     cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
     cecho ${INFO} "Please read your platform information above carefully,"
     cecho ${INFO} "  how you get those compilers installed and set up!"
-    cecho ${INFO} "Usually, mpicc, mpicxx, mpif90 and mpif77 should be the values."
+    cecho ${INFO} "Usually the values should be: mpicc, mpicxx, mpif90 and mpif77."
     cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
     echo
 fi
