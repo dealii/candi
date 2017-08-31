@@ -1,0 +1,26 @@
+VERSION=v1.2.3
+EXTRACTSTO=nanoflann
+NAME=nanoflann.git
+PACKING=git
+SOURCE=https://github.com/jlblancoc/
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/nanoflann-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/nanoflann-${VERSION}
+
+CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+ -D BUILD_SHARED_LIBS=ON"
+
+package_specific_register () {
+    export NANOFLANN_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export NANOFLANN_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
