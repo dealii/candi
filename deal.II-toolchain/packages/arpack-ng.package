@@ -1,9 +1,8 @@
 VERSION=master
-EXTRACTSTO=arpack-ng
 NAME=arpack-ng.git
-PACKING=git
+EXTRACTSTO=arpack-ng-${VERSION}
 SOURCE=https://github.com/opencollab/
-
+PACKING=git
 BUILDCHAIN=cmake
 
 BUILDDIR=${BUILD_PATH}/arpack-ng-${VERSION}
@@ -26,3 +25,4 @@ package_specific_conf () {
 export ARPACK_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }
+

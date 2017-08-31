@@ -1072,7 +1072,9 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Most packages extract to a directory named after the package
     default EXTRACTSTO=${NAME}
 
-    if [ ${SKIP} = maybe ] && [ ! -f ${BUILD_PATH}/${NAME}/candi_successful_build ]; then
+    # Check if the package can be set to SKIP:
+    default BUILDDIR=${BUILD_PATH}/${NAME}
+    if [ ${SKIP} = maybe ] && [ ! -f ${BUILDDIR}/candi_successful_build ]; then
         SKIP=false
     fi
     
