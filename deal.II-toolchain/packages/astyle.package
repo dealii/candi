@@ -1,0 +1,31 @@
+VERSION=2.04
+NAME=astyle_${VERSION}_linux
+SOURCE=https://downloads.sourceforge.net/project/astyle/astyle/astyle%202.04/
+PACKING=.tar.gz
+EXTRACTSTO=astyle
+CHECKSUM=30b1193a758b0909d06e7ee8dd9627f6
+BUILDCHAIN=custom
+
+INSTALL_PATH=${INSTALL_PATH}/astyle-${VERSION}
+
+package_specific_setup () {
+    cd ${BUILDDIR}
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+    cd build/gcc
+    mkdir -p ${INSTALL_PATH}
+    make -j${PROCS} >> make.output || bdie "Error in make"
+    cp bin/astyle ${INSTALL_PATH}/
+}
+
+package_specific_register () {
+    export PATH=${INSTALL_PATH}:$PATH
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export PATH=${INSTALL_PATH}:\${PATH}
+" >> $CONFIG_FILE
+}
