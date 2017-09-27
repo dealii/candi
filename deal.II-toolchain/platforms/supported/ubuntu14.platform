@@ -7,7 +7,7 @@
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion \
 #   git libblas-dev liblapack-dev libblas3gf liblapack3gf \
 #   libsuitesparse-dev libtool libboost-all-dev \
-#   splint tcl tcl-dev environment-modulesqt4-dev-tools
+#   splint tcl tcl-dev environment-modules qt4-dev-tools
 #
 # Then run candi again.
 ##
