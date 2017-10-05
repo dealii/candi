@@ -16,9 +16,4 @@
 
 #
 # Define the additional packages for this platform.
-PACKAGES="
-once:zlib
-once:bzip2
-once:boost
-${PACKAGES}"
-
+#PACKAGES="once:cmake ${PACKAGES}"
