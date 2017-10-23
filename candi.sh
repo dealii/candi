@@ -421,6 +421,10 @@ package_unpack() {
         fi
     fi
     
+    # Apply patches
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    package_specific_patch
+    
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error unpacking ${FILE_TO_UNPACK}."
     
@@ -1041,6 +1045,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
     
     # Reset package-specific functions
+    package_specific_patch () { true; }
     package_specific_setup () { true; }
     package_specific_build () { true; }
     package_specific_install () { true; }
