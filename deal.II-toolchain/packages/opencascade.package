@@ -7,7 +7,7 @@ if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]; then
     # if possible, try to download a release tarball (see below)
     
     # checkout specific release version
-    # VERSION=OCE-0.18.1
+    # VERSION=OCE-0.18.2
     # checkout current development version (master)
     VERSION=master
     
@@ -25,8 +25,10 @@ else
     
     #VERSION=0.17
     #CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
-    VERSION=0.18.1
-    CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
+    #VERSION=0.18.1
+    #CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
+    VERSION=0.18.2
+    CHECKSUM=6dfd68e459e2c62387579888a867281f
 
     NAME=OCE-${VERSION}
     PACKING=.tar.gz
@@ -47,6 +49,12 @@ CONFOPTS="-D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
  -D OCE_OCAF=OFF \
  -D OCE_DISABLE_X11=ON \
 "
+
+package_specific_patch () {
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
+    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
+}
 
 package_specific_register () {
     export OPENCASCADE_DIR=${INSTALL_PATH}
