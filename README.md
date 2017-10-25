@@ -22,27 +22,46 @@ Follow the instructions on the screen
 
 ### Examples
 
-#### Install deal.II on RHEL 7, CentOS 7 or Fedora 23,24,25:
+#### Install deal.II on RHEL 7, CentOS 7 or Fedora 24,25,26:
 ```bash
   module load mpi/openmpi-`uname -i`
-  export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
   ./candi.sh
 ```
 
-#### Install deal.II on ubuntu 12.04, 14.xx, 15.xx, 16.xx:
+#### Install deal.II on ubuntu 12.04, 14.xx, 15.xx, 16.xx, 17.xx:
 ```bash
-  export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
   ./candi.sh
 ```
 
-#### Install deal.II on macOS (10.11), 10.12
+#### Install deal.II on macOS (10.11), 10.12, 10.13:
 ```bash
+   ./candi.sh
+```
+
+#### Install deal.II on Windows 10 (1709):
+Since the Creators Update in fall 2017 (Windows 10 (1709)) the
+Windows Subsystem for Linux (WSL) is an official part.
+
+Install ubuntu from the Store.
+Then enable the WSL feature,
+e.g. by opening a PowerShell as Administrator and run:
+```bash
+   Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+```
+You need to reboot your system afterwards.
+
+Within the ubuntu terminal application clone this repository and run candi
+
+```bash
+   sudo apt-get update
+   sudo apt-get upgrade
+   git clone https://github.com/dealii/candi
+   cd candi
    ./candi.sh
 ```
 
 #### Install deal.II on a generic Linux system or cluster:
 ```bash
-  export CC=mpicc, export CXX=mpicxx; export FC=mpif90; export FF=mpif77
   ./candi.sh --platform=./deal.II-toolchain/platforms/supported/linux_cluster.platform
 ```
 
