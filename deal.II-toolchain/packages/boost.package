@@ -12,7 +12,7 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build () {
     cp -rf ${UNPACK_PATH}/${NAME}/* .
-    ./bootstrap.sh --prefix=${INSTALL_PATH}
+    ./bootstrap.sh --prefix=${INSTALL_PATH} --without-libraries=python
     quit_if_fail "boost build ./bootstrap.sh failed"
     
     echo "using mpi ;" > user-config.jam
