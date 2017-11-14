@@ -14,6 +14,19 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
+# Note that PETSc ./configure currently does not support python3, but some
+# distros might ship with python3 as the default "python".  So select python2
+# or python2.7 if available, otherwise use python or what the user supplied in
+# PYTHON_INTERPRETER.
+if builtin command -v python2 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python2"
+fi
+if builtin command -v python2.7 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python2.7"
+fi
+default PYTHON_INTERPRETER="python"
+
+
 #########################################################################
 
 CONFOPTS="
@@ -76,7 +89,7 @@ package_specific_setup () {
     # make sure no other invalid PETSC_DIR is set:
     unset PETSC_DIR
     
-    ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
     quit_if_fail "petsc ./configure failed"
     
     make all install
