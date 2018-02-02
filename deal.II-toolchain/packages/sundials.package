@@ -1,0 +1,28 @@
+VERSION=3.1.0
+NAME=sundials-${VERSION}
+EXTRACTSTO=sundials-${VERSION}
+SOURCE=https://computation.llnl.gov/projects/sundials/download/
+CHECKSUM=1a84ca41c7f71067e03d519ddbcd9dae
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/sundials-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/sundials-${VERSION}
+
+CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+ -D MPI_ENABLE=ON \
+ -D BUILD_SHARED_LIBS=ON"
+
+package_specific_register () {
+    export SUNDIALS_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export SUNDIALS_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
+
