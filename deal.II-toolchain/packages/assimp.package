@@ -1,0 +1,27 @@
+VERSION=3.3.1
+NAME=v${VERSION}
+EXTRACTSTO=assimp-${VERSION}
+SOURCE=https://github.com/assimp/assimp/archive/
+CHECKSUM=fc57b024e80ebb13301bd0983826cad3
+PACKING=.tar.gz
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/assimp-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/assimp-${VERSION}
+
+CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+ -D BUILD_SHARED_LIBS=ON"
+
+package_specific_register () {
+    export ASSIMP_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/assimp-${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export ASSIMP_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
+
