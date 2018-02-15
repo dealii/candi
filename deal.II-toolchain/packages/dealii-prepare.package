@@ -26,4 +26,20 @@ if [ ! -z "${PACKAGES_OFF}" ]; then
     read
 fi
 
+# Check if we hit cmake-3.10+ and deal.II v8.5.1 configure error (MPI / FindMPI)
+# cf. https://github.com/dealii/dealii/issues/5510
+
+if [ ${DEAL_II_VERSION} = "v8.5.1" ]; then
+    # check for cmake version 3.10 and above
+    CMAKE_VER_MAJOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f1)
+    CMAKE_VER_MINOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f2)
+    if [ ${CMAKE_VER_MAJOR}=="3" ] && [ ${CMAKE_VER_MINOR} -gt 9 ]; then
+        cecho ${BAD} "Your cmake version is ${CMAKE_VER_MAJOR}.${CMAKE_VER_MINOR}, which is above 3.9."
+        cecho ${INFO} "You need to switch on the cmake package in the config file!"
+        cecho ${BAD} "Please abort candi with ctrl+c to change the candi.cfg file, or"
+        cecho ${GOOD} "Please confirm this by pressing enter ..."
+        read
+    fi
+fi
+
 PACKAGE=dealii-prepare
