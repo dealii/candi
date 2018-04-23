@@ -13,12 +13,15 @@ if [ -n "$CANDI_ADOLC_FROM_GIT" ]; then
 else
     # download release tarball
 
-    VERSION=2.6.3
-    NAME=ADOL-C-${VERSION}
-    EXTRACTSTO=ADOL-C-${VERSION}
-    SOURCE=https://www.coin-or.org/download/source/ADOL-C/
-    CHECKSUM=f78f67f70d5874830a1ad1c0f54e54f7
-    PACKING=.tgz
+    # 2.6.3 is the latest official release, but is not compatible with
+    # deal.II. For now we have an un-official 2.6.4 RC that we are using.
+
+    #VERSION=2.6.3
+    #NAME=ADOL-C-${VERSION}
+    #EXTRACTSTO=ADOL-C-${VERSION}
+    #SOURCE=https://www.coin-or.org/download/source/ADOL-C/
+    #CHECKSUM=f78f67f70d5874830a1ad1c0f54e54f7
+    #PACKING=.tgz
 
     VERSION=2.6.4-rc1
     NAME=ADOL-C-${VERSION}
@@ -35,7 +38,7 @@ BUILDCHAIN=autotools
 BUILDDIR=${BUILD_PATH}/adolc-${VERSION}
 INSTALL_PATH=${INSTALL_PATH}/adolc-${VERSION}
 
-CONFOPTS=""
+CONFOPTS="--enable-atrig-erf"
 
 package_specific_register () {
     export ADOLC_DIR=${INSTALL_PATH}
