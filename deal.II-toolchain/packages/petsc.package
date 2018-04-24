@@ -98,6 +98,7 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
+    export SCALAPACK_DIR=${INSTALL_PATH}
 }
 
 package_specific_conf () {
