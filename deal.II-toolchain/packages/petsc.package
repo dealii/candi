@@ -35,6 +35,9 @@ CONFOPTS="
   --with-mpi=1
   --with-x=0
   --with-64-bit-indices=0
+  COPTFLAGS='-O3 -march=native -mtune=native'
+  CXXOPTFLAGS='-O3 -march=native -mtune=native'
+  FOPTFLAGS='-O3 -march=native -mtune=native'
 "
 
 for external_pkg in hypre; do
