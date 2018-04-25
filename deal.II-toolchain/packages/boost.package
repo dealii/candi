@@ -21,6 +21,7 @@ package_specific_build () {
 }
 
 package_specific_register () {
+    export BOOST_DIR=${INSTALL_PATH}
     export BOOST_ROOT=${INSTALL_PATH}
     export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
     export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
@@ -32,6 +33,7 @@ package_specific_conf () {
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
+export BOOST_DIR=${INSTALL_PATH}
 export BOOST_ROOT=${INSTALL_PATH}
 export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
 export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
