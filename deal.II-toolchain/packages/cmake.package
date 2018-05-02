@@ -1,8 +1,13 @@
-VERSION=3.4.0-rc2-Linux-x86_64
+#VERSION=3.4.0-rc2-Linux-x86_64
+#CHECKSUM=511db6fe363aa323905e1c06f7b22425
+#SOURCE=https://cmake.org/files/v3.4/
+
+VERSION=3.10.1-Linux-x86_64
+CHECKSUM=67075150cc6692d8d9e2c87a831448b2
+SOURCE=https://cmake.org/files/v3.10/
+
 NAME=cmake-${VERSION}
-SOURCE=https://cmake.org/files/v3.4/
 PACKING=.tar.gz
-CHECKSUM=511db6fe363aa323905e1c06f7b22425
 BUILDCHAIN=ignore
 
 package_specific_install () {
