@@ -1,16 +1,15 @@
-VERSION=3.4.0-rc2-Linux-x86_64
+MAJOR=3.9
+MINOR=6
+VERSION=${MAJOR}.${MINOR}
 NAME=cmake-${VERSION}
-SOURCE=https://cmake.org/files/v3.4/
+SOURCE=https://cmake.org/files/v${MAJOR}/
 PACKING=.tar.gz
-CHECKSUM=511db6fe363aa323905e1c06f7b22425
-BUILDCHAIN=ignore
-
-package_specific_install () {
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
-}
+CHECKSUM=084b1c8b2efc1c1ba432dea37243c0ae
+BUILDCHAIN=cmake
 
 package_specific_register () {
-    export PATH=${INSTALL_PATH}/${EXTRACTSTO}/bin:${PATH}
+    export PATH=${INSTALL_PATH}/bin:${PATH}
+    export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
 }
 
 package_specific_conf () {
@@ -18,6 +17,8 @@ package_specific_conf () {
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
-export PATH=${INSTALL_PATH}/${EXTRACTSTO}/bin:\${PATH}
+export PATH=${INSTALL_PATH}/bin:${PATH}
+export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
 " >> $CONFIG_FILE
 }
+
