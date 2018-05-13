@@ -956,7 +956,7 @@ echo
 
 # If the platform doesn't override the system python by installing its
 # own, figure out the version of the existing python
-default PYTHONVER=`python -c "import sys; print sys.version[:3]"`
+default PYTHONVER=`python -c "import sys; print(sys.version[:3])"`
 
 # Create necessary directories and set appropriate variables
 mkdir -p ${DOWNLOAD_PATH}
