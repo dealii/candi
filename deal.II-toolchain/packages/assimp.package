@@ -12,6 +12,14 @@ INSTALL_PATH=${INSTALL_PATH}/assimp-${VERSION}
 CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
  -D BUILD_SHARED_LIBS=ON"
 
+package_specific_patch () {
+    if [ "$VERSION" = "3.3.1" ]; then
+      cd ${UNPACK_PATH}/${EXTRACTSTO}
+      cecho ${WARN} "applying patch for assimp D3MFImporter problem"
+      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/assimp-D3MFImporter.patch || true
+    fi
+}
+
 package_specific_register () {
     export ASSIMP_DIR=${INSTALL_PATH}
 }
