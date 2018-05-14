@@ -35,6 +35,14 @@ package_specific_build() {
     quit_if_fail "parmetis make install failed"
 }
 
+package_specific_patch () {
+    if [ "$VERSION" = "4.0.3" ]; then
+      cd ${UNPACK_PATH}/${EXTRACTSTO}
+      cecho ${WARN} "applying patch for building METIS shared libraries"
+      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis.patch || true
+    fi
+}
+
 package_specific_register () {
     export METIS_DIR=${INSTALL_PATH}
     export PARMETIS_DIR=${INSTALL_PATH}
