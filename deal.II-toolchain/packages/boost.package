@@ -24,7 +24,7 @@ package_specific_patch () {
     if [ "$VERSION" = "1_63_0" ]; then
       cd ${UNPACK_PATH}/${EXTRACTSTO}
       cecho ${WARN} "applying patch for zlib bzip conflict"
-      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/boost-conflict.patch || true
+      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/boost-1.63.0-conflict.patch || true
     fi
 }
 
