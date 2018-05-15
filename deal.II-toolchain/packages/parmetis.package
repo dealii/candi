@@ -39,7 +39,7 @@ package_specific_patch () {
     if [ "$VERSION" = "4.0.3" ]; then
       cd ${UNPACK_PATH}/${EXTRACTSTO}
       cecho ${WARN} "applying patch for building METIS shared libraries"
-      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis.patch || true
+      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
     fi
 }
 
