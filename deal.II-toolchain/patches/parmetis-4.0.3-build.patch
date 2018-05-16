@@ -1,0 +1,13 @@
+--- CMakeLists.txt	2013-03-30 17:24:50.000000000 +0100
++++ CMakeLists.txt	2018-05-14 21:43:26.577097734 +0200
+@@ -19,8 +19,10 @@
+ # Prepare libraries.
+ if(SHARED)
+   set(ParMETIS_LIBRARY_TYPE SHARED)
++  set(METIS_LIBRARY_TYPE SHARED)
+ else()
+   set(ParMETIS_LIBRARY_TYPE STATIC)
++  set(METIS_LIBRARY_TYPE STATIC)
+ endif()
+ 
+ include(${GKLIB_PATH}/GKlibSystem.cmake)
