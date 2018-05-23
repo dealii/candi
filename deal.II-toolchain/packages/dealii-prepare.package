@@ -29,7 +29,7 @@ fi
 # Check if we hit cmake-3.10+ and deal.II v8.5.1 configure error (MPI / FindMPI)
 # cf. https://github.com/dealii/dealii/issues/5510
 
-if [ ${DEAL_II_VERSION} = "v8.5.1" ]; then
+if [ ${DEAL_II_VERSION} == "v8.5.1" ]; then
     # check for cmake version 3.10 and above
     CMAKE_VER_MAJOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f1)
     CMAKE_VER_MINOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f2)
