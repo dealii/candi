@@ -60,7 +60,7 @@ while [ -n "$1" ]; do
 	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
 	    exit 0
 	;;
-	
+
         #####################################
         # Prefix path
         -p)
@@ -78,7 +78,7 @@ while [ -n "$1" ]; do
         --packages=*)
             CMD_PACKAGES="${param#*=}"
         ;;
-        
+
         #####################################
         # Number of maximum processes to use
         --PROCS=*)
@@ -94,13 +94,13 @@ while [ -n "$1" ]; do
         -j*)
             PROCS="${param#*j}"
         ;;
-        
+
         #####################################
         # Specific platform
         -pf=*|--platform=*)
             GIVEN_PLATFORM="${param#*=}"
         ;;
-	
+
 	*)
 	    echo "invalid command line option. See -h for more information."
 	    exit 1
@@ -195,7 +195,7 @@ quit_if_fail() {
 #  return 4: Neither md5 nor md5sum found  (archive found, but unable to verify)
 verify_archive() {
     ARCHIVE_FILE=$1
-    
+
     # Make sure the archive was downloaded
     if [ ! -e ${ARCHIVE_FILE} ]; then
         return 2
@@ -205,21 +205,21 @@ verify_archive() {
     if [ ! -s ${ARCHIVE_FILE} ]; then
         return 2
     fi
-    
+
     # Check CHECKSUM has been specified for the package
     if [ -z "${CHECKSUM}" ]; then
         cecho ${WARN} "No checksum for ${ARCHIVE_FILE}"
         return 1
     fi
-    
+
     # Skip verifying archive, if CHECKSUM=ignore
     if [ "${CHECKSUM}" = "ignore" ]; then
         cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
         return 1
     fi
-    
+
     cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
-    
+
     # Verify CHECKSUM using md5/md5sum
     if builtin command -v md5 > /dev/null; then
         test "${CHECKSUM}" = "$(md5 -q ${ARCHIVE_FILE})"
@@ -230,7 +230,7 @@ verify_archive() {
             echo "${ARCHIVE_FILE}: FAILED"
             return 3
         fi
-    
+
     elif builtin command -v md5sum > /dev/null; then
         echo "${CHECKSUM}  ${ARCHIVE_FILE}" | md5sum --check -
         if [ $? = 0 ]; then
@@ -238,24 +238,24 @@ verify_archive() {
         else
             return 3
         fi
-    
+
     else
         cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
         return 4
     fi
-    
+
     # Internal error: we should never reach this point, but to be sure we
     return -1
 }
 
 download_archive () {
     ARCHIVE_FILE=$1
-    
+
     # Prepend MIRROR to SOURCE (to prefer) mirror source download
     if [ ! -z "${MIRROR}" ]; then
         SOURCE="${MIRROR} ${SOURCE}"
     fi
-    
+
     for DOWNLOADER in ${DOWNLOADERS[@]}; do
     for source in ${SOURCE}; do
         # verify_archive:
@@ -263,18 +263,18 @@ download_archive () {
         # * Remove corrupted ARCHIVE_FILE
         verify_archive ${ARCHIVE_FILE}
         archive_state=$?
-        
+
         if [ ${archive_state} = 0 ]; then
              cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
              return 0;
-        
+
         elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
              cecho ${WARN} "${ARCHIVE_FILE} already downloaded, but unable to be verified."
              return 0;
-        
+
         elif [ ${archive_state} = 3 ]; then
             cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
-            
+
             # Remove the file and check if that was successful
             rm -f ${ARCHIVE_FILE}
             if [ $? = 0 ]; then
@@ -286,11 +286,11 @@ download_archive () {
             fi
         fi
         unset archive_state
-        
+
         # Set up complete url
         url=${source}${ARCHIVE_FILE}
         cecho ${INFO} "Trying to download ${url}"
-        
+
         # Download.
         # If curl or wget is failing, continue this loop for trying an other mirror.
         if [ ${DOWNLOADER} = "curl" ]; then
@@ -303,7 +303,7 @@ download_archive () {
         fi
 
         unset url
-        
+
         # Verify the download
         verify_archive ${ARCHIVE_FILE}
         archive_state=$?
@@ -314,7 +314,7 @@ download_archive () {
         unset archive_state
     done
     done
-    
+
     # Unfortunately it seems that (all) download tryouts finally failed for some reason:
     verify_archive ${ARCHIVE_FILE}
     quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet."
@@ -322,13 +322,13 @@ download_archive () {
 
 package_fetch () {
     cecho ${GOOD} "Fetching ${PACKAGE} ${VERSION}"
-    
+
     # Fetch the package appropriately from its source
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         cd ${DOWNLOAD_PATH}
         download_archive ${NAME}${PACKING}
         quit_if_fail "candi: download_archive ${NAME}${PACKING} failed"
-    
+
     elif [ ${PACKING} = "git" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update git repositories
@@ -339,18 +339,18 @@ package_fetch () {
             cd ${EXTRACTSTO}
             git checkout master --force
             quit_if_fail "candi: git checkout master --force failed"
-            
+
             git pull
             quit_if_fail "candi: git pull failed"
             cd ..
         fi
-        
+
         if [ ${STABLE_BUILD} = true ]; then
             cd ${EXTRACTSTO}
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
         fi
-    
+
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -382,7 +382,7 @@ package_fetch () {
             cd ..
         fi
     fi
-    
+
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error fetching ${PACKAGE} ${VERSION} using ${PACKING}."
 }
@@ -391,7 +391,7 @@ package_unpack() {
     # First make sure we're in the right directory before unpacking
     cd ${UNPACK_PATH}
     FILE_TO_UNPACK=${DOWNLOAD_PATH}/${NAME}${PACKING}
-    
+
     # Only need to unpack archives
     if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tar.gz" ] || [ ${PACKING} = ".tbz2" ] || [ ${PACKING} = ".tgz" ] || [ ${PACKING} = ".tar.xz" ] || [ ${PACKING} = ".zip" ]; then
         cecho ${GOOD} "Unpacking ${NAME}${PACKING}"
@@ -400,15 +400,15 @@ package_unpack() {
             cecho ${BAD} "${FILE_TO_UNPACK} does not exist. Please download first."
             exit 1
         fi
-        
+
         # remove old unpack (this might be corrupted)
         if [ -d "${EXTRACTSTO}" ]; then
             rm -rf ${EXTRACTSTO}
             quit_if_fail "Removing of ${EXTRACTSTO} failed."
         fi
-        
+
         # Unpack the archive only if it isn't already
-        
+
         # Unpack the archive in accordance with its packing
         if [ ${PACKING} = ".tar.bz2" ] || [ ${PACKING} = ".tbz2" ]; then
             tar xjf ${FILE_TO_UNPACK}
@@ -420,69 +420,69 @@ package_unpack() {
             unzip ${FILE_TO_UNPACK}
         fi
     fi
-    
+
     # Apply patches
     cd ${UNPACK_PATH}/${EXTRACTSTO}
     package_specific_patch
-    
+
     # Quit with a useful message if something goes wrong
     quit_if_fail "Error unpacking ${FILE_TO_UNPACK}."
-    
+
     unset FILE_TO_UNPACK
 }
 
 package_build() {
     # Get things ready for the compilation process
     cecho ${GOOD} "Building ${PACKAGE} ${VERSION}"
-    
+
     if [ ! -d "${UNPACK_PATH}/${EXTRACTSTO}" ]; then
         cecho ${BAD} "${EXTRACTSTO} does not exist -- please unpack first."
         exit 1
     fi
-    
+
     # Set the BUILDDIR if nothing else was specified
     default BUILDDIR=${BUILD_PATH}/${NAME}
-    
+
     # Clean the build directory if specified
     if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = "true" ]; then
         rm -rf ${BUILDDIR}
     fi
-    
+
     # Create build directory if it does not exist
     if [ ! -d ${BUILDDIR} ]; then
         mkdir -p ${BUILDDIR}
     fi
-    
+
     # Move to the build directory
     cd ${BUILDDIR}
-    
+
     # Carry out any package-specific setup
     package_specific_setup
     quit_if_fail "There was a problem in build setup for ${PACKAGE} ${VERSION}."
     cd ${BUILDDIR}
-    
+
     # Use the appropriate build system to compile and install the
     # package
     for cmd_file in candi_configure candi_build; do
         echo "#!/usr/bin/env bash" >${cmd_file}
         chmod a+x ${cmd_file}
-        
+
         # Write variables to files so that they can be run stand-alone
         declare -x| grep -v "!::"| grep -v "ProgramFiles(x86)" >>${cmd_file}
-        
+
         # From this point in candi_*, errors are fatal
         echo "set -e" >>${cmd_file}
     done
-    
+
     if [ ${BUILDCHAIN} = "autotools" ]; then
         if [ -f ${UNPACK_PATH}/${EXTRACTSTO}/configure ]; then
             echo ${UNPACK_PATH}/${EXTRACTSTO}/configure ${CONFOPTS} --prefix=${INSTALL_PATH} >>candi_configure
         fi
-        
+
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
         done
-    
+
     elif [ ${BUILDCHAIN} = "cmake" ]; then
         rm -f ${BUILDDDIR}/CMakeCache.txt
         rm -rf ${BUILDDIR}/CMakeFiles
@@ -490,31 +490,31 @@ package_build() {
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
         done
-    
+
     elif [ ${BUILDCHAIN} = "python" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
         echo python setup.py install --prefix=${INSTALL_PATH} >>candi_build
-    
+
     elif [ ${BUILDCHAIN} = "scons" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
         for target in "${TARGETS[@]}"; do
             echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
         done
-    
+
     elif [ ${BUILDCHAIN} = "custom" ]; then
         # Write the function definition to file
         declare -f package_specific_build >>candi_build
         echo package_specific_build >>candi_build
-    
+
     elif [ ${BUILDCHAIN} = "ignore" ]; then
         cecho ${INFO} "Info: ${PACKAGE} has forced BUILDCHAIN=${BUILDCHAIN}."
-    
+
     else
         cecho ${BAD} "candi: internal error: BUILDCHAIN=${BUILDCHAIN} for ${PACKAGE} unknown."
         exit 1
     fi
     echo "touch candi_successful_build" >> candi_build
-    
+
     # Run the generated build scripts
     if [ ${BASH_VERSINFO} -ge 3 ]; then
         set -o pipefail
@@ -523,7 +523,7 @@ package_build() {
         ./candi_configure
     fi
     quit_if_fail "There was a problem configuring ${PACKAGE} ${VERSION}."
-    
+
     if [ ${BASH_VERSINFO} -ge 3 ]; then
         set -o pipefail
         ./candi_build 2>&1 | tee candi_build.log
@@ -531,7 +531,7 @@ package_build() {
         ./candi_build
     fi
     quit_if_fail "There was a problem building ${PACKAGE} ${VERSION}."
-    
+
     # Carry out any package-specific post-build instructions
     package_specific_install
     quit_if_fail "There was a problem in post-build instructions for ${PACKAGE} ${VERSION}."
@@ -554,7 +554,7 @@ guess_platform() {
     # Try to guess the name of the platform we're running on
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-    
+
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
@@ -562,22 +562,22 @@ guess_platform() {
             10.12*)  echo sierra;;
             10.13*)  echo highsierra;;
         esac
-    
+
     elif [ ! -z "$CRAYOS_VERSION" ]; then
         echo cray
 
     elif [ -x /usr/bin/lsb_release ]; then
         local OSVER=$(lsb_release -r -s  |grep -o -E '[0-9]+' |head -n 1)
-        
+
         if [ -f /etc/fedora-release ]; then
             echo fedora${OSVER}
-        
+
         elif [ -f /etc/centos-release ]; then
             echo centos${OSVER}
-        
+
         elif [ -f /etc/redhat-release ]; then
             echo rhel${OSVER}
-        
+
         else
             local DISTRO=$(lsb_release -i -s)
             local CODENAME=$(lsb_release -c -s)
@@ -596,16 +596,16 @@ guess_ostype() {
     # Try to guess the operating system type (ostype)
     if [ -f /usr/bin/cygwin1.dll ]; then
         echo cygwin
-    
+
     elif [ -x /usr/bin/sw_vers ]; then
         echo macos
-    
+
     elif [ -f /etc/fedora-release ]; then
         echo linux
-    
+
     elif [ -f /etc/redhat-release ]; then
         echo linux
-    
+
     elif [ -x /usr/bin/lsb_release ]; then
         echo linux
     fi
@@ -689,28 +689,28 @@ if [ -z "${GIVEN_PLATFORM}" ]; then
     PLATFORM_SUPPORTED=${PROJECT}/platforms/supported/`guess_platform`.platform
     PLATFORM_CONTRIBUTED=${PROJECT}/platforms/contributed/`guess_platform`.platform
     PLATFORM_DEPRECATED=${PROJECT}/platforms/deprecated/`guess_platform`.platform
-    
+
     if [ -e ${PLATFORM_SUPPORTED} ]; then
         PLATFORM=${PLATFORM_SUPPORTED}
         cecho ${INFO} "using ./${PLATFORM}."
-    
+
     elif [ -e ${PLATFORM_CONTRIBUTED} ]; then
         PLATFORM=${PLATFORM_CONTRIBUTED}
         cecho ${INFO} "using ./${PLATFORM}."
         cecho ${WARN} "Warning: Platform is not officially supported but may still work!"
-    
+
     elif [ -e ${PLATFORM_DEPRECATED} ]; then
         PLATFORM=${PLATFORM_DEPRECATED}
         cecho ${INFO} "using ./${PLATFORM}."
         cecho ${WARN} "Warning: Platform is deprecated and will be removed shortly but may still work!"
-    
+
     else
         cecho ${BAD} "Error: Your operating system could not be automatically recognised."
         echo "You may force a (similar) platform directly by:"
         echo "./candi.sh --platform=${PROJECT}/platforms/ {supported|contributed|deprecated} / <FORCED>.platform"
         exit 1
     fi
-    
+
     unset PLATFORM_SUPPORTED
     unset PLATFORM_CONTRIBUTED
     unset PLATFORM_DEPRECATED
@@ -720,9 +720,9 @@ else
     if [ -e ${GIVEN_PLATFORM} ]; then
         PLATFORM=${GIVEN_PLATFORM}
         cecho ${BAD} "using (user-forced) ./${PLATFORM}."
-        
+
         unset GIVEN_PLATFORM
-    
+
     else
         cecho ${BAD} "Error: Your forced platform file ${GIVEN_PLATFORM} does not exists"
         exit 1
@@ -748,10 +748,10 @@ fi
 # Guess dynamic shared library file extension -> LDSUFFIX
 if [ ${PLATFORM_OSTYPE} == "linux" ]; then
     LDSUFFIX=so
-    
+
 elif [ ${PLATFORM_OSTYPE} == "macos" ]; then
     LDSUFFIX=dylib
-	
+
 elif [ ${PLATFORM_OSTYPE} == "cygwin" ]; then
     LDSUFFIX=dll
 fi
@@ -1002,32 +1002,32 @@ TIMINGS=""
 for PACKAGE in ${PACKAGES[@]}; do
     # Start timer
     TIC="$(${DATE_CMD} +%s)"
-    
+
     # Return to the original CANDI directory
     cd ${ORIG_DIR}
-    
+
     # Skip building this package if the user requests it
     SKIP=false
     case ${PACKAGE} in
         load:*) SKIP=true; LOAD=true; PACKAGE=${PACKAGE#*:};;
         skip:*) SKIP=true;  PACKAGE=${PACKAGE#*:};;
-        once:*) 
+        once:*)
           # If the package is turned off in the deal.II configuration, do not
           # install it.
           PACKAGE=${PACKAGE#*:};
           if [[ ${PACKAGES_OFF} =~ ${PACKAGE} ]]; then
-            SKIP=true; 
+            SKIP=true;
           else
             SKIP=maybe;
           fi;;
     esac
-    
+
     # Check if the package exists
     if [ ! -e ${PROJECT}/packages/${PACKAGE}.package ]; then
         cecho ${BAD} "${PROJECT}/packages/${PACKAGE}.package does not exist yet. Please create it."
         exit 1
     fi
-    
+
     # Reset package-specific variables
     unset NAME
     unset VERSION
@@ -1044,7 +1044,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
     CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
-    
+
     # Reset package-specific functions
     package_specific_patch () { true; }
     package_specific_setup () { true; }
@@ -1052,29 +1052,29 @@ for PACKAGE in ${PACKAGES[@]}; do
     package_specific_install () { true; }
     package_specific_register () { true; }
     package_specific_conf() { true; }
-    
+
     # Fetch information pertinent to the package
     source ${PROJECT}/packages/${PACKAGE}.package
-    
+
     # Turn to a stable version of the package if that's what the user
     # wants and it exists
     if [ ${STABLE_BUILD} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
         source ${PROJECT}/packages/${PACKAGE}-stable.package
     fi
-    
+
     # Ensure that the package file is sanely constructed
     if [ ! "${BUILDCHAIN}" ]; then
         cecho ${BAD} "${PACKAGE}.package is not properly formed. Please check that all necessary variables are defined."
         exit 1
     fi
-    
+
     if [ ! "${BUILDCHAIN}" = "ignore" ] ; then
         if [ ! "${NAME}" ] || [ ! "${SOURCE}" ] || [ ! "${PACKING}" ]; then
             cecho ${BAD} "${PACKAGE}.package is not properly formed. Please check that all necessary variables are defined."
             exit 1
         fi
     fi
-    
+
     # Most packages extract to a directory named after the package
     default EXTRACTSTO=${NAME}
 
@@ -1083,7 +1083,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     if [ ${SKIP} = maybe ] && [ ! -f ${BUILDDIR}/candi_successful_build ]; then
         SKIP=false
     fi
-    
+
     # Fetch, unpack and build package
     if [ ${SKIP} = false ]; then
         if [ ${DEVELOPER_MODE} = "OFF" ]; then
@@ -1104,7 +1104,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     fi
     package_register
     package_conf
-    
+
     # Store timing
     TOC="$(($(${DATE_CMD} +%s)-TIC))"
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
