@@ -1,4 +1,4 @@
-# Fedora 24
+# Fedora 28
 
 # This build script assumes that you have several packages already
 # installed via Fedora's dnf using the following command:
