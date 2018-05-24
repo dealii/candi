@@ -19,7 +19,7 @@ pipeline
         echo "building on node ${env.NODE_NAME}"
       }
     }
-    
+
     stage ("Check permissions")
     {
       when {
@@ -38,7 +38,7 @@ pipeline
 
     stage ("min-ubuntu16")
     {
-      options {timeout(time: 60, unit: 'MINUTES')}
+      options {timeout(time: 240, unit: 'MINUTES')}
       agent
       {
         dockerfile {
@@ -66,7 +66,7 @@ pipeline
 
     stage ("default-ubuntu16")
     {
-      options {timeout(time: 60, unit: 'MINUTES')}
+      options {timeout(time: 240, unit: 'MINUTES')}
       agent
       {
         dockerfile {
