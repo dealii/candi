@@ -1,0 +1,32 @@
+FROM dealii/ubuntu16
+
+MAINTAINER timo.heister@gmail.com
+
+USER root
+
+# note: remove python after candi works with python3 by default
+
+RUN apt-get update && apt-get -yq install \
+    autoconf \
+    automake \
+    build-essential \
+    cmake \
+    gfortran \
+    git \
+    libblas-dev \
+    libblas3 \
+    liblapack-dev \
+    liblapack3 \
+    libopenmpi-dev \
+    lsb-release \
+    numdiff \
+    openmpi-bin \
+    openmpi-common \
+    python \
+    unzip \
+    wget \
+    zlib1g-dev
+
+USER dealii
+
+
