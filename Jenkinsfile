@@ -109,7 +109,7 @@ pipeline
         lsb_release -a
         echo $WORKSPACE
         ./candi.sh -j 4 --packages="cmake"
-        source ~/deal.ii-candi/configuration/enable.sh
+        . ~/deal.ii-candi/configuration/enable.sh
         which cmake
         cmake --version
         '''
