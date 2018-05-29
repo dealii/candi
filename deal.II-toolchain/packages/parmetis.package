@@ -36,10 +36,12 @@ package_specific_build() {
 }
 
 package_specific_patch () {
-    if [ ${PLATFORM_OSTYPE} == linux && ${VERSION} == "4.0.3" ]; then
-        cd ${UNPACK_PATH}/${EXTRACTSTO}
-        cecho ${WARN} "applying patch for building METIS shared libraries"
-        patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
+    if [ ${PLATFORM_OSTYPE} == linux ]; then
+        if [ ${VERSION} == "4.0.3" ]; then
+            cd ${UNPACK_PATH}/${EXTRACTSTO}
+            cecho ${WARN} "applying patch for building METIS shared libraries"
+            patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
+        fi
     fi
 }
 
