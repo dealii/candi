@@ -111,6 +111,7 @@ if [ ! -z "${PARMETIS_DIR}" ]; then
     	
     CONFOPTS="\
         ${CONFOPTS} \
+        ${TRILINOS_PARMETIS_CONFOPTS} \
         -D TPL_ENABLE_ParMETIS:BOOL=ON \
         -D TPL_ParMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
         -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
