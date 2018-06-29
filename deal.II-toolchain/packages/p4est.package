@@ -16,8 +16,15 @@ package_specific_setup () {
 
     # export zlib if we installed it ourselves
     if [ ! -z "${ZLIB_DIR}" ]; then
-      LIBS="-L${ZLIB_LIBPATH}"
-      CFLAGS="$CFLAGS -I${ZLIB_INCLUDE}"
+        if [ -z "${ZLIB_LIBPATH}" ]; then
+            ZLIB_LIBPATH=${ZLIB_DIR}/lib
+        fi
+        LIBS="-L${ZLIB_LIBPATH}"
+
+        if [ -z "${ZLIB_INCLUDE}" ]; then
+            ZLIB_INCLUDE=${ZLIB_DIR}/include
+        fi
+        CFLAGS="$CFLAGS -I${ZLIB_INCLUDE}"
     fi
 
     if test -z "$CFLAGS" -a -z "$P4EST_CFLAGS_FAST" ; then
