@@ -18,7 +18,7 @@ if [ ${PLATFORM_OSTYPE} == "linux" ]; then
     PACKING=.tar.gz
     CHECKSUM=55e30dd01698e9409b576008fd22394c
     BUILDCHAIN=ignore
-
+    INSTALL_PATH=${INSTALL_PATH}/${NAME}
 else
     # configure/make/install
     NAME=cmake-${VERSION}
@@ -39,7 +39,6 @@ SOURCE=https://cmake.org/files/v${MAJOR}/
 if [ ${BUILDCHAIN} == "ignore" ]; then
     package_specific_install () {
         cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
-        INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
     }
 fi
 
