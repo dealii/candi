@@ -587,8 +587,14 @@ guess_platform() {
                 *:*:*Ubuntu*)         echo ubuntu${OSVER};;
                 *:*:*openSUSE\ 12*)   echo opensuse12;;
                 *:*:*openSUSE\ 13*)   echo opensuse13;;
+                *:*:*openSUSE\ 15*)   echo opensuse15;;
             esac
         fi
+    elif [ -f /etc/os-release ]; then
+	. /etc/os-release
+	if [ "${PRETTY_NAME}" == "openSUSE Leap 15.0" ]; then
+	    echo opensuse15
+	fi
     fi
 }
 
@@ -607,6 +613,9 @@ guess_ostype() {
         echo linux
 
     elif [ -x /usr/bin/lsb_release ]; then
+        echo linux
+
+    elif [ -x /etc/os-release ]; then
         echo linux
     fi
 }
