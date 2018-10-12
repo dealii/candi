@@ -1,0 +1,20 @@
+# openSUSE 15
+#
+# This build script assumes that you have several packages already
+# installed via openSUSE's zypper using the following commands:
+#
+# > su -c 'zypper -n install -t pattern devel_basis devel_C_C++'
+#
+# > su -c 'zypper -n install \
+#          gcc-fortran subversion git cmake \
+#          openmpi3 openmpi3-devel blas-devel lapack-devel'
+#
+# optional packages:
+# Modules doxygen graphviz graphviz-devel devel_qt4 splint
+#
+# Then reboot and run candi again.
+##
+
+#
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
