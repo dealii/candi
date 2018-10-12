@@ -65,6 +65,11 @@ if [ ! -z "${MKL_DIR}" ]; then
     cecho ${INFO} "petsc: configuration with MKL"
     cecho ${INFO} "petsc: configuration with blas-lapack-dir=${MKL_DIR}"
     CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
+else
+    if [ ! -z "${BLAS_LIB}" ]; then
+        cecho ${INFO} "petsc: configuration with --with-blas-lapack-lib=${BLAS_LIB}"
+        CONFOPTS="${CONFOPTS} --with-blas-lapack-lib=${BLAS_LIB}"
+    fi
 fi
 
 # Add ParMETIS, if present
