@@ -18,28 +18,27 @@ if [ ${PLATFORM_OSTYPE} == "linux" ]; then
     PACKING=.tar.gz
     CHECKSUM=55e30dd01698e9409b576008fd22394c
     BUILDCHAIN=ignore
-
 else
     # configure/make/install
     NAME=cmake-${VERSION}
     PACKING=.tar.gz
     CHECKSUM=d2d554c05fc07cfae7846d2aa205f12a
-    
+
     if builtin command -v cmake > /dev/null; then
         # configure/make with cmake (older or newer version already installed)    
         BUILDCHAIN=cmake
-	else
+    else
         # configure/make with autotools
         BUILDCHAIN=autotools
     fi
 fi
 
 SOURCE=https://cmake.org/files/v${MAJOR}/
+INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 if [ ${BUILDCHAIN} == "ignore" ]; then
     package_specific_install () {
         cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
-        INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
     }
 fi
 
