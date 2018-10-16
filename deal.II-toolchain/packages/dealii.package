@@ -46,6 +46,14 @@ if [ ${DEAL_II_VERSION} == "v8.5.1" ]; then
     fi
 fi
 
+################################################################################
+# Check if we have commits to be cherry-picked by git
+
+if [ ! -z "${DEAL_CHERRYPICKCOMMITS}" ]; then
+    CHERRYPICKCOMMITS=" \
+        ${DEAL_CHERRYPICKCOMMITS}"
+    cecho ${INFO} "deal.II: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
+fi
 
 ################################################################################
 # Add additional packages, if present

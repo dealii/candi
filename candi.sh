@@ -350,6 +350,14 @@ package_fetch () {
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
         fi
+        
+        # git cherry-pick on commits given by ${CHERRYPICKCOMMITS}
+        if [ ${STABLE_BUILD} = true ] && [ ! -z "${CHERRYPICKCOMMITS}" ]; then
+            cecho ${INFO} "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
+            cd ${EXTRACTSTO}
+            git cherry-pick -X theirs ${CHERRYPICKCOMMITS}
+            quit_if_fail "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS} failed"
+        fi
 
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
@@ -1049,6 +1057,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset CONFOPTS
     unset MAKEOPTS
     unset CONFIG_FILE
+    unset CHERRYPICKCOMMITS
     TARGETS=('' install)
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
