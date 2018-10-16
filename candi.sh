@@ -349,6 +349,7 @@ package_fetch () {
             cd ${EXTRACTSTO}
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
+            cd ..
         fi
         
         # git cherry-pick on commits given by ${CHERRYPICKCOMMITS}
@@ -357,6 +358,7 @@ package_fetch () {
             cd ${EXTRACTSTO}
             git cherry-pick -X theirs ${CHERRYPICKCOMMITS}
             quit_if_fail "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS} failed"
+            cd ..
         fi
 
     elif [ ${PACKING} = "hg" ]; then
