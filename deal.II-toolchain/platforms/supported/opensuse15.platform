@@ -6,13 +6,18 @@
 # > su -c 'zypper -n install -t pattern devel_basis devel_C_C++'
 #
 # > su -c 'zypper -n install \
-#          gcc-fortran subversion git cmake \
+#          python gcc gcc-c++ gcc-fortran subversion git cmake \
 #          openmpi3 openmpi3-devel blas-devel lapack-devel'
 #
 # optional packages:
 # Modules doxygen graphviz graphviz-devel devel_qt4 splint
 #
 # Then reboot and run candi again.
+#
+# You need to specify the compilers, use the mpi-selector tool, or
+# source the mpi implementation before running candi using
+#
+# . /usr/lib64/mpi/gcc/openmpi3/bin/mpivars.sh
 ##
 
 #
