@@ -351,15 +351,6 @@ package_fetch () {
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
             cd ..
         fi
-        
-        # git cherry-pick on commits given by ${CHERRYPICKCOMMITS}
-        if [ ${STABLE_BUILD} = true ] && [ ! -z "${CHERRYPICKCOMMITS}" ]; then
-            cecho ${INFO} "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
-            cd ${EXTRACTSTO}
-            git cherry-pick -X theirs ${CHERRYPICKCOMMITS}
-            quit_if_fail "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS} failed"
-            cd ..
-        fi
 
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
@@ -429,6 +420,14 @@ package_unpack() {
         elif [ ${PACKING} = ".zip" ]; then
             unzip ${FILE_TO_UNPACK}
         fi
+    fi
+
+    # Apply patches with git cherry-pick of commits given by ${CHERRYPICKCOMMITS}
+    if [ ${PACKING} = "git" ] && [ ! -z "${CHERRYPICKCOMMITS}" ]; then
+        cecho ${INFO} "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
+        cd ${UNPACK_PATH}/${EXTRACTSTO}
+        git cherry-pick -X theirs ${CHERRYPICKCOMMITS}
+        quit_if_fail "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS} failed"
     fi
 
     # Apply patches
