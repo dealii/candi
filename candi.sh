@@ -349,6 +349,7 @@ package_fetch () {
             cd ${EXTRACTSTO}
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
+            cd ..
         fi
 
     elif [ ${PACKING} = "hg" ]; then
@@ -419,6 +420,14 @@ package_unpack() {
         elif [ ${PACKING} = ".zip" ]; then
             unzip ${FILE_TO_UNPACK}
         fi
+    fi
+
+    # Apply patches with git cherry-pick of commits given by ${CHERRYPICKCOMMITS}
+    if [ ${PACKING} = "git" ] && [ ! -z "${CHERRYPICKCOMMITS}" ]; then
+        cecho ${INFO} "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
+        cd ${UNPACK_PATH}/${EXTRACTSTO}
+        git cherry-pick -X theirs ${CHERRYPICKCOMMITS}
+        quit_if_fail "candi: git cherry-pick -X theirs ${CHERRYPICKCOMMITS} failed"
     fi
 
     # Apply patches
@@ -1049,6 +1058,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset CONFOPTS
     unset MAKEOPTS
     unset CONFIG_FILE
+    unset CHERRYPICKCOMMITS
     TARGETS=('' install)
     PROCS=${ORIG_PROCS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
