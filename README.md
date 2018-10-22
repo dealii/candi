@@ -14,6 +14,7 @@ then install the latest deal.II release and common dependencies:
 ```bash
  git clone https://github.com/dealii/candi
  cd candi
+ git checkout v9.0.1
  ./candi.sh
 ```
 
@@ -22,7 +23,7 @@ Follow the instructions on the screen
 
 ### Examples
 
-#### Install deal.II on RHEL 7, CentOS 7 or Fedora 24,25,26:
+#### Install deal.II on RHEL 7, CentOS 7 or Fedora 26,27,28:
 ```bash
   module load mpi/openmpi-`uname -i`
   ./candi.sh
