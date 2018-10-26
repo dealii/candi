@@ -115,4 +115,7 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
+    if [ ! -z "${PARMETIS_DIR}" ]; then
+       echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
+    fi
 }
