@@ -7,7 +7,7 @@
 #
 # > su -c 'zypper -n install \
 #          python gcc gcc-c++ gcc-fortran subversion git cmake \
-#          openmpi3 openmpi3-devel blas-devel lapack-devel'
+#          binutils-gold mpich-devel blas-devel lapack-devel'
 #
 # optional packages:
 # Modules doxygen graphviz graphviz-devel devel_qt4 splint
