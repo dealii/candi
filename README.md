@@ -8,13 +8,12 @@ linux-based systems.
 Quickstart
 ----
 
-The following commands download the current version of the installer and
+The following commands download the current stable version of the installer and
 then install the latest deal.II release and common dependencies:
 
 ```bash
  git clone https://github.com/dealii/candi
  cd candi
- git checkout v9.0.1
  ./candi.sh
 ```
 
