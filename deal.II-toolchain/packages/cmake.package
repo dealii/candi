@@ -52,7 +52,7 @@ package_specific_conf () {
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
-export PATH=${INSTALL_PATH}/bin:${PATH}
+export PATH=${INSTALL_PATH}/bin:\${PATH}
 export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
 " >> $CONFIG_FILE
 }
