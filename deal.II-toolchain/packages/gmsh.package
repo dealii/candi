@@ -1,0 +1,43 @@
+# see http://gmsh.info/src/
+VERSION=3.0.6
+CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+
+NAME=gmsh-${VERSION}-source
+PACKING=.tgz
+SOURCE=http://gmsh.info/src/
+EXTRACTSTO=gmsh-${VERSION}-source
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
+INSTALL_PATH=${INSTALL_PATH}/gmsh-${VERSION}
+
+CONFOPTS=" -D ENABLE_MPI=OFF \
+	   -D CMAKE_BUILD_TYPE=Release"
+
+# options we might consider setting:
+# -D ENABLE_METIS=OFF
+# -D ENABLE_FLTK=OFF
+# -D ENABLE_OCC=OFF
+# -D ENABLE_PETSC=OFF
+# -D ENABLE_SLEPC=OFF
+# -D ENABLE_COMPRESSED_IO=O
+# the following two sadly don't install the .so correctly:
+# -D ENABLE_BUILD_SHARED=ON
+# -D ENABLE_BUILD_DYNAMIC=ON
+
+
+package_specific_register () {
+    export GMSH_DIR=${INSTALL_PATH}
+    export PATH=${INSTALL_PATH}/bin:$PATH
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export GMSH_DIR=${INSTALL_PATH}
+export PATH=${INSTALL_PATH}/bin:\$PATH
+" >> $CONFIG_FILE
+}
