@@ -12,7 +12,11 @@ BUILDCHAIN=cmake
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/gmsh-${VERSION}
 
+# Disable slepc because gmsh is not setting the relative path for the
+# .so correctly.
+
 CONFOPTS=" -D ENABLE_MPI=OFF \
+	   -D ENABLE_SLEPC=OFF \
 	   -D CMAKE_BUILD_TYPE=Release"
 
 # options we might consider setting:
@@ -20,7 +24,6 @@ CONFOPTS=" -D ENABLE_MPI=OFF \
 # -D ENABLE_FLTK=OFF
 # -D ENABLE_OCC=OFF
 # -D ENABLE_PETSC=OFF
-# -D ENABLE_SLEPC=OFF
 # -D ENABLE_COMPRESSED_IO=O
 # the following two sadly don't install the .so correctly:
 # -D ENABLE_BUILD_SHARED=ON
