@@ -58,6 +58,7 @@ package_specific_patch () {
 
 package_specific_register () {
     export OPENCASCADE_DIR=${INSTALL_PATH}
+    export CASROOT=${INSTALL_PATH}
 }
 
 package_specific_conf () {
@@ -66,5 +67,6 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export OPENCASCADE_DIR=${INSTALL_PATH}
+export CASROOT=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }
