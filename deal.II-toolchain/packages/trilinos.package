@@ -2,7 +2,17 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
     TRILINOS_MAJOR_VERSION=AUTO
 fi
 
-if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
+if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ];then
+    # download from github:
+    # this is the last "blessed" version we like:
+    VERSION=dbf41f3b26b0326a1377f219e6e07eab861d181e
+    EXTRACTSTO=trilinos-12.dbf41f
+
+    NAME=Trilinos.git
+    PACKING=git
+    SOURCE=https://github.com/trilinos/
+
+elif [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
     VERSION=12-12-1
     CHECKSUM=ecd4606fa332212433c98bf950a69cc7
 
@@ -14,6 +24,11 @@ if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" 
     
     #VERSION=12-4-2
     #CHECKSUM=4c25a757d86bde3531090bd900a2cea8
+
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
     VERSION=11-14-3
@@ -29,15 +44,15 @@ elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
     cecho ${BAD} "trilinos: warning: forcing unset SUPERLU_DIR (not supported)"
     unset SUPERLU_DIR
 
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
+
 else
     cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
     exit
 fi
-
-SOURCE=https://github.com/trilinos/Trilinos/archive/
-NAME=trilinos-release-${VERSION}
-EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
-PACKING=.tar.gz
 
 BUILDCHAIN=cmake
 
