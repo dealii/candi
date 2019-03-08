@@ -2,7 +2,11 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
     TRILINOS_MAJOR_VERSION=AUTO
 fi
 
-if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ];then
+if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
+    TRILINOS_MAJOR_VERSION="12"
+fi
+
+if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     # download from github:
     # this is the last "blessed" version we like:
     VERSION=dbf41f3b26b0326a1377f219e6e07eab861d181e
@@ -11,10 +15,12 @@ if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ];then
     NAME=Trilinos.git
     PACKING=git
     SOURCE=https://github.com/trilinos/
-
 elif [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
-    VERSION=12-12-1
-    CHECKSUM=ecd4606fa332212433c98bf950a69cc7
+    VERSION=12-14-1
+    CHECKSUM=de912cca43c2ca3b74aa08528ac39dbd
+
+    #VERSION=12-12-1
+    #CHECKSUM=ecd4606fa332212433c98bf950a69cc7
 
 
     # note: the official trilinos tarball changed md5sum but we confirmed that the contents is
