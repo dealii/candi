@@ -30,8 +30,7 @@ CONFOPTS=" \
 
 if [ "${NATIVE_OPTIMIZATIONS}" = "true" ]; then
     CONFOPTS="${CONFOPTS} \
-      -D CMAKE_CXX_FLAGS='-march=native'
-    "
+      -D CMAKE_CXX_FLAGS='-march=native'"
 fi
 
 # add the user-specified flags at the end (so things can be overriden):

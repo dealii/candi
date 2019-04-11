@@ -38,11 +38,10 @@ CONFOPTS="
 "
 
 if [ "${NATIVE_OPTIMIZATIONS}" = "true" ]; then
-    CONFOPTS="${CONFOPTS}
-      COPTFLAGS='-O3 -march=native -mtune=native'
-      CXXOPTFLAGS='-O3 -march=native -mtune=native'
-      FOPTFLAGS='-O3 -march=native -mtune=native'
-    "
+    CONFOPTS="${CONFOPTS} \
+      COPTFLAGS='-O3 -march=native -mtune=native' \
+      CXXOPTFLAGS='-O3 -march=native -mtune=native' \
+      FOPTFLAGS='-O3 -march=native -mtune=native'"
 fi
 
 
