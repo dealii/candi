@@ -26,7 +26,15 @@ CONFOPTS=" \
 -D DEAL_II_FORCE_BUNDLED_UMFPACK:BOOL=OFF \
 -D DEAL_II_WITH_BOOST:BOOL=ON \
 -D DEAL_II_FORCE_BUNDLED_BOOST:BOOL=OFF \
--D DEAL_II_WITH_ZLIB:BOOL=ON \
+-D DEAL_II_WITH_ZLIB:BOOL=ON"
+
+if [ "${NATIVE_OPTIMIZATIONS}" = "true" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_CXX_FLAGS='-march=native'"
+fi
+
+# add the user-specified flags at the end (so things can be overriden):
+CONFOPTS="${CONFOPTS} \
 ${DEAL_CONFOPTS}"
 
 
