@@ -44,7 +44,6 @@ pipeline
         dockerfile {
           dir '.ci'
           filename 'dockerfile.ubuntu16'
-          label 'has-docker'
         }
       }
       steps
@@ -66,13 +65,12 @@ pipeline
 
     stage ("default-ubuntu16")
     {
-      options {timeout(time: 240, unit: 'MINUTES')}
+      options {timeout(time: 480, unit: 'MINUTES')}
       agent
       {
         dockerfile {
           dir '.ci'
           filename 'dockerfile.ubuntu16'
-          label 'has-docker'
         }
       }
       steps
@@ -100,7 +98,6 @@ pipeline
         dockerfile {
           dir '.ci'
           filename 'dockerfile.ubuntu16'
-          label 'has-docker'
         }
       }
       steps
