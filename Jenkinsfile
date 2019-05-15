@@ -102,7 +102,7 @@ pipeline
       }
       steps
       {
-        sh '''
+        sh '''#!/bin/bash
         lsb_release -a
         echo $WORKSPACE
         ./candi.sh -j 4 --packages="cmake"
