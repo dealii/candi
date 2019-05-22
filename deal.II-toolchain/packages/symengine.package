@@ -1,0 +1,30 @@
+VERSION=0.4.0
+CHECKSUM=fd9ae3e98258291ef35b6392faa72ace
+
+NAME=symengine-${VERSION}
+PACKING=.tar.gz
+SOURCE=https://github.com/symengine/symengine/releases/download/v$VERSION/
+EXTRACTSTO=symengine-${VERSION}
+
+#https://github.com/symengine/symengine/releases/download/v0.4.0/symengine-0.4.0.tar.gz
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
+INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
+
+CONFOPTS="-DCMAKE_BUILD_TYPE=Release \
+"
+
+package_specific_register () {
+    export SYMENGINE_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export SYMENGINE_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

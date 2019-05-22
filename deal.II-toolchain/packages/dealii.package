@@ -212,6 +212,23 @@ if [ ! -z "${OPENCASCADE_DIR}" ]; then
         -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
 fi
 
+#symengine:
+if [[ ${PACKAGES_OFF} =~ 'symengine' ]]; then
+    if [ ! -z "${SYMENGINE_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
+        unset SYMENGINE_DIR
+    fi
+fi
+
+if [ ! -z "${SYMENGINE_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with SYMENGINE"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D DEAL_II_WITH_SYMENGINE:BOOL=ON \
+        -D SYMENGINE_DIR=${SYMENGINE_DIR}"
+fi
+
+
 ################################################################################
 
 package_specific_conf() {
