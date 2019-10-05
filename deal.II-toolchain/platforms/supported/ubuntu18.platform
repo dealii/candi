@@ -7,7 +7,7 @@
 #   automake autoconf gfortran \
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion git \
 #   libblas-dev liblapack-dev libblas3 liblapack3 \
-#   libsuitesparse-dev libtool libboost-all-dev \
+#   libsuitesparse-dev libtool libboost-all-dev zlib1g-dev \
 #   splint tcl tcl-dev environment-modules qt4-dev-tools
 #
 # Then run candi again.
