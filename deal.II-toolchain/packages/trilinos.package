@@ -3,8 +3,11 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ] || [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
+
+    # note: the official trilinos tarball changed md5sum but we confirmed that the contents is
+    # identical. We accept both hashes here.
     VERSION=12-10-1
-    CHECKSUM=40f28628b63310f9bd17c26d9ebe32b1
+    CHECKSUM="667333dbd7c0f031d47d7c5511fd0810 40f28628b63310f9bd17c26d9ebe32b1"
     
     #VERSION=12-4-2
     #CHECKSUM=4c25a757d86bde3531090bd900a2cea8
