@@ -222,30 +222,25 @@ verify_archive() {
 
     # Verify CHECKSUM using md5/md5sum
     if builtin command -v md5 > /dev/null; then
-        test "${CHECKSUM}" = "$(md5 -q ${ARCHIVE_FILE})"
-        if [ $? = 0 ]; then
-            echo "${ARCHIVE_FILE}: OK"
-            return 0
-        else
-            echo "${ARCHIVE_FILE}: FAILED"
-            return 3
-        fi
-
+	CURRENT="$(md5 -q ${ARCHIVE_FILE})"
     elif builtin command -v md5sum > /dev/null; then
-        echo "${CHECKSUM}  ${ARCHIVE_FILE}" | md5sum --check -
-        if [ $? = 0 ]; then
-            return 0
-        else
-            return 3
-        fi
-
+	CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
     else
         cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
         return 4
     fi
 
-    # Internal error: we should never reach this point, but to be sure we
-    return -1
+    for CHECK in ${CHECKSUM}; do
+        test "${CHECK}" = "${CURRENT}"
+        if [ $? = 0 ]; then
+            echo "${ARCHIVE_FILE}: OK"
+            return 0
+	fi
+    done
+
+    cecho ${BAD} "${ARCHIVE_FILE}: FAILED"
+    cecho ${BAD} "${CURRENT} does not match any in ${CHECKSUM}"
+    return 3
 }
 
 download_archive () {
