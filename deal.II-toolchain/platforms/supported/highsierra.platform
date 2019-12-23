@@ -18,7 +18,7 @@
 # 
 # Install the following via Homebrew
 # $ brew install cmake
-# $ brew install openmpi --c++11 --with-mpi-thread-multiple
+# $ brew install openmpi
 # 
 # (Optional) Install the following via Homebrew
 # $ brew install wget
