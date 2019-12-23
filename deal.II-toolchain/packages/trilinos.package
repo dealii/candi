@@ -92,6 +92,7 @@ fi
 # Set intel MKL options
 if [ "${MKL}" = "ON" ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
+
     if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then
         cecho ${INFO} "trilinos: configuration with BLAS_DIR=${MKL_DIR}"
         cecho ${INFO} "trilinos: configuration with LAPACK_DIR=${MKL_DIR}"
@@ -100,11 +101,25 @@ if [ "${MKL}" = "ON" ]; then
             -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
             -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR}"
     fi
+
+    # Trilinos will complain that MKL does not support HAVE_TEUCHOS_BLASFLOAT
+    cecho ${BAD} "trilinos: disabling Tpetra because you are using MKL"
     
     CONFOPTS=" \
         ${CONFOPTS} \
         -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
-        -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
+        -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64 \
+        -D Trilinos_ENABLE_Tpetra=OFF"
+
+else
+    if [ ! -z "${BLAS_LIB}" ]; then
+        # We need to specify the full name if using openblas.package:
+        cecho ${INFO} "trilinos: configuration with BLAS_LIB=${BLAS_LIB}"
+        CONFOPTS="
+		${CONFOPTS} \
+		-D TPL_BLAS_LIBRARIES:STRING=${BLAS_LIB} \
+		-D TPL_LAPACK_LIBRARIES:STRING=${BLAS_LIB}"
+    fi
 fi
 
 # Set compilers & compiler options
@@ -163,9 +178,7 @@ fi
 #########################################################################
 # General Trilinos configuration
 
-CONFOPTS="${TRILINOS_CONFOPTS} \
-          ${CONFOPTS} \
-          -D TPL_ENABLE_MPI:BOOL=ON \
+CONFOPTS="-D TPL_ENABLE_MPI:BOOL=ON \
           -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
           -D TPL_ENABLE_TBB:BOOL=OFF \
           -D Trilinos_VERBOSE_CONFIGURE:BOOL=FALSE \
@@ -196,7 +209,9 @@ CONFOPTS="${TRILINOS_CONFOPTS} \
           -D Trilinos_ENABLE_Amesos2:BOOL=ON \
           -D CMAKE_BUILD_TYPE:STRING=RELEASE \
           -D CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE \
-          -D BUILD_SHARED_LIBS:BOOL=ON"
+          -D BUILD_SHARED_LIBS:BOOL=ON \
+          ${CONFOPTS} \
+          ${TRILINOS_CONFOPTS}"
 
 package_specific_register () {
     export TRILINOS_DIR=${INSTALL_PATH}
