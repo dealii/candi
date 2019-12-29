@@ -1,0 +1,38 @@
+# macOS 10.14 (Mojave)
+#
+# macOS support is experimental and requires:
+# - a recent version of xcode with command line tools
+# - openmpi installed using homebrew and
+# - cmake
+#
+# Detailed Installation Notes:
+# - install Xcode from AppStore, open it and accept the license.
+# - Open Terminal, and install Xcode command line tools via
+# $ xcode-select --install
+# and then run
+# $ xcodebuild -license
+# to accept the license.
+#
+# Install Homebrew in a Terminal via
+# $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#
+# Install the following via Homebrew
+# $ brew install cmake
+# $ brew install openmpi
+#
+# Put the following definitions into your bashrc to use gcc (instead of apple clang):
+#   export OMPI_CXX=g++-9
+#   export OMPI_CC=gcc-9
+#   export OMPI_FC=gfortran-9
+#
+# (Optional) Install the following via Homebrew
+# $ brew install wget
+# $ brew install gnuplot
+#
+# $ brew install bash
+# and follow the shell activation notes.
+#
+# $ brew install modules
+# and follow the activation notes to use the modulefile configuration.
+#
+##
