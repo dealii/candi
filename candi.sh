@@ -565,6 +565,8 @@ guess_platform() {
             10.11*)  echo elcapitan;;
             10.12*)  echo sierra;;
             10.13*)  echo highsierra;;
+            10.14*)  echo mojave;;
+            10.15*)  echo catalina;;
         esac
 
     elif [ ! -z "$CRAYOS_VERSION" ]; then
