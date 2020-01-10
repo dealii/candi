@@ -1,0 +1,61 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  ubuntu18-minimal:
+    name: ubuntu 18.04 minimal build
+    runs-on: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: setup
+      run: |
+        sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin libblas-dev liblapack-dev libblas3 liblapack3
+    - name: info
+      run: |
+        g++ -v
+        mpic++ -v
+        cmake --version
+    - name: build
+      run: |
+        ./candi.sh -j 2 --packages="once:p4est dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+
+  osx-minimal:
+    name: OSX minimal build
+    runs-on: [macos-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: info
+      run: |
+        g++ -v
+        cmake --version
+    - name: build
+      run: |
+        echo 'DEAL_CONFOPTS="-D DEAL_II_WITH_MPI=OFF"' >> candi.cfg
+        ./candi.sh -j 2 --packages="dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+
+  osx-parallel:
+    name: OSX parallel build
+    runs-on: [macos-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: setup
+      run: |
+        brew install openmpi
+    - name: info
+      run: |
+        export OMPI_CXX=g++-9
+        mpicxx -v
+        cmake --version
+    - name: build
+      run: |
+        export OMPI_CXX=g++-9
+        export OMPI_CC=gcc-9
+        export OMPI_FC=gfortran-9
+        ./candi.sh -j 2 --packages="once:p4est dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
