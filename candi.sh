@@ -601,6 +601,12 @@ guess_platform() {
 	if [ "${PRETTY_NAME}" == "openSUSE Leap 15.0" ]; then
 	    echo opensuse15
 	fi
+	if [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
+	    echo arch
+	fi
+	if [ "${PRETTY_NAME}" == "Arch Linux" ]; then
+	    echo arch
+	fi
     fi
 }
 
