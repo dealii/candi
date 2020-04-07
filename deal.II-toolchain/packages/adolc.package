@@ -1,33 +1,23 @@
 # use development version?
-#CANDI_ADOLC_FROM_GIT=1
+CANDI_ADOLC_FROM_GIT=1
 
 if [ -n "$CANDI_ADOLC_FROM_GIT" ]; then
     # download git repository
     VERSION=master
     EXTRACTSTO=ADOL-C-master
 
-    NAME=adol-c.git
+    NAME=ADOL-C.git
     PACKING=git
-    SOURCE=https://gitlab.com/adol-c/
+    SOURCE=https://github.com/coin-or/
 
 else
     # download release tarball
 
-    # 2.6.3 is the latest official release, but is not compatible with
-    # deal.II. For now we have an un-official 2.6.4 RC that we are using.
-
-    #VERSION=2.6.3
-    #NAME=ADOL-C-${VERSION}
-    #EXTRACTSTO=ADOL-C-${VERSION}
-    #SOURCE=https://www.coin-or.org/download/source/ADOL-C/
-    #CHECKSUM=f78f67f70d5874830a1ad1c0f54e54f7
-    #PACKING=.tgz
-
-    VERSION=2.6.4-rc1
-    NAME=ADOL-C-${VERSION}
-    EXTRACTSTO=ADOL-C-${VERSION}
-    SOURCE=https://github.com/tjhei/adol-c/releases/download/v2.6.4-rc1/
-    CHECKSUM=cca27e9579c0c9ab4dd0c1cfa1c44433
+    VERSION=2.7.2
+    NAME=${VERSION}
+    EXTRACTSTO=ADOL-C-releases-${VERSION}
+    SOURCE=https://github.com/coin-or/ADOL-C/archive/releases/
+    CHECKSUM=ea05bd8e0d6c92d474204876fdcad04d
     PACKING=.tar.gz
 fi
 unset CANDI_ADOLC_FROM_GIT
