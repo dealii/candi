@@ -8,7 +8,7 @@ jobs:
     runs-on: [ubuntu-18.04]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: setup
       run: |
         sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin libblas-dev liblapack-dev libblas3 liblapack3
@@ -27,7 +27,7 @@ jobs:
     runs-on: [macos-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: info
       run: |
         g++ -v
@@ -43,7 +43,7 @@ jobs:
     runs-on: [macos-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: setup
       run: |
         brew install openmpi
