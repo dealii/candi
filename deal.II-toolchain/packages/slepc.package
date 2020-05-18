@@ -1,5 +1,8 @@
-VERSION=3.11.2
-CHECKSUM=89abc5a197dd696a3c73f00f48699d7b
+VERSION=3.13.2
+CHECKSUM=74af8d2ff74aa8b1a75a5e96e17ab7d8
+
+#VERSION=3.11.2
+#CHECKSUM=89abc5a197dd696a3c73f00f48699d7b
 
 #VERSION=3.7.3
 #CHECKSUM=c7edcb13e0b19e2cf263301962b38f75
@@ -15,15 +18,16 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-# Note that SLEPc ./configure currently does not support python3, but some
-# distros might ship with python3 as the default "python".  So select python2
-# or python2.7 if available, otherwise use python or what the user supplied in
-# PYTHON_INTERPRETER.
+# Note that older SLEPc ./configure only supports python2. For now, prefer
+# using python2 but use what the user supplies as PYTHON_INTERPRETER.
 if builtin command -v python2 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2"
 fi
 if builtin command -v python2.7 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2.7"
+fi
+if builtin command -v python3 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python3"
 fi
 default PYTHON_INTERPRETER="python"
 
