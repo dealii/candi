@@ -1,5 +1,8 @@
-VERSION=3.11.3
-CHECKSUM=e04cbb1aaccde4a33c8843e75a1fba15
+VERSION=3.13.1
+CHECKSUM=b8b99c4a16fbc7d6694a70af044dbaac
+
+#VERSION=3.11.3
+#CHECKSUM=e04cbb1aaccde4a33c8843e75a1fba15
 
 #VERSION=3.7.6
 #CHECKSUM=152c1f15f535af22fc015de1d3099db3
@@ -16,15 +19,16 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
-# Note that PETSc ./configure currently does not support python3, but some
-# distros might ship with python3 as the default "python".  So select python2
-# or python2.7 if available, otherwise use python or what the user supplied in
-# PYTHON_INTERPRETER.
+# Note that older PETSc ./configure only supports python2. For now, prefer
+# using python2 but use what the user supplies as PYTHON_INTERPRETER.
 if builtin command -v python2 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2"
 fi
 if builtin command -v python2.7 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2.7"
+fi
+if builtin command -v python3 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python3"
 fi
 default PYTHON_INTERPRETER="python"
 
