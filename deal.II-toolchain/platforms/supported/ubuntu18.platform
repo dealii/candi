@@ -4,7 +4,7 @@
 # installed via ubuntu's apt-get using the following commands:
 #
 # > sudo apt-get install build-essential lsb-release wget \
-#   automake autoconf gfortran \
+#   bc python automake autoconf gfortran \
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion git \
 #   libblas-dev liblapack-dev libblas3 liblapack3 \
 #   libsuitesparse-dev libtool libboost-all-dev zlib1g-dev \
