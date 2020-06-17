@@ -590,6 +590,7 @@ guess_platform() {
             local DESCRIPTION=$(lsb_release -d -s)
             case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
                 *:*:*Debian*9*)       echo debian9;;
+                *:*:*Debian*10*)      echo debian10;;
                 *:*:*Ubuntu*)         echo ubuntu${OSVER};;
                 *:*:*openSUSE\ 12*)   echo opensuse12;;
                 *:*:*openSUSE\ 13*)   echo opensuse13;;
