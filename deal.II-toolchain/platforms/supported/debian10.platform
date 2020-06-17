@@ -1,4 +1,4 @@
-# debian 9
+# debian 10
 #
 # This build script assumes that you have several packages already
 # installed via debian's apt-get using the following commands:
@@ -15,4 +15,3 @@
 #
 # Define the additional packages for this platform.
 #PACKAGES="once:cmake ${PACKAGES}"
-
