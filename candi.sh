@@ -497,7 +497,7 @@ package_build() {
 
     elif [ ${BUILDCHAIN} = "python" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
-        echo python setup.py install --prefix=${INSTALL_PATH} >>candi_build
+        echo ${PYTHON_INTERPRETER} setup.py install --prefix=${INSTALL_PATH} >>candi_build
 
     elif [ ${BUILDCHAIN} = "scons" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
@@ -975,9 +975,22 @@ cecho ${GOOD} "Project:  ${PROJECT}"
 cecho ${GOOD} "Platform: ${PLATFORM}"
 echo
 
-# If the platform doesn't override the system python by installing its
-# own, figure out the version of the existing python
-default PYTHONVER=`python -c "import sys; print(sys.version[:3])"`
+
+# Figure out what binary to use for python support. Note that older PETSc ./configure only supports python2. For now, prefer
+# using python2 but use what the user supplies as PYTHON_INTERPRETER.
+if builtin command -v python2 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python2"
+fi
+if builtin command -v python2.7 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python2.7"
+fi
+if builtin command -v python3 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python3"
+fi
+default PYTHON_INTERPRETER="python"
+
+# Figure out the version of the existing python:
+default PYTHONVER=`${PYTHON_INTERPRETER} -c "import sys; print(sys.version[:3])"`
 
 # Create necessary directories and set appropriate variables
 mkdir -p ${DOWNLOAD_PATH}
