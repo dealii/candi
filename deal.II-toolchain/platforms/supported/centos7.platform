@@ -27,5 +27,5 @@ TRILINOS_PARMETIS_CONFOPTS="\
 
 #
 # Define the additional packages for this platform.
-#PACKAGES="once:cmake ${PACKAGES}"
+PACKAGES="once:cmake ${PACKAGES}"
 
