@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   ubuntu18-minimal:
-    name: ubuntu 18.04 minimal build
+    name: ubuntu 18.04 minimal
     runs-on: [ubuntu-18.04]
 
     steps:
@@ -19,11 +19,31 @@ jobs:
         cmake --version
     - name: build
       run: |
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
 
+  ubuntu20-blas:
+    name: ubuntu 20.04
+    runs-on: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin
+    - name: info
+      run: |
+        g++ -v
+        mpic++ -v
+        cmake --version
+    - name: build
+      run: |
+        ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+
   osx-minimal:
-    name: OSX minimal build
+    name: OSX clang
     runs-on: [macos-latest]
 
     steps:
@@ -40,11 +60,12 @@ jobs:
         cmake --version
     - name: build
       run: |
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
 
-  osx-parallel:
-    name: OSX parallel build
+  osx-gcc:
+    name: OSX gcc
     runs-on: [macos-latest]
 
     steps:
