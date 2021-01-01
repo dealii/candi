@@ -21,7 +21,7 @@ jobs:
       run: |
         echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   ubuntu20-blas:
     name: ubuntu 20.04
@@ -40,7 +40,7 @@ jobs:
     - name: build
       run: |
         ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   osx-minimal:
     name: OSX clang
@@ -62,7 +62,7 @@ jobs:
       run: |
         echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   osx-gcc:
     name: OSX gcc
@@ -87,4 +87,4 @@ jobs:
         export OMPI_CC=gcc-9
         export OMPI_FC=gfortran-9
         ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
