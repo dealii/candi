@@ -10,7 +10,7 @@ BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
 INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 
 ################################################################################
-# Please do not change the line below!
+# Please do not change the lines below!
 
 ################################################################################
 #Choose general configuration and components of deal.II
@@ -18,6 +18,8 @@ INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 CONFOPTS=" \
 -D CMAKE_BUILD_TYPE=DebugRelease \
 -D DEAL_II_WITH_MPI:BOOL=ON \
+-D MPI_CXX_COMPILER=${CXX} \
+-D MPI_C_COMPILER=${CC} \
 -D DEAL_II_COMPONENT_DOCUMENTATION:BOOL=OFF \
 -D DEAL_II_WITH_LAPACK:BOOL=ON \
 -D DEAL_II_WITH_UMFPACK:BOOL=ON \
@@ -35,6 +37,11 @@ fi
 CONFOPTS="${CONFOPTS} \
 ${DEAL_CONFOPTS}"
 
+# Disable CXX, CC for deal.II as recommended in
+# https://github.com/dealii/dealii/issues/11478 . Note the we are
+# setting the MPI_*_COMPILER cmake variables above.
+unset CXX
+unset CC
 
 ################################################################################
 # Check if we hit cmake-3.10+ and deal.II v8.5.1 configure error (MPI / FindMPI)
