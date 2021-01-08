@@ -28,13 +28,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        # force cmake version:
+        pip install cmake==3.18.4
+        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
+        brew install openmpi
     - name: info
       run: |
-        g++ -v
+        mpicxx -v
         cmake --version
     - name: build
       run: |
-        echo 'DEAL_CONFOPTS="-D DEAL_II_WITH_MPI=OFF"' >> candi.cfg
         ./candi.sh -j 2 --packages="dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
 
@@ -46,6 +51,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: setup
       run: |
+        # force cmake version:
+        pip install cmake==3.18.4
+        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
         brew install openmpi
     - name: info
       run: |
