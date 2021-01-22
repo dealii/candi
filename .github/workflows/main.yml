@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   ubuntu18-minimal:
-    name: ubuntu 18.04 minimal build
+    name: ubuntu 18.04 minimal
     runs-on: [ubuntu-18.04]
 
     steps:
@@ -19,33 +19,63 @@ jobs:
         cmake --version
     - name: build
       run: |
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
-  osx-minimal:
-    name: OSX minimal build
-    runs-on: [macos-latest]
+  ubuntu20-blas:
+    name: ubuntu 20.04
+    runs-on: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin
     - name: info
       run: |
         g++ -v
+        mpic++ -v
         cmake --version
     - name: build
       run: |
-        echo 'DEAL_CONFOPTS="-D DEAL_II_WITH_MPI=OFF"' >> candi.cfg
-        ./candi.sh -j 2 --packages="dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
+        ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
-  osx-parallel:
-    name: OSX parallel build
+  osx-minimal:
+    name: OSX clang
     runs-on: [macos-latest]
 
     steps:
     - uses: actions/checkout@v2
     - name: setup
       run: |
+        # force cmake version:
+        pip install cmake==3.18.4
+        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
+        brew install openmpi
+    - name: info
+      run: |
+        mpicxx -v
+        cmake --version
+    - name: build
+      run: |
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+        ./candi.sh -j 2 --packages="dealii"
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+
+  osx-gcc:
+    name: OSX gcc
+    runs-on: [macos-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        # force cmake version:
+        pip install cmake==3.18.4
+        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
         brew install openmpi
     - name: info
       run: |
@@ -57,5 +87,6 @@ jobs:
         export OMPI_CXX=g++-9
         export OMPI_CC=gcc-9
         export OMPI_FC=gfortran-9
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && make test
+        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
