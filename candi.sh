@@ -575,6 +575,7 @@ guess_platform() {
     elif [ -f /etc/os-release ]; then
         local OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
         local OS_VERSIONID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+        local OS_MAJOR_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
         local OS_NAME=$(grep -oP '(?<=^NAME=).+' /etc/os-release | tr -d '"')
         local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
 
@@ -585,13 +586,13 @@ guess_platform() {
             echo centos${OS_VERSIONID}
 
         elif [ "$OS_ID" == "rhel" ]; then
-            echo rhel${OS_VERSIONID}
+            echo rhel${OS_MAJOR_VER}
 
         elif [ "$OS_ID" == "debian" ]; then
             echo debian${OS_VERSIONID}
 
         elif [ "$OS_ID" == "ubuntu" ]; then
-            echo ubuntu${OS_VERSIONID}
+            echo ubuntu${OS_MAJOR_VER}
 
         elif [ "$OS_ID" == "opensuse" ]; then
             if [ "${OS_NAME}" == "openSUSE Leap" ]; then
