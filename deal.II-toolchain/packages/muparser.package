@@ -1,0 +1,27 @@
+VERSION=2.2.6.1
+CHECKSUM=410d29b4c58d1cdc2fc9ed1c1c7f67fe
+
+NAME=v${VERSION}
+PACKING=.tar.gz
+SOURCE=https://github.com/beltoforion/muparser/archive/
+EXTRACTSTO=muparser-${VERSION}
+
+BUILDCHAIN=cmake
+BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
+INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
+CONFOPTS="-D ENABLE_SAMPLES=OFF -D ENABLE_OPENMP=OFF"
+
+package_specific_register () {
+    export MUPARSER_DIR=${INSTALL_PATH}
+    export MUPARSER_INCLUDE_DIR=${INSTALL_PATH}/include
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export MUPARSER_DIR=${INSTALL_PATH}
+export MUPARSER_INCLUDE_DIR=${INSTALL_PATH}/include
+" >> $CONFIG_FILE
+}
