@@ -1,0 +1,26 @@
+VERSION=4.7.4
+CHECKSUM=33979e8f0cf4ee31323fc0934282111b
+EXTRACTSTO=netcdf-c-${VERSION}
+NAME=v${VERSION}
+PACKING=.tar.gz
+SOURCE=https://github.com/Unidata/netcdf-c/archive/
+
+BUILDCHAIN=autotools
+
+BUILDDIR=${BUILD_PATH}/netcdf-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/netcdf-${VERSION}
+
+CONFOPTS="--disable-dap --enable-parallel --enable-netcdf-4 CPPFLAGS=-I${HDF5_DIR}/include LDFLAGS=-L${HDF5_DIR}/lib CC=${CC}"
+
+package_specific_register () {
+    export NETCDF_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export NETCDF_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
