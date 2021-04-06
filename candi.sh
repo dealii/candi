@@ -572,41 +572,39 @@ guess_platform() {
     elif [ ! -z "$CRAYOS_VERSION" ]; then
         echo cray
 
-    elif [ -x /usr/bin/lsb_release ]; then
-        local OSVER=$(lsb_release -r -s  |grep -o -E '[0-9]+' |head -n 1)
-
-        if [ -f /etc/fedora-release ]; then
-            echo fedora${OSVER}
-
-        elif [ -f /etc/centos-release ]; then
-            echo centos${OSVER}
-
-        elif [ -f /etc/redhat-release ]; then
-            echo rhel${OSVER}
-
-        else
-            local DISTRO=$(lsb_release -i -s)
-            local CODENAME=$(lsb_release -c -s)
-            local DESCRIPTION=$(lsb_release -d -s)
-            case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-                *:*:*Debian*9*)       echo debian9;;
-                *:*:*Ubuntu*)         echo ubuntu${OSVER};;
-                *:*:*openSUSE\ 12*)   echo opensuse12;;
-                *:*:*openSUSE\ 13*)   echo opensuse13;;
-                *:*:*openSUSE\ 15*)   echo opensuse15;;
-            esac
-        fi
     elif [ -f /etc/os-release ]; then
-	. /etc/os-release
-	if [ "${PRETTY_NAME}" == "openSUSE Leap 15.0" ]; then
-	    echo opensuse15
-	fi
-	if [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
-	    echo arch
-	fi
-	if [ "${PRETTY_NAME}" == "Arch Linux" ]; then
-	    echo arch
-	fi
+        local OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
+        local OS_VERSIONID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+        local OS_MAJOR_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
+        local OS_NAME=$(grep -oP '(?<=^NAME=).+' /etc/os-release | tr -d '"')
+        local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
+
+        if [ "$OS_ID" == "fedora" ]; then
+            echo fedora${OS_VERSIONID}
+
+        elif [ "$OS_ID" == "centos" ]; then
+            echo centos${OS_VERSIONID}
+
+        elif [ "$OS_ID" == "rhel" ]; then
+            echo rhel${OS_MAJOR_VER}
+
+        elif [ "$OS_ID" == "debian" ]; then
+            echo debian${OS_MAJOR_VER}
+
+        elif [ "$OS_ID" == "ubuntu" ]; then
+            echo ubuntu${OS_MAJOR_VER}
+
+        elif [ "$OS_ID" == "opensuse" ]; then
+            if [ "${OS_NAME}" == "openSUSE Leap" ]; then
+                echo opensuse15
+            fi
+
+        elif [ "${PRETTY_NAME}" == "Arch Linux" ]; then
+            echo arch
+
+        elif [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
+            echo arch
+        fi
     fi
 }
 
@@ -617,15 +615,6 @@ guess_ostype() {
 
     elif [ -x /usr/bin/sw_vers ]; then
         echo macos
-
-    elif [ -f /etc/fedora-release ]; then
-        echo linux
-
-    elif [ -f /etc/redhat-release ]; then
-        echo linux
-
-    elif [ -x /usr/bin/lsb_release ]; then
-        echo linux
 
     elif [ -x /etc/os-release ]; then
         echo linux
