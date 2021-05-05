@@ -1,4 +1,4 @@
-VERSION=3.6.2
+VERSION=3.8.0
 NAME=arpack-ng.git
 EXTRACTSTO=arpack-ng-${VERSION}
 SOURCE=https://github.com/opencollab/
