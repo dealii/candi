@@ -42,6 +42,7 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 PREFIX=~/deal.ii-candi
 PROCS=1
 CMD_PACKAGES=""
+SKIP_READ=false
 
 while [ -n "$1" ]; do
     param="$1"
@@ -56,6 +57,7 @@ while [ -n "$1" ]; do
 	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
 	    echo "  --platform=<platform>       force usage of a particular platform file"
 	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
+	    echo "  -y, --yes, --assume-yes     automatic yes to prompts"
 	    echo ""
 	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
 	    exit 0
@@ -99,6 +101,12 @@ while [ -n "$1" ]; do
         # Specific platform
         -pf=*|--platform=*)
             GIVEN_PLATFORM="${param#*=}"
+        ;;
+        
+        #####################################
+        # Assume yes to prompts
+        -y|--yes|--assume-yes)
+            SKIP_READ=true
         ;;
 
 	*)
@@ -163,9 +171,11 @@ cecho() {
 }
 
 cls() {
-    # clear screen
-    COL=$1; shift
-    echo -e "${COL}$@\033c"
+    if [ ${SKIP_READ} = false ]; then
+        # clear screen
+        COL=$1; shift
+        echo -e "${COL}$@\033c"
+    fi
 }
 
 default () {
@@ -805,14 +815,16 @@ echo
 
 # Let the user confirm now, that the PLATFORM is set up correctly
 echo "-------------------------------------------------------------------------------"
-cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-cecho ${GOOD} "is ready for installing ${PROJECT}."
-cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
-cecho ${INFO} "Then copy and paste these instructions into this terminal."
-echo
+if [ ${SKIP_READ} = false ]; then
+    cecho ${GOOD} "Please make sure you've read the instructions above and your system"
+    cecho ${GOOD} "is ready for installing ${PROJECT}."
+    cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
+    cecho ${INFO} "Then copy and paste these instructions into this terminal."
+    echo
 
-cecho ${GOOD} "Once ready, hit enter to continue!"
-read
+    cecho ${GOOD} "Once ready, hit enter to continue!"
+    read
+fi
 
 ################################################################################
 # Output configuration details
@@ -951,8 +963,10 @@ fi
 ################################################################################
 # Force the user to accept the current output
 echo "-------------------------------------------------------------------------------"
-cecho ${GOOD} "Once ready, hit enter to continue!"
-read
+if [ ${SKIP_READ} = false ]; then
+    cecho ${GOOD} "Once ready, hit enter to continue!"
+    read
+fi
 
 ################################################################################
 # Output configuration details
