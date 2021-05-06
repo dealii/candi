@@ -109,6 +109,13 @@ You can combine the command line options given below.
 * Example: to use 2 build processes type ``./candi.sh -j 2``.
 * Be careful with this option! You need to have enough system memory (e.g. at least 8GB for 2 or more processes).
 
+#### User interaction: ``[-y]``, ``[--yes]``, ``[--assume-yes]``
+```bash
+  ./candi.sh -y
+```
+
+With this option you skip the user interaction. This might be useful if you submit the installation to the queueing system of a cluster.
+
 ### Configuration file options
 
 If you want to change the set of packages to be installed,
