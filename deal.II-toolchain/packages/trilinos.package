@@ -102,14 +102,16 @@ if [ "${MKL}" = "ON" ]; then
             -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR}"
     fi
 
-    # Trilinos will complain that MKL does not support HAVE_TEUCHOS_BLASFLOAT
-    cecho ${BAD} "trilinos: disabling Tpetra because you are using MKL"
+    # Trilinos will complain that MKL does not support HAVE_TEUCHOS_BLASFLOAT. See
+    # the discussion in https://github.com/dealii/candi/pull/92 for more details.
+    cecho ${INFO} "trilinos: disabling some Tpetra instantiations because you are using MKL"
     
     CONFOPTS=" \
         ${CONFOPTS} \
         -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
-        -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64 \
-        -D Trilinos_ENABLE_Tpetra=OFF"
+        -D Tpetra_INST_FLOAT=OFF \
+        -D Tpetra_INST_COMPLEX_FLOAT=OFF \
+        -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
 
 else
     if [ ! -z "${BLAS_LIB}" ]; then
