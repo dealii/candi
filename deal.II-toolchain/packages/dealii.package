@@ -26,6 +26,18 @@ CONFOPTS=" \
 -D DEAL_II_FORCE_BUNDLED_BOOST:BOOL=OFF \
 -D DEAL_II_WITH_ZLIB:BOOL=ON"
 
+# Choice of whether to build the dealii examples
+if [ "${BUILD_EXAMPLES}" = "true" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_COMPONENT_EXAMPLES:BOOL=ON"
+elif [ "${BUILD_EXAMPLES}" = "false" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_COMPONENT_EXAMPLES:BOOL=OFF"
+else
+    cecho ${BAD} "candi: bad variable: BUILD_EXAMPLES={false|true}; (your specified option is = ${BUILD_EXAMPLES})"
+    exit 1
+fi
+
 if [ "${NATIVE_OPTIMIZATIONS}" = "true" ]; then
     CONFOPTS="${CONFOPTS} \
       -D CMAKE_CXX_FLAGS='-march=native'"
