@@ -1148,6 +1148,15 @@ for PACKAGE in ${PACKAGES[@]}; do
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
 done
 
+# Cleanup install directory on demand
+if [ ${CLEAN_INSTALL_DIR} = ON ]; then
+    echo
+    echo "Removing all temporary installation files/directories"
+    rm -rf ${PREFIX_PATH}/tmp
+    cecho ${GOOD} "Done"
+    echo
+fi
+
 # print information about enable.sh
 echo
 echo To export environment variables for all installed libraries execute:
