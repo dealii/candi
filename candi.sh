@@ -350,7 +350,7 @@ package_fetch () {
             cd ..
         fi
 
-        if [ ${STABLE_BUILD} = true ]; then
+        if [ ${STABLE_BUILD} = ON ]; then
             cd ${EXTRACTSTO}
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
@@ -672,7 +672,7 @@ default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
 default CLEAN_BUILD=OFF
-default STABLE_BUILD=true
+default STABLE_BUILD=ON
 default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
@@ -869,7 +869,7 @@ echo
 
 
 echo "-------------------------------------------------------------------------------"
-if [ ${STABLE_BUILD} = true ]; then
+if [ ${STABLE_BUILD} = ON ]; then
     cecho ${INFO} "Building stable releases of ${PROJECT} packages."
 else
     cecho ${WARN} "Building development versions of ${PROJECT} packages."
@@ -1096,7 +1096,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     # Turn to a stable version of the package if that's what the user
     # wants and it exists
-    if [ ${STABLE_BUILD} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
+    if [ ${STABLE_BUILD} = ON ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
         source ${PROJECT}/packages/${PACKAGE}-stable.package
     fi
 
