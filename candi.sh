@@ -458,7 +458,7 @@ package_build() {
     default BUILDDIR=${BUILD_PATH}/${NAME}
 
     # Clean the build directory if specified
-    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = "true" ]; then
+    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = ON ]; then
         rm -rf ${BUILDDIR}
     fi
 
@@ -671,7 +671,7 @@ default BUILD_PATH=${PREFIX_PATH}/tmp/build
 default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
-default CLEAN_BUILD=false
+default CLEAN_BUILD=OFF
 default STABLE_BUILD=true
 default DEVELOPER_MODE=OFF
 
