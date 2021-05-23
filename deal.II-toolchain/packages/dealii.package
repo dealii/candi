@@ -38,7 +38,8 @@ else
     exit 1
 fi
 
-if [ "${NATIVE_OPTIMIZATIONS}" = "true" ]; then
+# Choice of whether native compiler optimizations should be enabled
+if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
     CONFOPTS="${CONFOPTS} \
       -D CMAKE_CXX_FLAGS='-march=native'"
 fi
