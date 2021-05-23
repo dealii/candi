@@ -847,7 +847,7 @@ elif [ ${DEVELOPER_MODE} = "ON" ]; then
     cecho ${BAD} "source files from: $(prettify_dir ${UNPACK_PATH})"
     echo
 else
-    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={OFF|ON}; (your specified option is = ${DEVELOPER_MODE})"
+    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={ON|OFF}; (your specified option is = ${DEVELOPER_MODE})"
     exit 1
 fi
 

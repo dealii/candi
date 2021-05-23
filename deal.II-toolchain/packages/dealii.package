@@ -10,10 +10,10 @@ BUILDDIR=${BUILD_PATH}/deal.II-${VERSION}
 INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 
 ################################################################################
-# Please do not change the line below!
+# Please do not change the lines below!
 
 ################################################################################
-#Choose general configuration and components of deal.II
+# Choose general configuration and components of deal.II
 
 CONFOPTS=" \
 -D CMAKE_BUILD_TYPE=DebugRelease \
