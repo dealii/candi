@@ -1146,16 +1146,15 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Store timing
     TOC="$(($(${DATE_CMD} +%s)-TIC))"
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
-done
 
-# Cleanup install directory on demand
-if [ ${CLEAN_INSTALL_DIR} = ON ]; then
-    echo
-    echo "Removing all temporary installation files/directories"
-    rm -rf ${PREFIX_PATH}/tmp
-    cecho ${GOOD} "Done"
-    echo
-fi
+    # Cleanup install directory on demand
+    if [ ${CLEAN_INSTALL_DIR} = ON ]; then
+        echo
+        echo "Removing temporary installation files/directories"
+        rm -rf ${PREFIX_PATH}/tmp
+        echo
+    fi
+done
 
 # print information about enable.sh
 echo
