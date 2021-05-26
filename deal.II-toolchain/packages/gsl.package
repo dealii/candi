@@ -15,7 +15,7 @@ INSTALL_PATH=${ORIG_INSTALL_PATH}/gsl-${VERSION}
 CONFOPTS=""
 
 package_specific_build () {
-    # copy the git reprository into the build directory
+    # copy the git repository into the build directory
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
     # prepare the build
