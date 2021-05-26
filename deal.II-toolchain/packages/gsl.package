@@ -3,38 +3,21 @@
 ################################################################################
 
 VERSION=release-2-6
-NAME=gsl.git
-EXTRACTSTO=gsl-${VERSION}
+NAME=gsl
+EXTRACTSTO=${NAME}-${VERSION}
 SOURCE=https://git.savannah.gnu.org/git/
 PACKING=git
-BUILDCHAIN=custom
+BUILDCHAIN=autotools
 
-BUILDDIR=${BUILD_PATH}/gsl-${VERSION}
-INSTALL_PATH=${ORIG_INSTALL_PATH}/gsl-${VERSION}
+BUILDDIR=${BUILD_PATH}/${NAME}-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/${NAME}-${VERSION}
 
-CONFOPTS=""
+CONFOPTS="--enable-maintainer-mode"
 
-package_specific_build () {
-    # copy the git repository into the build directory
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
-    # prepare the build
+package_specific_setup () {
+    # We need to do a specific bootstrap before running the autotools build chain
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
     ./autogen.sh
-    quit_if_fail "gsl setup ./autogen.sh failed"
-    
-    ./configure --enable-maintainer-mode --prefix=${INSTALL_PATH}
-    quit_if_fail "gsl setup ./configure failed"
-    
-    make -j${PROCS}
-    
-    # make -j${PROCS} check # TODO write into file
-    
-    # install gsl
-    make -j${PROCS} install
-    
-    quit_if_fail "gsl build failed"
-
-    # make -j${PROCS} installcheck # TODO write into file
 }
 
 package_specific_register () {
