@@ -1131,11 +1131,21 @@ for PACKAGE in ${PACKAGES[@]}; do
         fi
         package_build
 
-        # Clean build/src/unpack directory after install
-        if [ ${INSTANT_CLEAN_AFTER_INSTALL} = ON ]; then
-            rm -rf ${BUILDDIR} # build
-            rm -rf ${DOWNLOAD_PATH}/${NAME}${PACKING} # src
-            rm -rf ${UNPACK_PATH}/${EXTRACTSTO} # unpack
+        # Clean build directory after install
+        if [ ${INSTANT_CLEAN_BUILD_AFTER_INSTALL} = ON ]; then
+            rm -rf ${BUILDDIR}
+        fi
+
+        # Clean src after install
+        if [ ${INSTANT_CLEAN_SRC_AFTER_INSTALL} = ON ]; then
+            if [ -f ${DOWNLOAD_PATH}/${NAME}${PACKING} ]; then
+                rm -f ${DOWNLOAD_PATH}/${NAME}${PACKING}
+            fi
+        fi
+
+        # Clean unpack directory after install
+        if [ ${INSTANT_CLEAN_UNPACK_AFTER_INSTALL} = ON ]; then
+            rm -rf ${UNPACK_PATH}/${EXTRACTSTO}
         fi
     else
         if [ ! -z "${LOAD}" ]; then
