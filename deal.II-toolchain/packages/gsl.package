@@ -12,11 +12,7 @@ BUILDCHAIN=custom
 BUILDDIR=${BUILD_PATH}/gsl-${VERSION}
 INSTALL_PATH=${ORIG_INSTALL_PATH}/gsl-${VERSION}
 
-
-
 CONFOPTS=""
-
-
 
 package_specific_build () {
     # copy the git reprository into the build directory
@@ -41,13 +37,9 @@ package_specific_build () {
     # make -j${PROCS} installcheck # TODO write into file
 }
 
-
-
 package_specific_register () {
     export GSL_DIR=${INSTALL_PATH}
 }
-
-
 
 package_specific_conf () {
     # Generate configuration file
