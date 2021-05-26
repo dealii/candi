@@ -1130,6 +1130,13 @@ for PACKAGE in ${PACKAGES[@]}; do
             package_unpack
         fi
         package_build
+
+        # Clean build/src/unpack directory after install
+        if [ ${INSTANT_CLEAN_AFTER_INSTALL} = ON ]; then
+            rm -rf ${BUILDDIR} # build
+            rm -rf ${DOWNLOAD_PATH}/${NAME}${PACKING} # src
+            rm -rf ${UNPACK_PATH}/${EXTRACTSTO} # unpack
+        fi
     else
         if [ ! -z "${LOAD}" ]; then
             # Let the user know we're loading the current package
@@ -1146,14 +1153,6 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Store timing
     TOC="$(($(${DATE_CMD} +%s)-TIC))"
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
-
-    # Cleanup install directory on demand
-    if [ ${CLEAN_INSTALL_DIR} = ON ]; then
-        echo
-        echo "Removing temporary installation files/directories"
-        rm -rf ${PREFIX_PATH}/tmp
-        echo
-    fi
 done
 
 # print information about enable.sh
