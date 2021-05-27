@@ -222,6 +222,14 @@ fi
 
 ################################################################################
 
+package_specific_install() {
+    if [ ${RUN_DEAL_II_TESTS} = ON ]; then
+        make test 2>&1 | tee candi_test.log
+    fi
+}
+
+
+
 package_specific_conf() {
     ############################################################################
     # Generate modulefile
