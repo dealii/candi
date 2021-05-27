@@ -1,0 +1,34 @@
+################################################################################
+## GSL                                                                        ##
+################################################################################
+
+VERSION=release-2-6
+NAME=gsl
+EXTRACTSTO=${NAME}-${VERSION}
+SOURCE=https://git.savannah.gnu.org/git/
+PACKING=git
+BUILDCHAIN=autotools
+
+BUILDDIR=${BUILD_PATH}/${NAME}-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/${NAME}-${VERSION}
+
+CONFOPTS="--enable-maintainer-mode"
+
+package_specific_setup () {
+    # We need to do a specific bootstrap before running the autotools build chain
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    ./autogen.sh
+}
+
+package_specific_register () {
+    export GSL_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export GSL_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
