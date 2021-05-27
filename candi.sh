@@ -350,7 +350,7 @@ package_fetch () {
             cd ..
         fi
 
-        if [ ${STABLE_BUILD} = true ]; then
+        if [ ${STABLE_BUILD} = ON ]; then
             cd ${EXTRACTSTO}
             git checkout ${VERSION} --force
             quit_if_fail "candi: git checkout ${VERSION} --force failed"
@@ -458,7 +458,7 @@ package_build() {
     default BUILDDIR=${BUILD_PATH}/${NAME}
 
     # Clean the build directory if specified
-    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = "true" ]; then
+    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = ON ]; then
         rm -rf ${BUILDDIR}
     fi
 
@@ -671,8 +671,8 @@ default BUILD_PATH=${PREFIX_PATH}/tmp/build
 default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
-default CLEAN_BUILD=false
-default STABLE_BUILD=true
+default CLEAN_BUILD=OFF
+default STABLE_BUILD=ON
 default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
@@ -847,7 +847,7 @@ elif [ ${DEVELOPER_MODE} = "ON" ]; then
     cecho ${BAD} "source files from: $(prettify_dir ${UNPACK_PATH})"
     echo
 else
-    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={OFF|ON}; (your specified option is = ${DEVELOPER_MODE})"
+    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={ON|OFF}; (your specified option is = ${DEVELOPER_MODE})"
     exit 1
 fi
 
@@ -869,7 +869,7 @@ echo
 
 
 echo "-------------------------------------------------------------------------------"
-if [ ${STABLE_BUILD} = true ]; then
+if [ ${STABLE_BUILD} = ON ]; then
     cecho ${INFO} "Building stable releases of ${PROJECT} packages."
 else
     cecho ${WARN} "Building development versions of ${PROJECT} packages."
@@ -1096,7 +1096,7 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     # Turn to a stable version of the package if that's what the user
     # wants and it exists
-    if [ ${STABLE_BUILD} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
+    if [ ${STABLE_BUILD} = ON ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
         source ${PROJECT}/packages/${PACKAGE}-stable.package
     fi
 
