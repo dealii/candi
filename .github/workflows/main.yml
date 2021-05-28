@@ -19,7 +19,7 @@ jobs:
         cmake --version
     - name: build
       run: |
-        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
@@ -61,7 +61,7 @@ jobs:
         cmake --version
     - name: build
       run: |
-        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
@@ -87,6 +87,6 @@ jobs:
         export OMPI_CXX=g++-9
         export OMPI_CC=gcc-9
         export OMPI_FC=gfortran-9
-        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
         cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
