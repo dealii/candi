@@ -71,8 +71,6 @@ while [ -n "$1" ]; do
         ;;
         -p=*|--prefix=*)
             PREFIX="${param#*=}"
-            # replace '~' by $HOME
-            PREFIX=${PREFIX/#~\//$HOME\/}
         ;;
 
         #####################################
@@ -116,8 +114,11 @@ while [ -n "$1" ]; do
     shift
 done
 
-# replace '~' by $HOME:
+# Check the input argument of the install path and (if used) replace the tilde
+# character '~' by the users home directory ${HOME}. Afterwards clear the
+# PREFIX input variable.
 PREFIX_PATH=${PREFIX/#~\//$HOME\/}
+unset PREFIX
 
 RE='^[0-9]+$'
 if [[ ! "${JOBS}" =~ ${RE} || ${JOBS}<1 ]] ; then
