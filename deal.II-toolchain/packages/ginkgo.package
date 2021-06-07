@@ -1,0 +1,52 @@
+################################################################################
+## GINKGO                                                                     ##
+################################################################################
+
+VERSION=develop
+NAME=ginkgo.git
+SOURCE=https://github.com/ginkgo-project/
+EXTRACTSTO=ginkgo-${VERSION}
+PACKING=git
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/ginkgo-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/ginkgo-${VERSION}
+
+CONFOPTS="\
+  -G 'Unix Makefiles' \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D BUILD_SHARED_LIBS:BOOL=ON \
+  -D GINKGO_BUILD_TESTS:BOOL=OFF \
+  -D GINKGO_FAST_TESTS:BOOL=OFF \
+  -D GINKGO_BUILD_EXAMPLES:BOOL=OFF \
+  -D GINKGO_BUILD_BENCHMARKS:BOOL=OFF \
+  -D GINKGO_BENCHMARK_ENABLE_TUNING:BOOL=OFF \
+  -D GINKGO_BUILD_DOC:BOOL=OFF \
+  -D GINKGO_VERBOSE_LEVEL=1 \
+  -D GINKGO_DEVEL_TOOLS:BOOL=OFF \
+  -D GINKGO_WITH_CLANG_TIDY:BOOL=OFF \
+  -D GINKGO_WITH_IWYU:BOOL=OFF \
+  -D GINKGO_CHECK_CIRCULAR_DEPS:BOOL=OFF \
+  -D GINKGO_WITH_CCACHE:BOOL=OFF \
+  -D GINKGO_BUILD_HWLOC:BOOL=OFF"
+
+# Autodetected ginkgo options
+# -D GINKGO_BUILD_OMP:BOOL=ON \
+# -D GINKGO_BUILD_REFERENCE:BOOL=ON \
+# -D GINKGO_BUILD_CUDA:BOOL=OFF \
+# -D GINKGO_BUILD_HIP:BOOL=OFF \
+# -D GINKGO_BUILD_DPCPP:BOOL=OFF \
+
+package_specific_register () {
+    export GINKGO_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export GINKGO_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
