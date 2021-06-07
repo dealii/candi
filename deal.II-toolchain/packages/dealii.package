@@ -85,17 +85,24 @@ fi
 ################################################################################
 # Add additional packages, if present
 
-# arpack
+########################################
+# ARPACK
+if [[ ${PACKAGES_OFF} =~ 'arpack-ng' ]]; then
+    if [ ! -z "${ARPACK_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ARPACK_DIR due to forced DEAL_II_WITH_ARPACK:BOOL=OFF option"
+        unset ARPACK_DIR
+    fi
+fi
+
 if [ ! -z "${ARPACK_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with ARPACK"
     # We use a recent enough version of arpack, so PARPACK can be enabled
     # even though it is disabled by default, see 
     # https://github.com/dealii/dealii/blob/master/cmake/modules/FindARPACK.cmake
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_ARPACK:BOOL=ON \
-        -D DEAL_II_ARPACK_WITH_PARPACK=ON \
-        -D ARPACK_DIR=${ARPACK_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ARPACK:BOOL=ON \
+      -D DEAL_II_ARPACK_WITH_PARPACK:BOOL=ON \
+      -D ARPACK_DIR=${ARPACK_DIR}"
 fi
 
 # metis

@@ -1,3 +1,7 @@
+################################################################################
+## ARPACK-NG                                                                  ##
+################################################################################
+
 VERSION=3.8.0
 NAME=arpack-ng.git
 EXTRACTSTO=arpack-ng-${VERSION}
@@ -9,21 +13,20 @@ BUILDDIR=${BUILD_PATH}/arpack-ng-${VERSION}
 INSTALL_PATH=${INSTALL_PATH}/arpack-ng-${VERSION}
 
 CONFOPTS="\
- -D CMAKE_INSTALL_LIBDIR=$INSTALL_PATH/lib \
- -D EXAMPLES=OFF \
- -D MPI=ON \
- -D BUILD_SHARED_LIBS=ON"
+  -D CMAKE_INSTALL_LIBDIR=${INSTALL_PATH}/lib \
+  -D EXAMPLES:BOOL=OFF \
+  -D MPI:BOOL=ON \
+  -D BUILD_SHARED_LIBS:BOOL=ON"
 
-package_specific_register () {
-    export ARPACK_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export ARPACK_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export ARPACK_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }
-
