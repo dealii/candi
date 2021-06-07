@@ -100,9 +100,11 @@ You can combine the command line options given below.
   ./candi.sh --prefix=Your/Prefix/Path
 ```
 
-#### Multiple build processes: ``[-j <N>]``, ``[--PROCS=<N>]``
+#### Multiple build processes: ``[-j<N>]``, ``[-j <N>]``, ``[--jobs=<N>]``
 ```bash
+  ./candi.sh -j<N>
   ./candi.sh -j <N>
+  ./candi.sh --jobs=<N>
 ```
 
 * Example: to use 2 build processes type ``./candi.sh -j 2``.

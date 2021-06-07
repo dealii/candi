@@ -40,7 +40,7 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 ################################################################################
 # Parse command line input parameters
 PREFIX=~/deal.ii-candi
-PROCS=1
+JOBS=1
 CMD_PACKAGES=""
 SKIP_READ=false
 
@@ -54,7 +54,7 @@ while [ -n "$1" ]; do
 	    echo "Usage: $0 [options]"
 	    echo "Options:"
 	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
-	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
+	    echo "  -j <N>, -j<N>, --jobs=<N>   compile with N processes in parallel (default ${JOBS})"
 	    echo "  --platform=<platform>       force usage of a particular platform file"
 	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
 	    echo "  -y, --yes, --assume-yes     automatic yes to prompts"
@@ -83,18 +83,18 @@ while [ -n "$1" ]; do
 
         #####################################
         # Number of maximum processes to use
-        --PROCS=*)
-            PROCS="${param#*=}"
+        --jobs=*)
+            JOBS="${param#*=}"
         ;;
 
         # Make styled processes with or without space
 	-j)
 	    shift
-            PROCS="${1}"
+            JOBS="${1}"
 	;;
 
         -j*)
-            PROCS="${param#*j}"
+            JOBS="${param#*j}"
         ;;
 
         #####################################
@@ -120,8 +120,8 @@ done
 PREFIX_PATH=${PREFIX/#~\//$HOME\/}
 
 RE='^[0-9]+$'
-if [[ ! "$PROCS" =~ $RE || $PROCS<1 ]] ; then
-  echo "ERROR: invalid number of build processes '$PROCS'"
+if [[ ! "${JOBS}" =~ ${RE} || ${JOBS}<1 ]] ; then
+  echo "ERROR: invalid number of build processes '${JOBS}'"
   exit 1
 fi
 
@@ -523,7 +523,7 @@ package_build() {
         fi
 
         for target in "${TARGETS[@]}"; do
-            echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
+            echo make ${MAKEOPTS} -j ${JOBS} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "cmake" ]; then
@@ -531,7 +531,7 @@ package_build() {
         rm -rf ${BUILDDIR}/CMakeFiles
         echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
         for target in "${TARGETS[@]}"; do
-            echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
+            echo make ${MAKEOPTS} -j ${JOBS} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "python" ]; then
@@ -541,7 +541,7 @@ package_build() {
     elif [ ${BUILDCHAIN} = "scons" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
         for target in "${TARGETS[@]}"; do
-            echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
+            echo scons -j ${JOBS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "custom" ]; then
@@ -885,7 +885,7 @@ cecho ${GOOD} "Package configuration in: $(prettify_dir ${CONFIGURATION_PATH})"
 echo
 
 echo "-------------------------------------------------------------------------------"
-cecho ${INFO} "Number of (at most) build processes to use: PROCS=${PROCS}"
+cecho ${INFO} "Number of (at most) build processes to use: JOBS=${JOBS}"
 echo
 
 echo "-------------------------------------------------------------------------------"
@@ -1047,7 +1047,7 @@ EOF
 # WARNING: do not overwrite this variables!
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_CONFIGURATION_PATH=${CONFIGURATION_PATH}
-ORIG_PROCS=${PROCS}
+ORIG_JOBS=${JOBS}
 
 guess_architecture
 
@@ -1098,7 +1098,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset CONFIG_FILE
     unset CHERRYPICKCOMMITS
     TARGETS=('' install)
-    PROCS=${ORIG_PROCS}
+    JOBS=${ORIG_JOBS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
     CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
 
