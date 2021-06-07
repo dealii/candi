@@ -241,6 +241,21 @@ if [ ! -z "${GINKGO_DIR}" ]; then
       -D GINKGO_DIR=${GINKGO_DIR}"
 fi
 
+########################################
+# SYMENGINE
+if [[ ${PACKAGES_OFF} =~ 'symengine' ]]; then
+    if [ ! -z "${SYMENGINE_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
+        unset SYMENGINE_DIR
+    fi
+fi
+
+if [ ! -z "${SYMENGINE_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with SYMENGINE"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_SYMENGINE:BOOL=ON"
+fi
+
 ################################################################################
 
 package_specific_install() {
