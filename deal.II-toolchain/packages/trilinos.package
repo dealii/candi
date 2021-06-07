@@ -138,10 +138,10 @@ if [ ! -z "${FC}" ]; then
 fi
 
 CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING=-fPIC -g -O3 \
-  -D CMAKE_C_FLAGS:STRING=-fPIC -g -O3 \
-  -D CMAKE_FORTRAN_FLAGS:STRING=-g -O5 \
-  -D Trilinos_EXTRA_LINK_FLAGS:STRING=-lgfortran"
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
+  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
+  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3' \
+  -D Trilinos_EXTRA_LINK_FLAGS:STRING='-lgfortran'"
 
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
