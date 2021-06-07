@@ -39,7 +39,7 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 
 ################################################################################
 # Parse command line input parameters
-PREFIX=~/deal.ii-candi
+PREFIX=~/dealii-candi
 JOBS=1
 CMD_PACKAGES=""
 USER_INTERACTION=ON
