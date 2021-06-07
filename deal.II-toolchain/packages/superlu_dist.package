@@ -1,19 +1,24 @@
+################################################################################
+## SUPERLU_DIST                                                               ##
+################################################################################
+
 VERSION=5.1.2
+CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
+
 NAME=superlu_dist_${VERSION}
 EXTRACTSTO=SuperLU_DIST_${VERSION}
 SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 PACKING=.tar.gz
-CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
 
 BUILDCHAIN=cmake
+
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-CONFOPTS=" \
-    $CONFOPTS \
-    -D TPL_PARMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include \
-    -D TPL_PARMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
-    -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
-    -D BUILD_SHARED_LIBS:BOOL=ON"
+CONFOPTS="${CONFOPTS} \
+  -D TPL_PARMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include \
+  -D TPL_PARMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
+  -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
+  -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_register () {
     export SUPERLU_DIR=${INSTALL_PATH}
