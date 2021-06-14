@@ -202,7 +202,12 @@ quit_if_fail() {
 #  return 1: No checksum provided          (archive found, but unable to verify)
 #  return 2: ARCHIVE_FILE not found        (archive NOT found)
 #  return 3: CHECKSUM mismatch             (archive file corrupted)
-#  return 4: Neither md5 nor md5sum found  (archive found, but unable to verify)
+#  return 4: Not able to compute checksum  (archive found, but unable to verify)
+#  return 5: Checksum algorithm not found  (archive found, but unable to verify)
+# This function tries to verify the downloaded archive by determing and
+# comapring checksums. For a specific package several checksums might be
+# defined. Based on the length of the given checksum the underlying algorithm
+# is determined. The first matching checksum verifies the archive.
 verify_archive() {
     ARCHIVE_FILE=$1
 
@@ -224,32 +229,62 @@ verify_archive() {
 
     # Skip verifying archive, if CHECKSUM=ignore
     if [ "${CHECKSUM}" = "ignore" ]; then
-        cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
+        cecho ${WARN} "Ignore checksum check for ${ARCHIVE_FILE}"
         return 1
     fi
 
     cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
 
-    # Verify CHECKSUM using md5/md5sum
-    if builtin command -v md5 > /dev/null; then
-	CURRENT="$(md5 -q ${ARCHIVE_FILE})"
-    elif builtin command -v md5sum > /dev/null; then
-	CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
-    else
-        cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
-        return 4
-    fi
-
     for CHECK in ${CHECKSUM}; do
+        # Verify CHECKSUM using md5/sha1/sha256
+        if [ ${#CHECK} = 32 ]; then
+            ALGORITHM="md5"
+            if builtin command -v md5sum > /dev/null; then
+                CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v md5 > /dev/null; then
+                CURRENT="$(md5 -q ${ARCHIVE_FILE})"
+            else
+                cecho ${BAD} "Neither md5sum nor md5 were found in the PATH"
+                return 4
+            fi
+        elif [ ${#CHECK} = 40 ]; then
+            ALGORITHM="sha1"
+            if builtin command -v sha1sum > /dev/null; then
+                CURRENT=$(sha1sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v shasum > /dev/null; then
+                CURRENT=$(shasum -a 1 ${ARCHIVE_FILE} | awk '{print $1}')
+            else
+                cecho ${BAD} "Neither sha1sum nor shasum were found in the PATH"
+                return 4
+            fi
+        elif [ ${#CHECK} = 64 ]; then
+            ALGORITHM="sha256"
+            if builtin command -v sha256sum > /dev/null; then
+                CURRENT=$(sha256sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v shasum > /dev/null; then
+                CURRENT=$(shasum -a 256 ${ARCHIVE_FILE} | awk '{print $1}')
+            else
+                cecho ${BAD} "Neither sha256sum nor shasum were found in the PATH"
+                return 4
+            fi
+        else
+            cecho ${BAD} "Checksum algorithm could not be determined"
+            exit 5
+        fi
+
         test "${CHECK}" = "${CURRENT}"
         if [ $? = 0 ]; then
-            echo "${ARCHIVE_FILE}: OK"
+            cecho ${GOOD} "${ARCHIVE_FILE}: OK(${ALGORITHM})"
             return 0
-	fi
+        else
+            cecho ${BAD} "${ARCHIVE_FILE}: FAILED(${ALGORITHM})"
+            cecho ${BAD} "${CURRENT} does not match given checksum ${CHECK}"
+        fi
     done
+    unset ALGORITHM
 
     cecho ${BAD} "${ARCHIVE_FILE}: FAILED"
-    cecho ${BAD} "${CURRENT} does not match any in ${CHECKSUM}"
+    cecho ${BAD} "Checksum does not match any in ${CHECKSUM}"
     return 3
 }
 
