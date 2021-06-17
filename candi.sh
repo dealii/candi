@@ -205,7 +205,7 @@ quit_if_fail() {
 #  return 4: Not able to compute checksum  (archive found, but unable to verify)
 #  return 5: Checksum algorithm not found  (archive found, but unable to verify)
 # This function tries to verify the downloaded archive by determing and
-# comapring checksums. For a specific package several checksums might be
+# comparing checksums. For a specific package several checksums might be
 # defined. Based on the length of the given checksum the underlying algorithm
 # is determined. The first matching checksum verifies the archive.
 verify_archive() {
@@ -227,9 +227,9 @@ verify_archive() {
         return 1
     fi
 
-    # Skip verifying archive, if CHECKSUM=ignore
-    if [ "${CHECKSUM}" = "ignore" ]; then
-        cecho ${WARN} "Ignore checksum check for ${ARCHIVE_FILE}"
+    # Skip verifying archive, if CHECKSUM=skip
+    if [ "${CHECKSUM}" = "skip" ]; then
+        cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
         return 1
     fi
 
@@ -348,7 +348,7 @@ download_archive () {
         verify_archive ${ARCHIVE_FILE}
         archive_state=$?
         if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
-            # If the download was successful, and the CHECKSUM is matching, ignored, or not possible
+            # If the download was successful, and the CHECKSUM is matching, skipped, or not possible
             return 0;
         fi
         unset archive_state
