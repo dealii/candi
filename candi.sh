@@ -335,20 +335,22 @@ package_fetch () {
         quit_if_fail "candi: download_archive ${NAME}${PACKING} failed"
 
     elif [ ${PACKING} = "git" ]; then
+        # Go into the unpack dir
         cd ${UNPACK_PATH}
-        # Suitably clone or update git repositories
+
+        # Clone the git repository if not existing locally
         if [ ! -d ${EXTRACTSTO} ]; then
             git clone ${SOURCE}${NAME} ${EXTRACTSTO}
             quit_if_fail "candi: git clone ${SOURCE}${NAME} ${EXTRACTSTO} failed"
-        else
-            cd ${EXTRACTSTO}
-            git checkout ${VERSION} --force
-            quit_if_fail "candi: git checkout ${VERSION} --force failed"
-
-            git pull
-            quit_if_fail "candi: git pull failed"
-            cd ..
         fi
+
+        # Checkout the desired version
+        cd ${EXTRACTSTO}
+        git checkout ${VERSION} --force
+        quit_if_fail "candi: git checkout ${VERSION} --force failed"
+
+        # Switch to the tmp dir
+        cd ..
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
