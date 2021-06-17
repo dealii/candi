@@ -335,28 +335,22 @@ package_fetch () {
         quit_if_fail "candi: download_archive ${NAME}${PACKING} failed"
 
     elif [ ${PACKING} = "git" ]; then
+        # Go into the unpack dir
         cd ${UNPACK_PATH}
-        # Suitably clone or update git repositories
+
+        # Clone the git repository if not existing locally
         if [ ! -d ${EXTRACTSTO} ]; then
             git clone ${SOURCE}${NAME} ${EXTRACTSTO}
             quit_if_fail "candi: git clone ${SOURCE}${NAME} ${EXTRACTSTO} failed"
-        else
-            cd ${EXTRACTSTO}
-            git checkout master --force
-            quit_if_fail "candi: git checkout master --force failed"
-
-            git pull
-            quit_if_fail "candi: git pull failed"
-            cd ..
         fi
 
-        if [ ${STABLE_BUILD} = ON ]; then
-            cd ${EXTRACTSTO}
-            git checkout ${VERSION} --force
-            quit_if_fail "candi: git checkout ${VERSION} --force failed"
-            cd ..
-        fi
+        # Checkout the desired version
+        cd ${EXTRACTSTO}
+        git checkout ${VERSION} --force
+        quit_if_fail "candi: git checkout ${VERSION} --force failed"
 
+        # Switch to the tmp dir
+        cd ..
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -672,7 +666,6 @@ default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
 default CLEAN_BUILD=OFF
-default STABLE_BUILD=ON
 default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
@@ -865,15 +858,6 @@ cecho ${INFO} "Packages:"
 for PACKAGE in ${PACKAGES[@]}; do
     echo ${PACKAGE}
 done
-echo
-
-
-echo "-------------------------------------------------------------------------------"
-if [ ${STABLE_BUILD} = ON ]; then
-    cecho ${INFO} "Building stable releases of ${PROJECT} packages."
-else
-    cecho ${WARN} "Building development versions of ${PROJECT} packages."
-fi
 echo
 
 # if the program 'module' is available, output the currently loaded modulefiles
@@ -1093,12 +1077,6 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     # Fetch information pertinent to the package
     source ${PROJECT}/packages/${PACKAGE}.package
-
-    # Turn to a stable version of the package if that's what the user
-    # wants and it exists
-    if [ ${STABLE_BUILD} = ON ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
-        source ${PROJECT}/packages/${PACKAGE}-stable.package
-    fi
 
     # Ensure that the package file is sanely constructed
     if [ ! "${BUILDCHAIN}" ]; then
