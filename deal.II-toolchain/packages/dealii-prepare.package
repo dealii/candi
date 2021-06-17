@@ -2,9 +2,9 @@ NAME=dealii-prepare
 BUILDCHAIN=ignore
 
 ################################################################################
-# Loop over the options in DEAL_CONFOPTS and if the package is turned off, add
-# it to the PACKAGES_OFF list.
-for option in ${DEAL_CONFOPTS[@]}; do
+# Loop over the options in DEAL_II_CONFOPTS and if the package is turned off,
+# add it to the PACKAGES_OFF list.
+for option in ${DEAL_II_CONFOPTS[@]}; do
     case ${option} in
         *DEAL_II_WITH*:BOOL=OFF)
         PACKAGE_NAME=${option##*WITH_};
@@ -20,7 +20,7 @@ PACKAGES_OFF=`echo "$PACKAGES_OFF" | tr '[:upper:]' '[:lower:]'`
 
 if [ ! -z "${PACKAGES_OFF}" ]; then
     cecho ${WARN} "deal.II: forcing package skip for: ${PACKAGES_OFF}"
-    cecho ${INFO} "This is coming from your personal DEAL_CONFOPTS settings!"
+    cecho ${INFO} "This is coming from your personal DEAL_II_CONFOPTS settings!"
     echo
     cecho ${GOOD} "Please confirm this behaviour by pressing enter..."
     read
