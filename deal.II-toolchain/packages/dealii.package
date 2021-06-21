@@ -225,6 +225,22 @@ if [ ! -z "${OPENCASCADE_DIR}" ]; then
         -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
 fi
 
+########################################
+# GINKGO
+if [[ ${PACKAGES_OFF} =~ 'ginkgo' ]]; then
+    if [ ! -z "${GINKGO_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset GINKGO_DIR due to forced DEAL_II_WITH_GINKGO:BOOL=OFF option"
+        unset GINKGO_DIR
+    fi
+fi
+
+if [ ! -z "${GINKGO_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with GINKGO"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_GINKGO:BOOL=ON \
+      -D GINKGO_DIR=${GINKGO_DIR}"
+fi
+
 ################################################################################
 
 package_specific_install() {
