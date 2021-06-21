@@ -1,0 +1,49 @@
+################################################################################
+## SYMENGINE                                                                  ##
+################################################################################
+
+# Option {ON|OFF}: Choose whether to load the tarball or the git repository.
+CANDI_SYMENGINE_LOAD_TARBALL=OFF
+
+if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
+    # download release tarball
+    VERSION=0.7.0
+    CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
+
+    NAME=symengine-${VERSION}
+    SOURCE=https://github.com/symengine/symengine/releases/download/v${VERSION}/
+    EXTRACTSTO=${NAME}
+    PACKING=.tar.gz
+else
+    # download git repository
+    VERSION=v0.7.0
+
+    NAME=symengine.git
+    SOURCE=https://github.com/symengine/
+    EXTRACTSTO=symengine-${VERSION}
+    PACKING=git
+fi
+unset CANDI_SYMENGINE_LOAD_TARBALL
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/symengine-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/symengine-${VERSION}
+
+CONFOPTS="\
+  -D BUILD_SHARED_LIBS:BOOL=ON \
+  -D BUILD_TESTS:BOOL=OFF \
+  -D BUILD_BENCHMARKS:BOOL=OFF"
+
+package_specific_register () {
+    export SYMENGINE_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f ${CONFIG_FILE}
+    echo "
+export SYMENGINE_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
