@@ -1,8 +1,3 @@
-# candi/tmp directories
-/src/
-/deal.II-toolchain-build/
-/deal.II-toolchain-unpack/
-
 # eclipse
 /.cproject
 /.project
