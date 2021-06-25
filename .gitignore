@@ -1,5 +1,26 @@
-*~
+# candi/tmp directories
 /src/
 /deal.II-toolchain-build/
 /deal.II-toolchain-unpack/
-*.DS_Store
+
+# eclipse
+/.cproject
+/.project
+qtcreator/
+
+# visual studio code
+/.vscode
+
+# temporary and backup files
+*~
+*#
+*.swp
+
+# MacOS self-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
