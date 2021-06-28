@@ -29,7 +29,7 @@ set -a
 # The Unix date command does not work with nanoseconds, so use
 # the GNU date instead. This is available in the 'coreutils' package
 # from MacPorts.
-if builtin command -v gdate > /dev/null; then
+if builtin command -v gdate >/dev/null; then
     DATE_CMD=$(which gdate)
 else
     DATE_CMD=$(which date)
@@ -48,68 +48,69 @@ while [ -n "$1" ]; do
     param="$1"
     case $param in
 
-	-h|--help)
-	    echo "candi (Compile & Install)"
-	    echo ""
-	    echo "Usage: $0 [options]"
-	    echo "Options:"
-	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
-	    echo "  -j <N>, -j<N>, --jobs=<N>   compile with N processes in parallel (default ${JOBS})"
-	    echo "  --platform=<platform>       force usage of a particular platform file"
-	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
-	    echo "  -y, --yes, --assume-yes     automatic yes to prompts"
-	    echo ""
-	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
-	    exit 0
-	;;
-
-        #####################################
-        # Prefix path
-        -p)
-	    shift
-            PREFIX="${1}"
-        ;;
-        -p=*|--prefix=*)
-            PREFIX="${param#*=}"
+    -h | --help)
+        echo "candi (Compile & Install)"
+        echo ""
+        echo "Usage: $0 [options]"
+        echo "Options:"
+        echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
+        echo "  -j <N>, -j<N>, --jobs=<N>   compile with N processes in parallel (default ${JOBS})"
+        echo "  --platform=<platform>       force usage of a particular platform file"
+        echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
+        echo "  -y, --yes, --assume-yes     automatic yes to prompts"
+        echo ""
+        echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
+        exit 0
         ;;
 
-        #####################################
-        # overwrite package list
-        --packages=*)
-            CMD_PACKAGES="${param#*=}"
+    #####################################
+    # Prefix path
+    -p)
+        shift
+        PREFIX="${1}"
+        ;;
+    -p=* | --prefix=*)
+        PREFIX="${param#*=}"
         ;;
 
-        #####################################
-        # Number of maximum processes to use
-        --jobs=*)
-            JOBS="${param#*=}"
+    #####################################
+    # overwrite package list
+    --packages=*)
+        CMD_PACKAGES="${param#*=}"
+        ;;
+
+    #####################################
+    # Number of maximum processes to use
+    --jobs=*)
+        JOBS="${param#*=}"
         ;;
 
         # Make styled processes with or without space
-	-j)
-	    shift
-            JOBS="${1}"
-	;;
-
-        -j*)
-            JOBS="${param#*j}"
+    -j)
+        shift
+        JOBS="${1}"
         ;;
 
-        #####################################
-        # Specific platform
-        -pf=*|--platform=*)
-            GIVEN_PLATFORM="${param#*=}"
-        ;;
-        
-        #####################################
-        # Assume yes to prompts
-        -y|--yes|--assume-yes)
-            USER_INTERACTION=OFF
+    -j*)
+        JOBS="${param#*j}"
         ;;
 
-	*)
-	    echo "invalid command line option. See -h for more information."
-	    exit 1
+    #####################################
+    # Specific platform
+    -pf=* | --platform=*)
+        GIVEN_PLATFORM="${param#*=}"
+        ;;
+
+    #####################################
+    # Assume yes to prompts
+    -y | --yes | --assume-yes)
+        USER_INTERACTION=OFF
+        ;;
+
+    *)
+        echo "invalid command line option. See -h for more information."
+        exit 1
+        ;;
     esac
     shift
 done
@@ -121,9 +122,9 @@ PREFIX_PATH=${PREFIX/#~\//$HOME\/}
 unset PREFIX
 
 RE='^[0-9]+$'
-if [[ ! "${JOBS}" =~ ${RE} || ${JOBS}<1 ]] ; then
-  echo "ERROR: invalid number of build processes '${JOBS}'"
-  exit 1
+if [[ ! "${JOBS}" =~ ${RE} || ${JOBS} < 1 ]]; then
+    echo "ERROR: invalid number of build processes '${JOBS}'"
+    exit 1
 fi
 
 ################################################################################
@@ -133,13 +134,13 @@ fi
 DOWNLOADERS="${DOWNLOADER}"
 
 # Check if the curl download is available
-if builtin command -v curl > /dev/null; then
+if builtin command -v curl >/dev/null; then
     # Set curl as the prefered download tool, if nothing else is specified
     DOWNLOADERS="${DOWNLOADERS} curl"
 fi
 
 # Check if the wget download is available
-if builtin command -v wget > /dev/null; then
+if builtin command -v wget >/dev/null; then
     # Set wget as the prefered download tool, if nothing else is specified
     DOWNLOADERS="${DOWNLOADERS} wget"
 fi
@@ -161,25 +162,27 @@ BOLD="\033[1m"
 # Define candi helper functions
 
 prettify_dir() {
-   # Make a directory name more readable by replacing homedir with "~"
-   echo ${1/#$HOME\//~\/}
+    # Make a directory name more readable by replacing homedir with "~"
+    echo ${1/#$HOME\//~\/}
 }
 
 cecho() {
     # Display messages in a specified colour
-    COL=$1; shift
+    COL=$1
+    shift
     echo -e "${COL}$@\033[0m"
 }
 
 cls() {
     if [ ${USER_INTERACTION} = ON ]; then
         # clear screen
-        COL=$1; shift
+        COL=$1
+        shift
         echo -e "${COL}$@\033c"
     fi
 }
 
-default () {
+default() {
     # Export a variable, if it is not already set
     VAR="${1%%=*}"
     VALUE="${1#*=}"
@@ -240,9 +243,9 @@ verify_archive() {
         # Verify CHECKSUM using md5/sha1/sha256
         if [ ${#CHECK} = 32 ]; then
             ALGORITHM="md5"
-            if builtin command -v md5sum > /dev/null; then
+            if builtin command -v md5sum >/dev/null; then
                 CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
-            elif builtin command -v md5 > /dev/null; then
+            elif builtin command -v md5 >/dev/null; then
                 CURRENT="$(md5 -q ${ARCHIVE_FILE})"
             else
                 cecho ${BAD} "Neither md5sum nor md5 were found in the PATH"
@@ -250,9 +253,9 @@ verify_archive() {
             fi
         elif [ ${#CHECK} = 40 ]; then
             ALGORITHM="sha1"
-            if builtin command -v sha1sum > /dev/null; then
+            if builtin command -v sha1sum >/dev/null; then
                 CURRENT=$(sha1sum ${ARCHIVE_FILE} | awk '{print $1}')
-            elif builtin command -v shasum > /dev/null; then
+            elif builtin command -v shasum >/dev/null; then
                 CURRENT=$(shasum -a 1 ${ARCHIVE_FILE} | awk '{print $1}')
             else
                 cecho ${BAD} "Neither sha1sum nor shasum were found in the PATH"
@@ -260,9 +263,9 @@ verify_archive() {
             fi
         elif [ ${#CHECK} = 64 ]; then
             ALGORITHM="sha256"
-            if builtin command -v sha256sum > /dev/null; then
+            if builtin command -v sha256sum >/dev/null; then
                 CURRENT=$(sha256sum ${ARCHIVE_FILE} | awk '{print $1}')
-            elif builtin command -v shasum > /dev/null; then
+            elif builtin command -v shasum >/dev/null; then
                 CURRENT=$(shasum -a 256 ${ARCHIVE_FILE} | awk '{print $1}')
             else
                 cecho ${BAD} "Neither sha256sum nor shasum were found in the PATH"
@@ -289,7 +292,7 @@ verify_archive() {
     return 3
 }
 
-download_archive () {
+download_archive() {
     ARCHIVE_FILE=$1
 
     # Prepend MIRROR to SOURCE (to prefer) mirror source download
@@ -298,62 +301,62 @@ download_archive () {
     fi
 
     for DOWNLOADER in ${DOWNLOADERS[@]}; do
-    for source in ${SOURCE}; do
-        # verify_archive:
-        # * Skip loop if the ARCHIVE_FILE is already downloaded
-        # * Remove corrupted ARCHIVE_FILE
-        verify_archive ${ARCHIVE_FILE}
-        archive_state=$?
+        for source in ${SOURCE}; do
+            # verify_archive:
+            # * Skip loop if the ARCHIVE_FILE is already downloaded
+            # * Remove corrupted ARCHIVE_FILE
+            verify_archive ${ARCHIVE_FILE}
+            archive_state=$?
 
-        if [ ${archive_state} = 0 ]; then
-             cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
-             return 0;
+            if [ ${archive_state} = 0 ]; then
+                cecho ${INFO} "${ARCHIVE_FILE} already downloaded and verified."
+                return 0
 
-        elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
-             cecho ${WARN} "${ARCHIVE_FILE} already downloaded, but unable to be verified."
-             return 0;
+            elif [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
+                cecho ${WARN} "${ARCHIVE_FILE} already downloaded, but unable to be verified."
+                return 0
 
-        elif [ ${archive_state} = 3 ]; then
-            cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
+            elif [ ${archive_state} = 3 ]; then
+                cecho ${BAD} "${ARCHIVE_FILE} in your download folder is corrupted"
 
-            # Remove the file and check if that was successful
-            rm -f ${ARCHIVE_FILE}
-            if [ $? = 0 ]; then
-                cecho ${INFO} "Corrupted ${ARCHIVE_FILE} has been removed!"
-            else
-                cecho ${BAD} "Corrupted ${ARCHIVE_FILE} could not be removed."
-                cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
-                exit 1;
+                # Remove the file and check if that was successful
+                rm -f ${ARCHIVE_FILE}
+                if [ $? = 0 ]; then
+                    cecho ${INFO} "Corrupted ${ARCHIVE_FILE} has been removed!"
+                else
+                    cecho ${BAD} "Corrupted ${ARCHIVE_FILE} could not be removed."
+                    cecho ${INFO} "Please remove the file ${DOWNLOAD_PATH}/${ARCHIVE_FILE} on your own!"
+                    exit 1
+                fi
             fi
-        fi
-        unset archive_state
+            unset archive_state
 
-        # Set up complete url
-        url=${source}${ARCHIVE_FILE}
-        cecho ${INFO} "Trying to download ${url}"
+            # Set up complete url
+            url=${source}${ARCHIVE_FILE}
+            cecho ${INFO} "Trying to download ${url}"
 
-        # Download.
-        # If curl or wget is failing, continue this loop for trying an other mirror.
-        if [ ${DOWNLOADER} = "curl" ]; then
-            curl -f -L -k -O ${url} || continue
-        elif [ ${DOWNLOADER} = "wget" ]; then
-            wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
-        else
-            cecho ${BAD} "candi: Unknown downloader: ${DOWNLOADER}"
-            exit 1
-        fi
+            # Download.
+            # If curl or wget is failing, continue this loop for trying an other mirror.
+            if [ ${DOWNLOADER} = "curl" ]; then
+                curl -f -L -k -O ${url} || continue
+            elif [ ${DOWNLOADER} = "wget" ]; then
+                wget --no-check-certificate ${url} -O ${ARCHIVE_FILE} || continue
+            else
+                cecho ${BAD} "candi: Unknown downloader: ${DOWNLOADER}"
+                exit 1
+            fi
 
-        unset url
+            unset url
 
-        # Verify the download
-        verify_archive ${ARCHIVE_FILE}
-        archive_state=$?
-        if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
-            # If the download was successful, and the CHECKSUM is matching, skipped, or not possible
-            return 0;
-        fi
-        unset archive_state
-    done
+            # Verify the download
+            verify_archive ${ARCHIVE_FILE}
+            archive_state=$?
+            if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
+                # If the download was successful, and the CHECKSUM is matching, skipped, or not possible
+                return 0
+            fi
+            unset archive_state
+        done
     done
 
     # Unfortunately it seems that (all) download tryouts finally failed for some reason:
@@ -361,7 +364,7 @@ download_archive () {
     quit_if_fail "Error verifying checksum for ${ARCHIVE_FILE}\nMake sure that you are connected to the internet."
 }
 
-package_fetch () {
+package_fetch() {
     cecho ${GOOD} "Fetching ${PACKAGE} ${VERSION}"
 
     # Fetch the package appropriately from its source
@@ -512,7 +515,7 @@ package_build() {
         chmod a+x ${cmd_file}
 
         # Write variables to files so that they can be run stand-alone
-        declare -x| grep -v "!::"| grep -v "ProgramFiles(x86)" >>${cmd_file}
+        declare -x | grep -v "!::" | grep -v "ProgramFiles(x86)" >>${cmd_file}
 
         # From this point in candi_*, errors are fatal
         echo "set -e" >>${cmd_file}
@@ -557,7 +560,7 @@ package_build() {
         cecho ${BAD} "candi: internal error: BUILDCHAIN=${BUILDCHAIN} for ${PACKAGE} unknown."
         exit 1
     fi
-    echo "touch candi_successful_build" >> candi_build
+    echo "touch candi_successful_build" >>candi_build
 
     # Run the generated build scripts
     if [ ${BASH_VERSINFO} -ge 3 ]; then
@@ -602,12 +605,12 @@ guess_platform() {
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
-            10.11*) echo macos_elcapitan;;
-            10.12*) echo macos_sierra;;
-            10.13*) echo macos_highsierra;;
-            10.14*) echo macos_mojave;;
-            10.15*) echo macos_catalina;;
-            11.4*)  echo macos_bigsur;;
+        10.11*) echo macos_elcapitan ;;
+        10.12*) echo macos_sierra ;;
+        10.13*) echo macos_highsierra ;;
+        10.14*) echo macos_mojave ;;
+        10.15*) echo macos_catalina ;;
+        11.4*) echo macos_bigsur ;;
         esac
 
     elif [ ! -z "$CRAYOS_VERSION" ]; then
@@ -663,9 +666,8 @@ guess_ostype() {
 guess_architecture() {
     # Try to guess the architecture of the platform we are running on
     ARCH=unknown
-    if [ -x /usr/bin/uname -o -x /bin/uname ]
-    then
-        ARCH=`uname -m`
+    if [ -x /usr/bin/uname -o -x /bin/uname ]; then
+        ARCH=$(uname -m)
     fi
 }
 
@@ -680,7 +682,7 @@ echo
 
 # Keep the current work directory of candi.sh
 # WARNING: You should NEVER override this variable!
-export ORIG_DIR=`pwd`
+export ORIG_DIR=$(pwd)
 
 ################################################################################
 # Read configuration variables from candi.cfg
@@ -734,9 +736,9 @@ fi
 # Operating system (PLATFORM) check
 if [ -z "${GIVEN_PLATFORM}" ]; then
     # No platform is forced to use, try to find a platform file.
-    PLATFORM_SUPPORTED=${PROJECT}/platforms/supported/`guess_platform`.platform
-    PLATFORM_CONTRIBUTED=${PROJECT}/platforms/contributed/`guess_platform`.platform
-    PLATFORM_DEPRECATED=${PROJECT}/platforms/deprecated/`guess_platform`.platform
+    PLATFORM_SUPPORTED=${PROJECT}/platforms/supported/$(guess_platform).platform
+    PLATFORM_CONTRIBUTED=${PROJECT}/platforms/contributed/$(guess_platform).platform
+    PLATFORM_DEPRECATED=${PROJECT}/platforms/deprecated/$(guess_platform).platform
 
     if [ -e ${PLATFORM_SUPPORTED} ]; then
         PLATFORM=${PLATFORM_SUPPORTED}
@@ -779,7 +781,7 @@ fi
 echo
 
 # Guess the operating system type -> PLATFORM_OSTYPE
-PLATFORM_OSTYPE=`guess_ostype`
+PLATFORM_OSTYPE=$(guess_ostype)
 if [ -z "${PLATFORM_OSTYPE}" ]; then
     cecho ${WARN} "WARNING: could not determine your Operating System Type (assuming linux)"
     PLATFORM_OSTYPE=linux
@@ -790,7 +792,7 @@ cecho ${INFO} "Operating System Type detected as: ${PLATFORM_OSTYPE}"
 if [ -z "${PLATFORM_OSTYPE}" ]; then
     # check if PLATFORM_OSTYPE is set and not empty failed
     cecho ${BAD} "Error: (internal) could not set PLATFORM_OSTYPE"
-	exit 1
+    exit 1
 fi
 
 # Guess dynamic shared library file extension -> LDSUFFIX
@@ -809,7 +811,7 @@ cecho ${INFO} "Dynamic shared library file extension detected as: *.${LDSUFFIX}"
 if [ -z "${LDSUFFIX}" ]; then
     # check if PLATFORM_OSTYPE is set and not empty failed
     cecho ${BAD} "Error: (internal) could not set LDSUFFIX"
-	exit 1
+    exit 1
 fi
 
 # Source default PACKAGES variables, if none were given so far
@@ -897,7 +899,7 @@ done
 echo
 
 # if the program 'module' is available, output the currently loaded modulefiles
-if builtin command -v module > /dev/null; then
+if builtin command -v module >/dev/null; then
     echo "-------------------------------------------------------------------------------"
     cecho ${GOOD} Currently loaded modulefiles:
     cecho ${INFO} "$(module list)"
@@ -915,7 +917,7 @@ echo "--------------------------------------------------------------------------
 
 # CC test
 if [ ! -n "$CC" ]; then
-    if builtin command -v mpicc > /dev/null; then
+    if builtin command -v mpicc >/dev/null; then
         cecho ${WARN} "CC variable not set, but default mpicc found."
         export CC=mpicc
     fi
@@ -929,7 +931,7 @@ fi
 
 # CXX test
 if [ ! -n "$CXX" ]; then
-    if builtin command -v mpicxx > /dev/null; then
+    if builtin command -v mpicxx >/dev/null; then
         cecho ${WARN} "CXX variable not set, but default mpicxx found."
         export CXX=mpicxx
     fi
@@ -943,7 +945,7 @@ fi
 
 # FC test
 if [ ! -n "$FC" ]; then
-    if builtin command -v mpif90 > /dev/null; then
+    if builtin command -v mpif90 >/dev/null; then
         cecho ${WARN} "FC variable not set, but default mpif90 found."
         export FC=mpif90
     fi
@@ -957,7 +959,7 @@ fi
 
 # FF test
 if [ ! -n "$FF" ]; then
-    if builtin command -v mpif77 > /dev/null; then
+    if builtin command -v mpif77 >/dev/null; then
         cecho ${WARN} "FF variable not set, but default mpif77 found."
         export FF=mpif77
     fi
@@ -998,22 +1000,21 @@ cecho ${GOOD} "Project:  ${PROJECT}"
 cecho ${GOOD} "Platform: ${PLATFORM}"
 echo
 
-
 # Figure out what binary to use for python support. Note that older PETSc ./configure only supports python2. For now, prefer
 # using python2 but use what the user supplies as PYTHON_INTERPRETER.
-if builtin command -v python2 --version > /dev/null; then
-  default PYTHON_INTERPRETER="python2"
+if builtin command -v python2 --version >/dev/null; then
+    default PYTHON_INTERPRETER="python2"
 fi
-if builtin command -v python2.7 --version > /dev/null; then
-  default PYTHON_INTERPRETER="python2.7"
+if builtin command -v python2.7 --version >/dev/null; then
+    default PYTHON_INTERPRETER="python2.7"
 fi
-if builtin command -v python3 --version > /dev/null; then
-  default PYTHON_INTERPRETER="python3"
+if builtin command -v python3 --version >/dev/null; then
+    default PYTHON_INTERPRETER="python3"
 fi
 default PYTHON_INTERPRETER="python"
 
 # Figure out the version of the existing python:
-default PYTHONVER=`${PYTHON_INTERPRETER} -c "import sys; print(sys.version[:3])"`
+default PYTHONVER=$(${PYTHON_INTERPRETER} -c "import sys; print(sys.version[:3])")
 
 # Create necessary directories and set appropriate variables
 mkdir -p ${DOWNLOAD_PATH}
@@ -1023,7 +1024,7 @@ mkdir -p ${INSTALL_PATH}
 mkdir -p ${CONFIGURATION_PATH}
 
 # configuration script
-cat > ${CONFIGURATION_PATH}/enable.sh <<"EOF"
+cat >${CONFIGURATION_PATH}/enable.sh <<"EOF"
 #!/bin/bash
 # helper script to source all configuration files. Use
 #    source enable.sh
@@ -1042,7 +1043,6 @@ do
   fi
 done
 EOF
-
 
 # Keep original variables
 # WARNING: do not overwrite this variables!
@@ -1066,17 +1066,25 @@ for PACKAGE in ${PACKAGES[@]}; do
     # Skip building this package if the user requests it
     SKIP=false
     case ${PACKAGE} in
-        load:*) SKIP=true; LOAD=true; PACKAGE=${PACKAGE#*:};;
-        skip:*) SKIP=true;  PACKAGE=${PACKAGE#*:};;
-        once:*)
-          # If the package is turned off in the deal.II configuration, do not
-          # install it.
-          PACKAGE=${PACKAGE#*:};
-          if [[ ${PACKAGES_OFF} =~ ${PACKAGE} ]]; then
-            SKIP=true;
-          else
-            SKIP=maybe;
-          fi;;
+    load:*)
+        SKIP=true
+        LOAD=true
+        PACKAGE=${PACKAGE#*:}
+        ;;
+    skip:*)
+        SKIP=true
+        PACKAGE=${PACKAGE#*:}
+        ;;
+    once:*)
+        # If the package is turned off in the deal.II configuration, do not
+        # install it.
+        PACKAGE=${PACKAGE#*:}
+        if [[ ${PACKAGES_OFF} =~ ${PACKAGE} ]]; then
+            SKIP=true
+        else
+            SKIP=maybe
+        fi
+        ;;
     esac
 
     # Check if the package exists
@@ -1104,11 +1112,11 @@ for PACKAGE in ${PACKAGES[@]}; do
     CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
 
     # Reset package-specific functions
-    package_specific_patch () { true; }
-    package_specific_setup () { true; }
-    package_specific_build () { true; }
-    package_specific_install () { true; }
-    package_specific_register () { true; }
+    package_specific_patch() { true; }
+    package_specific_setup() { true; }
+    package_specific_build() { true; }
+    package_specific_install() { true; }
+    package_specific_register() { true; }
     package_specific_conf() { true; }
 
     # Fetch information pertinent to the package
@@ -1120,7 +1128,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         exit 1
     fi
 
-    if [ ! "${BUILDCHAIN}" = "ignore" ] ; then
+    if [ ! "${BUILDCHAIN}" = "ignore" ]; then
         if [ ! "${NAME}" ] || [ ! "${SOURCE}" ] || [ ! "${PACKING}" ]; then
             cecho ${BAD} "${PACKAGE}.package is not properly formed. Please check that all necessary variables are defined."
             exit 1
@@ -1175,7 +1183,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     package_conf
 
     # Store timing
-    TOC="$(($(${DATE_CMD} +%s)-TIC))"
+    TOC="$(($(${DATE_CMD} +%s) - TIC))"
     TIMINGS="$TIMINGS"$"\n""$PACKAGE: ""$((TOC)) s"
 done
 
@@ -1187,7 +1195,7 @@ cecho ${GOOD} "    source ${CONFIGURATION_PATH}/enable.sh"
 echo
 
 # Stop global timer
-TOC_GLOBAL="$(($(${DATE_CMD} +%s)-TIC_GLOBAL))"
+TOC_GLOBAL="$(($(${DATE_CMD} +%s) - TIC_GLOBAL))"
 
 # Display a summary
 echo

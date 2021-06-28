@@ -57,23 +57,23 @@ CONFOPTS="\
   -D OCE_OCAF:BOOL=OFF \
   -D OCE_DISABLE_X11:BOOL=ON"
 
-package_specific_patch () {
+package_specific_patch() {
     cd ${UNPACK_PATH}/${EXTRACTSTO}
     cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
-    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
+    patch -p0 --forward <${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
 }
 
-package_specific_register () {
+package_specific_register() {
     export OPENCASCADE_DIR=${INSTALL_PATH}
     export CASROOT=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
 export OPENCASCADE_DIR=${INSTALL_PATH}
 export CASROOT=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

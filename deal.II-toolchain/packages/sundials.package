@@ -13,16 +13,15 @@ CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
  -D MPI_ENABLE=ON \
  -D BUILD_SHARED_LIBS=ON"
 
-package_specific_register () {
+package_specific_register() {
     export SUNDIALS_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
 export SUNDIALS_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }
-
