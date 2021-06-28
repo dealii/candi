@@ -1,0 +1,365 @@
+name: linux-build
+
+on: [push, pull_request]
+
+jobs:
+  ubuntu18-minimal:
+    name: ubuntu 18.04 minimal
+    runs-on: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get update
+        sudo apt-get install gfortran \
+        libopenmpi-dev openmpi-common openmpi-bin \
+        libblas-dev liblapack-dev libblas3 liblapack3
+
+        # Install cmake via candi to hit the version 3.16.3
+
+    - name: info
+      run: |
+        g++ -v
+        mpic++ -v
+        cmake --version
+    - name: build
+      run: |
+        # Modify some variables of the configuration script
+
+        # Install only DEBUG mode to save some time and disk space
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
+        # Remove build directory after successful installation
+        echo 'INSTANT_CLEAN_BUILD_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove downloaded packed src after successful installation
+        echo 'INSTANT_CLEAN_SRC_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove unpack directory after successful installation
+        echo 'INSTANT_CLEAN_UNPACK_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Skip examples build
+        echo 'BUILD_EXAMPLES=OFF' >> candi.cfg
+
+        # dealii version
+        echo 'DEAL_II_VERSION=v9.3.0-rc1' >> candi.cfg
+
+        # Run dealii tests after installation
+        echo 'RUN_DEAL_II_TESTS=ON' >> candi.cfg
+
+        # Install
+        ./candi.sh -j 2 -y --packages="\
+          once:cmake \
+          once:adolc \
+          once:arpack-ng \
+          once:assimp \
+          once:hdf5 \
+          once:p4est \
+          once:parmetis \
+          once:petsc \
+          once:slepc \
+          dealii"
+
+          # once:gmsh \
+          # once:opencascade \
+          # once:sundials \
+          # once:superlu_dist \
+          # once:trilinos \
+
+  ubuntu20:
+    name: ubuntu 20.04
+    runs-on: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+        doxygen graphviz \
+        mpi-default-dev \
+        libboost-all-dev libsuitesparse-dev
+
+        # Install cmake via candi to hit the version 3.16.3
+
+    - name: update compiler version
+      run: |
+        # Use GNU gcc g++ gfortran version 10 by default
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+
+    - name: info
+      run: |
+        gcc --version
+        g++ --version
+        gfortran --version
+
+    - name: build
+      run: |
+        # Modify some variables of the configuration script
+
+        # Install only DEBUG mode to save some time and disk space
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
+        # Remove build directory after successful installation
+        echo 'INSTANT_CLEAN_BUILD_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove downloaded packed src after successful installation
+        echo 'INSTANT_CLEAN_SRC_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove unpack directory after successful installation
+        echo 'INSTANT_CLEAN_UNPACK_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Skip examples build
+        echo 'BUILD_EXAMPLES=OFF' >> candi.cfg
+
+        # dealii version
+        echo 'DEAL_II_VERSION=v9.3.0-rc1' >> candi.cfg
+
+        # Run dealii tests after installation
+        echo 'RUN_DEAL_II_TESTS=ON' >> candi.cfg
+
+        # Install
+        ./candi.sh -j 2 -y --packages="once:cmake \
+          once:petsc \
+          once:slepc \
+          once:sundials \
+          dealii"
+
+        # once:adolc \
+        # once:arpack-ng \
+        # once:assimp \
+        # once:gmsh \
+        # once:hdf5 \
+        # once:opencascade \
+        # once:p4est \
+        # once:parmetis \
+        # once:superlu_dist \
+        # once:trilinos \
+
+  ubuntu20-plain-dealii:
+    name: ubuntu 20.04 (plain dealii)
+    runs-on: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+        doxygen graphviz \
+        mpi-default-dev \
+        libboost-all-dev libsuitesparse-dev
+
+        # Install cmake via candi to hit the version 3.16.3
+
+    - name: update compiler version
+      run: |
+        # Use GNU gcc g++ gfortran version 10 by default
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+
+    - name: info
+      run: |
+        gcc --version
+        g++ --version
+        gfortran --version
+
+    - name: build
+      run: |
+        # Modify some variables of the configuration script
+
+        # Install only DEBUG mode to save some time and disk space
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
+        # Remove build directory after successful installation
+        echo 'INSTANT_CLEAN_BUILD_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove downloaded packed src after successful installation
+        echo 'INSTANT_CLEAN_SRC_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove unpack directory after successful installation
+        echo 'INSTANT_CLEAN_UNPACK_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Skip examples build
+        echo 'BUILD_EXAMPLES=OFF' >> candi.cfg
+
+        # dealii version
+        echo 'DEAL_II_VERSION=v9.3.0-rc1' >> candi.cfg
+
+        # Run dealii tests after installation
+        echo 'RUN_DEAL_II_TESTS=ON' >> candi.cfg
+
+        # Install
+        ./candi.sh -j 2 -y --packages="once:cmake \
+          dealii"
+
+  ubuntu20-trilinos:
+    name: ubuntu 20.04 (trilinos)
+    runs-on: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        # sudo apt-get update
+        sudo apt-get install \
+        doxygen graphviz \
+        mpi-default-dev \
+        libboost-all-dev libsuitesparse-dev
+
+        # Install cmake via candi to hit the version 3.16.3
+
+    - name: update compiler version
+      run: |
+        # Use GNU gcc g++ gfortran version 10 by default
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+
+    - name: info
+      run: |
+        gcc --version
+        g++ --version
+        gfortran --version
+
+    - name: build
+      run: |
+        # Modify some variables of the configuration script
+
+        # Install only DEBUG mode to save some time and disk space
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
+        # Remove build directory after successful installation
+        echo 'INSTANT_CLEAN_BUILD_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove downloaded packed src after successful installation
+        echo 'INSTANT_CLEAN_SRC_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove unpack directory after successful installation
+        echo 'INSTANT_CLEAN_UNPACK_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Skip examples build
+        echo 'BUILD_EXAMPLES=OFF' >> candi.cfg
+
+        # dealii version
+        echo 'DEAL_II_VERSION=v9.3.0-rc1' >> candi.cfg
+
+        # Run dealii tests after installation
+        echo 'RUN_DEAL_II_TESTS=ON' >> candi.cfg
+
+        # Install
+        ./candi.sh -j 2 -y --packages="once:cmake \
+          once:p4est \
+          once:parmetis \
+          once:superlu_dist \
+          once:trilinos \
+          dealii"
+
+        # once:adolc \
+        # once:arpack-ng \
+        # once:assimp \
+        # once:gmsh \
+        # once:hdf5 \
+        # once:opencascade \
+        # once:p4est \
+        # once:parmetis \
+        # once:petsc \
+        # once:slepc \
+        # once:sundials \
+        # once:superlu_dist \
+        # once:trilinos \
+
+  ubuntu20-full:
+    name: ubuntu 20.04 (full)
+    runs-on: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        # sudo apt-get update
+        sudo apt-get install \
+        doxygen graphviz \
+        mpi-default-dev \
+        libboost-all-dev libsuitesparse-dev
+
+        # Install cmake via candi to hit the version 3.16.3
+
+    - name: update compiler version
+      run: |
+        # Use GNU gcc g++ gfortran version 10 by default
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+
+    - name: info
+      run: |
+        gcc --version
+        g++ --version
+        gfortran --version
+
+    - name: build
+      run: |
+        # Modify some variables of the configuration script
+
+        # Install only DEBUG mode to save some time and disk space
+        echo 'DEAL_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
+        # Remove build directory after successful installation
+        echo 'INSTANT_CLEAN_BUILD_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove downloaded packed src after successful installation
+        echo 'INSTANT_CLEAN_SRC_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Remove unpack directory after successful installation
+        echo 'INSTANT_CLEAN_UNPACK_AFTER_INSTALL=ON' >> candi.cfg
+
+        # Skip examples build
+        echo 'BUILD_EXAMPLES=OFF' >> candi.cfg
+
+        # dealii version
+        echo 'DEAL_II_VERSION=v9.3.0-rc1' >> candi.cfg
+
+        # Run dealii tests after installation
+        echo 'RUN_DEAL_II_TESTS=ON' >> candi.cfg
+
+        # Install
+        ./candi.sh -j 2 -y --packages="once:cmake \
+          once:adolc \
+          once:arpack-ng \
+          once:assimp \
+          once:gmsh \
+          once:hdf5 \
+          once:opencascade \
+          once:p4est \
+          once:parmetis \
+          once:petsc \
+          once:slepc \
+          once:sundials \
+          once:superlu_dist \
+          once:trilinos \
+          dealii"
