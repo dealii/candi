@@ -212,10 +212,9 @@ if [ ! -z "${SLEPC_DIR}" ]; then
         -D SLEPC_DIR=${SLEPC_DIR}"
 fi
 
-# opencascade
+########################################
+# OPENCASCADE
 if [[ ${PACKAGES_OFF} =~ 'opencascade' ]]; then
-    # Disable OPENCASCADE for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces opencascade to be off
     if [ ! -z "${OPENCASCADE_DIR}" ]; then
         cecho ${INFO} "deal.II: unset OPENCASCADE_DIR due to forced DEAL_II_WITH_OPENCASCADE:BOOL=OFF option"
         unset OPENCASCADE_DIR
@@ -224,9 +223,8 @@ fi
 
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with OPENCASCADE"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
 fi
 
 ########################################
