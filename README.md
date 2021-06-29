@@ -31,7 +31,7 @@ Follow the instructions on the screen
   ./candi.sh
 ```
 
-#### Install deal.II on ubuntu 18.04, 20.xx:
+#### Install deal.II on Ubuntu (16.04), 18.04, 20.xx:
 ```bash
   ./candi.sh
 ```
@@ -49,7 +49,8 @@ For a detailed instruction how to install WSL, the new WSL 2 and a recent
 Ubuntu distribution on Windows 10 you can follow the
 [Microsoft Documentation](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Within the ubuntu terminal application clone this repository and run candi
+Within the Ubuntu terminal application, upgrade Ubuntu first, then
+clone this repository and run candi
 
 ```bash
   sudo apt-get update
