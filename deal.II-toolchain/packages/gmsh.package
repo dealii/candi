@@ -38,9 +38,6 @@ BUILDCHAIN=cmake
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/gmsh-${VERSION}
 
-# Disable slepc because gmsh is not setting the relative path for the .so
-# correctly.
-
 CONFOPTS="\
   -D ENABLE_MPI:BOOL=OFF \
   -D CMAKE_INSTALL_RPATH_USE_LINK_PATH:BOOL=ON \
