@@ -42,7 +42,7 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 PREFIX=~/deal.ii-candi
 JOBS=1
 CMD_PACKAGES=""
-SKIP_READ=false
+USER_INTERACTION=ON
 
 while [ -n "$1" ]; do
     param="$1"
@@ -106,7 +106,7 @@ while [ -n "$1" ]; do
         #####################################
         # Assume yes to prompts
         -y|--yes|--assume-yes)
-            SKIP_READ=true
+            USER_INTERACTION=OFF
         ;;
 
 	*)
@@ -171,7 +171,7 @@ cecho() {
 }
 
 cls() {
-    if [ ${SKIP_READ} = false ]; then
+    if [ ${USER_INTERACTION} = ON ]; then
         # clear screen
         COL=$1; shift
         echo -e "${COL}$@\033c"
@@ -841,9 +841,10 @@ echo
 awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
 echo
 
-# Let the user confirm now, that the PLATFORM is set up correctly
-echo "-------------------------------------------------------------------------------"
-if [ ${SKIP_READ} = false ]; then
+# If interaction is enabled, let the user confirm, that the platform is set up
+# correctly
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
     cecho ${GOOD} "Please make sure you've read the instructions above and your system"
     cecho ${GOOD} "is ready for installing ${PROJECT}."
     cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
@@ -980,9 +981,9 @@ if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
 fi
 
 ################################################################################
-# Force the user to accept the current output
-echo "-------------------------------------------------------------------------------"
-if [ ${SKIP_READ} = false ]; then
+# If interaction is enabled, force the user to accept the current output
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
 fi
