@@ -47,7 +47,7 @@ Since the Creators Update in fall 2017 (Windows 10 (1709)) the
 Windows Subsystem for Linux (WSL) is an official part.
 
 For a detailed instruction how to install WSL, the new WSL 2 and a recent
-ubuntu distribution on Windows 10 you can follow the
+Ubuntu distribution on Windows 10 you can follow the
 [Microsoft Documentation](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 Within the ubuntu terminal application clone this repository and run candi
