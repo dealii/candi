@@ -25,7 +25,7 @@ Follow the instructions on the screen
 
 ### Examples
 
-#### Install deal.II on RHEL 7, CentOS 7 or Fedora 26, 27, 28:
+#### Install deal.II on RHEL 7, CentOS 7 or Fedora:
 ```bash
   module load mpi/openmpi-`uname -i`
   ./candi.sh

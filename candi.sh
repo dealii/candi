@@ -619,7 +619,7 @@ guess_platform() {
         local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
 
         if [ "$OS_ID" == "fedora" ]; then
-            echo fedora${OS_VERSIONID}
+            echo fedora
 
         elif [ "$OS_ID" == "centos" ]; then
             echo centos${OS_VERSIONID}
