@@ -601,11 +601,12 @@ guess_platform() {
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
-            10.11*)  echo elcapitan;;
-            10.12*)  echo sierra;;
-            10.13*)  echo highsierra;;
-            10.14*)  echo mojave;;
-            10.15*)  echo catalina;;
+            10.11*) echo macos_elcapitan;;
+            10.12*) echo macos_sierra;;
+            10.13*) echo macos_highsierra;;
+            10.14*) echo macos_mojave;;
+            10.15*) echo macos_catalina;;
+            11.4*)  echo macos_bigsur;;
         esac
 
     elif [ ! -z "$CRAYOS_VERSION" ]; then

@@ -36,11 +36,10 @@ Follow the instructions on the screen
   ./candi.sh
 ```
 
-#### Install deal.II on macOS (10.11), 10.12, 10.13:
+#### Install deal.II on macOS (experimental):
 ```bash
   ./candi.sh
 ```
-Note: macOS support is currently experimental.
 
 #### Install deal.II on Windows 10 (1709):
 Since the Creators Update in fall 2017 (Windows 10 (1709)) the
