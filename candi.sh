@@ -634,10 +634,8 @@ guess_platform() {
         elif [ "$OS_ID" == "ubuntu" ]; then
             echo ubuntu${OS_MAJOR_VER}
 
-        elif [ "$OS_ID" == "opensuse" ]; then
-            if [ "${OS_NAME}" == "openSUSE Leap" ]; then
-                echo opensuse15
-            fi
+        elif [ "${OS_NAME}" == "openSUSE Leap" ]; then
+            echo opensuse15
 
         elif [ "${PRETTY_NAME}" == "Arch Linux" ]; then
             echo arch
