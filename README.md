@@ -25,22 +25,21 @@ Follow the instructions on the screen
 
 ### Examples
 
-#### Install deal.II on RHEL 7, CentOS 7 or Fedora 26, 27, 28:
+#### Install deal.II on RHEL 7, CentOS 7 or Fedora:
 ```bash
   module load mpi/openmpi-`uname -i`
   ./candi.sh
 ```
 
-#### Install deal.II on ubuntu 18.04, 20.xx:
+#### Install deal.II on Ubuntu (16.04), 18.04, 20.xx:
 ```bash
   ./candi.sh
 ```
 
-#### Install deal.II on macOS (10.11), 10.12, 10.13:
+#### Install deal.II on macOS (experimental):
 ```bash
   ./candi.sh
 ```
-Note: macOS support is currently experimental.
 
 #### Install deal.II on Windows 10 (1709):
 Since the Creators Update in fall 2017 (Windows 10 (1709)) the
@@ -50,7 +49,8 @@ For a detailed instruction how to install WSL, the new WSL 2 and a recent
 Ubuntu distribution on Windows 10 you can follow the
 [Microsoft Documentation](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Within the ubuntu terminal application clone this repository and run candi
+Within the Ubuntu terminal application, upgrade Ubuntu first, then
+clone this repository and run candi
 
 ```bash
   sudo apt-get update
