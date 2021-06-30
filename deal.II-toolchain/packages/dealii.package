@@ -274,6 +274,21 @@ if [ ! -z "${GMSH_DIR}" ]; then
       -D GMSH_DIR=${GMSH_DIR}"
 fi
 
+########################################
+# ADOLC
+if [[ ${PACKAGES_OFF} =~ 'adolc' ]]; then
+    if [ ! -z "${ADOLC_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ADOLC_DIR due to forced DEAL_II_WITH_ADOLC:BOOL=OFF option"
+        unset ADOLC_DIR
+    fi
+fi
+
+if [ ! -z "${ADOLC_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with ADOLC"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ADOLC:BOOL=ON"
+fi
+
 ################################################################################
 
 package_specific_install() {
