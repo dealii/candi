@@ -124,10 +124,9 @@ if [ ! -z "${MUMPS_DIR}" ]; then
         -D MUMPS_DIR=${MUMPS_DIR}"
 fi
 
-# p4est
+########################################
+# P4EST
 if [[ ${PACKAGES_OFF} =~ 'p4est' ]]; then
-    # Disable p4est for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces p4est to be off
     if [ ! -z "${P4EST_DIR}" ]; then
         cecho ${INFO} "deal.II: unset P4EST_DIR due to forced DEAL_II_WITH_P4EST:BOOL=OFF option"
         unset P4EST_DIR
@@ -136,10 +135,9 @@ fi
 
 if [ ! -z "${P4EST_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with P4EST"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_P4EST:BOOL=ON \
-        -D P4EST_DIR=${P4EST_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_P4EST:BOOL=ON \
+      -D P4EST_DIR=${P4EST_DIR}"
 fi
 
 # hdf5
