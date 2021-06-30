@@ -15,7 +15,7 @@ INSTALL_PATH=${ORIG_INSTALL_PATH}/deal.II-${VERSION}
 ################################################################################
 # Choose general configuration and components of deal.II
 
-CONFOPTS=" \
+CONFOPTS="\
 -D CMAKE_BUILD_TYPE=DebugRelease \
 -D DEAL_II_WITH_MPI:BOOL=ON \
 -D DEAL_II_COMPONENT_DOCUMENTATION:BOOL=OFF \
@@ -89,7 +89,7 @@ fi
 if [ ! -z "${ARPACK_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with ARPACK"
     # We use a recent enough version of arpack, so PARPACK can be enabled
-    # even though it is disabled by default, see 
+    # even though it is disabled by default, see
     # https://github.com/dealii/dealii/blob/master/cmake/modules/FindARPACK.cmake
     CONFOPTS="\
         ${CONFOPTS} \
@@ -295,27 +295,25 @@ package_specific_install() {
     fi
 }
 
-
-
 package_specific_conf() {
     ############################################################################
     # Generate modulefile
 
-# Prepare modulefile path and config file name
-if [ -z "${COMPILER}" ]; then
-    COMPILER=default
-fi
+    # Prepare modulefile path and config file name
+    if [ -z "${COMPILER}" ]; then
+        COMPILER=default
+    fi
 
-if [ -z "${MODULEFILE_PATH}" ]; then
-    MODULEFILE_PATH=${CONFIGURATION_PATH}/modulefiles
-fi
+    if [ -z "${MODULEFILE_PATH}" ]; then
+        MODULEFILE_PATH=${CONFIGURATION_PATH}/modulefiles
+    fi
 
-CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
+    CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
 
-CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
+    CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
 
     # Generate modulefile
-    
+
     mkdir -p ${MODULEFILE_PATH}
     rm -f $CONFIG_FILE
     echo "#%Module 1.0
@@ -327,8 +325,8 @@ conflict                deal.II
 module load ${CURRENT_MODULES}
 
 setenv                  DEAL_II_DIR         ${INSTALL_PATH}
-" >> $CONFIG_FILE
-    
+" >>$CONFIG_FILE
+
     echo
     echo "${NAME} has now been installed in"
     echo
@@ -340,19 +338,17 @@ setenv                  DEAL_II_DIR         ${INSTALL_PATH}
     echo
 
     export DEAL_II_DIR=${INSTALL_PATH}
-    
+
     ############################################################################
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/deal.II-${VERSION}
     rm -f $CONFIG_FILE
     echo "
 export DEAL_II_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 
     echo "If you are not using modules, execute the following command instead:"
     echo
     cecho ${GOOD} "    source $CONFIG_FILE"
     echo
 }
-
-

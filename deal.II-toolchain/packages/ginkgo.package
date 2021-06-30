@@ -38,15 +38,15 @@ CONFOPTS="\
 # -D GINKGO_BUILD_HIP:BOOL=OFF \
 # -D GINKGO_BUILD_DPCPP:BOOL=OFF \
 
-package_specific_register () {
-    export GINKGO_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export GINKGO_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export GINKGO_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

@@ -6,17 +6,18 @@ BUILDCHAIN=ignore
 # add it to the PACKAGES_OFF list.
 for option in ${DEAL_II_CONFOPTS[@]}; do
     case ${option} in
-        *DEAL_II_WITH*:BOOL=OFF)
-        PACKAGE_NAME=${option##*WITH_};
-        PACKAGE_NAME=${PACKAGE_NAME%%:BOOL*};
-        PACKAGES_OFF=${PACKAGE_NAME}' '${PACKAGES_OFF};;
+    *DEAL_II_WITH*:BOOL=OFF)
+        PACKAGE_NAME=${option##*WITH_}
+        PACKAGE_NAME=${PACKAGE_NAME%%:BOOL*}
+        PACKAGES_OFF=${PACKAGE_NAME}' '${PACKAGES_OFF}
+        ;;
     esac
 done
 unset option
 unset PACKAGE_NAME
 
 # Transform upper case to lower case.
-PACKAGES_OFF=`echo "$PACKAGES_OFF" | tr '[:upper:]' '[:lower:]'`
+PACKAGES_OFF=$(echo "$PACKAGES_OFF" | tr '[:upper:]' '[:lower:]')
 
 if [ ! -z "${PACKAGES_OFF}" ]; then
     cecho ${WARN} "deal.II: forcing package skip for: ${PACKAGES_OFF}"

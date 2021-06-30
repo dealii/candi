@@ -7,22 +7,22 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_build () {
+package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     ./configure --prefix=${INSTALL_PATH}
     quit_if_fail "zlib configure failed"
-    
+
     make install
     quit_if_fail "zlib make install failed"
 }
 
-package_specific_register () {
+package_specific_register() {
     export ZLIB_DIR=${INSTALL_PATH}
     export ZLIB_INCLUDE=${INSTALL_PATH}/include
     export ZLIB_LIBPATH=${INSTALL_PATH}/lib
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
@@ -30,5 +30,5 @@ package_specific_conf () {
 export ZLIB_DIR=${INSTALL_PATH}
 export ZLIB_INCLUDE=${INSTALL_PATH}/include
 export ZLIB_LIBPATH=${INSTALL_PATH}/lib
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

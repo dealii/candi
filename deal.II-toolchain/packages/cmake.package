@@ -26,8 +26,8 @@ else
     # CHECKSUM=d2d554c05fc07cfae7846d2aa205f12a # 3.11.2
     CHECKSUM=9e6fa59704d3a52812e279996b5b01c7 # 3.16.3
 
-    if builtin command -v cmake > /dev/null; then
-        # configure/make with cmake (older or newer version already installed)    
+    if builtin command -v cmake >/dev/null; then
+        # configure/make with cmake (older or newer version already installed)
         BUILDCHAIN=cmake
     else
         # configure/make with autotools
@@ -39,22 +39,22 @@ SOURCE=https://cmake.org/files/v${MAJOR}/
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 if [ ${BUILDCHAIN} == "ignore" ]; then
-    package_specific_install () {
+    package_specific_install() {
         cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
     }
 fi
 
-package_specific_register () {
+package_specific_register() {
     export PATH=${INSTALL_PATH}/bin:${PATH}
     export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
 export PATH=${INSTALL_PATH}/bin:\${PATH}
 export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

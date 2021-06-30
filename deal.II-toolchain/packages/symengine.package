@@ -35,15 +35,15 @@ CONFOPTS="\
   -D BUILD_TESTS:BOOL=OFF \
   -D BUILD_BENCHMARKS:BOOL=OFF"
 
-package_specific_register () {
+package_specific_register() {
     export SYMENGINE_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f ${CONFIG_FILE}
     echo "
 export SYMENGINE_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

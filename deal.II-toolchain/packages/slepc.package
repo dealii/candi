@@ -18,7 +18,6 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-
 ##############################################################################
 
 if [ -z "${PETSC_DIR}" ]; then
@@ -26,29 +25,29 @@ if [ -z "${PETSC_DIR}" ]; then
     exit 1
 fi
 
-package_specific_setup () {
+package_specific_setup() {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
+
     # make sure no other invalid SLEPC_DIR is set:
     unset SLEPC_DIR
 
     ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
     quit_if_fail "slepc ./configure failed"
-    
+
     make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} all install
     quit_if_fail "slepc make all install failed"
 }
 
-package_specific_register () {
+package_specific_register() {
     export SLEPC_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
     rm -f $CONFIG_FILE
     echo "
 export SLEPC_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }

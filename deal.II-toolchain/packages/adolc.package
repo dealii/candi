@@ -33,15 +33,15 @@ INSTALL_PATH=${INSTALL_PATH}/adolc-${VERSION}
 
 CONFOPTS="--enable-atrig-erf --with-boost=no"
 
-package_specific_register () {
+package_specific_register() {
     export ADOLC_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/adolc-${VERSION}
     rm -f ${CONFIG_FILE}
     echo "
 export ADOLC_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }
