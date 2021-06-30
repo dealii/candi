@@ -1,30 +1,27 @@
-MAJOR=3.16
-MINOR=3
+MAJOR=3.20
+MINOR=5
 VERSION=${MAJOR}.${MINOR}
 
-# We try to determine if we have a linux platform to use tarball install
-# instead of configure/make due to possible missing autotools on some
-# HPC clusters. We need to do this, because tarball install on MacOS or
-# other platforms is not maintainable by the candi authors.
+if [ -z ${CANDI_CMAKE_LOAD_TARBALL} ]; then
+    CANDI_CMAKE_LOAD_TARBALL=ON
+fi
 
 if [ -z "${PLATFORM_OSTYPE}" ]; then
     cecho ${WARN} "WARNING: could not determine your Operating System Type (assuming linux)"
     PLATFORM_OSTYPE=linux
 fi
 
-if [ ${PLATFORM_OSTYPE} == "linux" ]; then
+if [ ${CANDI_CMAKE_LOAD_TARBALL} = ON ] && [ ${PLATFORM_OSTYPE} == "linux" ]; then
     # tarball install
-    NAME=cmake-${VERSION}-Linux-x86_64
+    NAME=cmake-${VERSION}-linux-x86_64
     PACKING=.tar.gz
-    # CHECKSUM=55e30dd01698e9409b576008fd22394c # 3.11.2
-    CHECKSUM=8f3dd8952ae9d532ae340c7d0f4cd1d7 # 3.16.3
+    CHECKSUM=3adc4d6ab87b8d3b46fb5fe98612dd84 # 3.20.5 tarball linux
     BUILDCHAIN=ignore
 else
     # configure/make/install
     NAME=cmake-${VERSION}
     PACKING=.tar.gz
-    # CHECKSUM=d2d554c05fc07cfae7846d2aa205f12a # 3.11.2
-    CHECKSUM=9e6fa59704d3a52812e279996b5b01c7 # 3.16.3
+    CHECKSUM=137311bbe83d9a32469f99ac2792a2bc # 3.20.5 src
 
     if builtin command -v cmake > /dev/null; then
         # configure/make with cmake (older or newer version already installed)    
@@ -34,6 +31,8 @@ else
         BUILDCHAIN=autotools
     fi
 fi
+
+unset CANDI_CMAKE_LOAD_TARBALL
 
 SOURCE=https://cmake.org/files/v${MAJOR}/
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
