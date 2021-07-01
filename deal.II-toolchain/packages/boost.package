@@ -16,7 +16,7 @@ package_specific_build () {
     quit_if_fail "boost build ./bootstrap.sh failed"
     
     echo "using mpi ;" > user-config.jam
-    ./b2 -j ${PROCS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
+    ./b2 -j ${JOBS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
     quit_if_fail "boost build ./b2 failed"
 }
 

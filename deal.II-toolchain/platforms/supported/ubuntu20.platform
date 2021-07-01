@@ -1,0 +1,32 @@
+# Ubuntu 20.04
+#
+# This build script assumes that you have several packages already
+# installed via ubuntu's apt-get using the following commands:
+#
+# > sudo apt-get install lsb-release git subversion wget bc libgmp-dev \
+#   build-essential autoconf automake cmake libtool gfortran python \
+#   libboost-all-dev zlib1g-dev \
+#   openmpi-bin openmpi-common libopenmpi-dev \
+#   libblas3 libblas-dev liblapack3 liblapack-dev libsuitesparse-dev
+#
+# Then run candi again.
+#
+#
+# To use native compiler optimizations on Intel's 11th-Gen (TigerLake)
+# you may need to use the GNU Compiler collection Version 10 or newer.
+# To priorize v10 over the default v9, do
+#
+#   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10 \
+#   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+#
+#   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10 \
+#   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+#
+#   update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10 \
+#   update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+#
+# with super-user privileges and invoke an operating system update.
+##
+
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
