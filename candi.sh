@@ -108,7 +108,7 @@ while [ -n "$1" ]; do
         ;;
 
 	*)
-	    echo "invalid command line option. See -h for more information."
+	    echo "invalid command line option <$param>. See -h for more information."
 	    exit 1
     esac
     shift
