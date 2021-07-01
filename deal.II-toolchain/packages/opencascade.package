@@ -1,54 +1,53 @@
-# NOTE: uncomment the following line to use the git repository
-#       and not a release tarball:
-#CANDI_OPENCASCADE_FROM_GIT=1
+################################################################################
+## OPENCASCADE                                                                ##
+################################################################################
 
-if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]; then
-    # download git repository (huge download)
-    # if possible, try to download a release tarball (see below)
-    
-    # checkout specific release version
-    # VERSION=OCE-0.18.2
-    # checkout current development version (master)
-    VERSION=master
-    
-    if [ "${VERSION}" = "master" ]; then
-        EXTRACTSTO=OCE-master
-    fi
-    
-    # set up git repository
-    NAME=oce.git
-    PACKING=git
-    SOURCE=https://github.com/tpaviot/
-    
-else
+# Option {ON|OFF}: Choose whether to load the tarball or the git repository.
+CANDI_OPENCASCADE_LOAD_TARBALL=ON
+
+if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
     # download release tarball
-    
-    #VERSION=0.17
-    #CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
-    #VERSION=0.18.1
-    #CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
     VERSION=0.18.2
     CHECKSUM=6dfd68e459e2c62387579888a867281f
 
+    # VERSION=0.18.1
+    # CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
+
+    # VERSION=0.17
+    # CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
+
     NAME=OCE-${VERSION}
-    PACKING=.tar.gz
     SOURCE=https://github.com/tpaviot/oce/archive/
     EXTRACTSTO=oce-OCE-${VERSION}
+    PACKING=.tar.gz
+else
+    # download git repository (huge download)
+
+    # checkout specific release version
+    #VERSION=master
+    #VERSION=OCE-0.18.3
+    VERSION=OCE-0.18.2
+
+    # set up git repository
+    NAME=oce.git
+    PACKING=git
+    EXTRACTSTO=OCE-${VERSION}
+    SOURCE=https://github.com/tpaviot/
 fi
-unset CANDI_OPENCASCADE_FROM_GIT
+unset CANDI_OPENCASCADE_LOAD_TARBALL
 
 BUILDCHAIN=cmake
 
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
-CONFOPTS="-D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
- -D OCE_VISUALISATION=OFF \
- -D OCE_DISABLE_TKSERVICE_FONT=ON \
- -D OCE_DATAEXCHANGE=ON \
- -D OCE_OCAF=OFF \
- -D OCE_DISABLE_X11=ON \
-"
+CONFOPTS="\
+  -D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
+  -D OCE_VISUALISATION:BOOL=OFF \
+  -D OCE_DISABLE_TKSERVICE_FONT:BOOL=ON \
+  -D OCE_DATAEXCHANGE:BOOL=ON \
+  -D OCE_OCAF:BOOL=OFF \
+  -D OCE_DISABLE_X11:BOOL=ON"
 
 package_specific_patch () {
     cd ${UNPACK_PATH}/${EXTRACTSTO}

@@ -12,6 +12,12 @@
 # Then reboot and run candi again.
 ##
 
+# on debian 9 the candi installed parmetis 4.0.3 is not recognized correctly
+# for trilinos 12-10-1. We force to assume parmetis version 4.0.3.
+TRILINOS_PARMETIS_CONFOPTS="\
+    ${TRILINOS_PARMETIS_CONFOPTS} \
+    -D HAVE_PARMETIS_VERSION_4_0_3=ON"
+
 #
 # Define the additional packages for this platform.
 #PACKAGES="once:cmake ${PACKAGES}"

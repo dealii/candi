@@ -1,14 +1,31 @@
-# see http://gmsh.info/src/
-VERSION=3.0.6
-CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+################################################################################
+## GMSH                                                                       ##
+################################################################################
 
-#VERSION=2.16.0
-#CHECKSUM=762c10f159dab4b042e3140b1c348427
+# Option {ON|OFF}: Choose whether to load the tarball or the git repository.
+CANDI_GMSH_LOAD_TARBALL=ON
 
-NAME=gmsh-${VERSION}-source
-PACKING=.tgz
-SOURCE=http://gmsh.info/src/
-EXTRACTSTO=gmsh-${VERSION}-source
+if [ ${CANDI_GMSH_LOAD_TARBALL} = ON ]; then
+    # see http://gmsh.info/src/
+
+    VERSION=3.0.6
+    CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+
+    # VERSION=2.16.0
+    # CHECKSUM=762c10f159dab4b042e3140b1c348427
+
+    NAME=gmsh-${VERSION}-source
+    PACKING=.tgz
+    EXTRACTSTO=gmsh-${VERSION}-source
+    SOURCE=http://gmsh.info/src/
+else
+    VERSION=gmsh_3_0_6
+    NAME=gmsh.git
+    PACKING=git
+    EXTRACTSTO=${VERSION}
+    SOURCE=https://gitlab.onelab.info/gmsh/
+fi
+unset CANDI_GMSH_LOAD_TARBALL
 
 BUILDCHAIN=cmake
 
@@ -32,7 +49,6 @@ CONFOPTS=" -D ENABLE_MPI=OFF \
 # the following two sadly don't install the .so correctly:
 # -D ENABLE_BUILD_SHARED=ON
 # -D ENABLE_BUILD_DYNAMIC=ON
-
 
 package_specific_register () {
     export GMSH_DIR=${INSTALL_PATH}
