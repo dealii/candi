@@ -20,7 +20,7 @@
 # version number is not set to AUTO.
 # The last point is due to own compilers (e.g. intel) which support
 # Trilinos 12.
-if [ ${STABLE_BUILD} == "true" ] && [ ${DEAL_II_VERSION} == "v8.3.0" ] && [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
+if [ ${DEAL_II_VERSION} ~= "master" ] && [ ${DEAL_II_VERSION} == "v8.3.0" ] && [ ${TRILINOS_MAJOR_VERSION} == "AUTO" ]; then
   TRILINOS_MAJOR_VERSION=11
 fi
 

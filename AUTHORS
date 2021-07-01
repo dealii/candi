@@ -1,8 +1,30 @@
+===================================================================
 candi (compile&install) for deal.II
 
-  Uwe Koecher           <uwe.koecher@hsu-hamburg.de>
-  Bruno Turcksin        <bruno.turcksin@gmail.com>
-  Timo Heister          <timo.heister@gmail.com>
+The most recent contributors to candi are:
+
+   Uwe Köcher <koecher@hsu-hamburg.de>
+   Timo Heister <timo.heister@gmail.com>
+   Fabian Castelli <fabian.castelli@kit.edu>
+
+
+The list of all contributors (in the order of their last commit):
+
+Uwe Köcher
+Fabian Castelli
+Timo Heister
+ohcfe
+Reza Rastak
+fvanmaele
+Wolfgang Bangerth
+Daniel Arndt
+Max Rudolph
+Curt Corum
+Lukas van de Wiel
+Rene Gassmoeller
+Bruno Turcksin
+tcclevenger
+Xiaoyu WEI
 
 
 ===================================================================
