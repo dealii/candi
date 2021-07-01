@@ -1,4 +1,4 @@
-# macOS 10.13 (High Sierra)
+# macOS 10.11 (El Capitan)
 #
 # macOS support is experimental and requires:
 # - a recent version of xcode with command line tools
@@ -18,7 +18,7 @@
 # 
 # Install the following via Homebrew
 # $ brew install cmake
-# $ brew install openmpi --c++11 --with-mpi-thread-multiple
+# $ brew install openmpi
 # 
 # (Optional) Install the following via Homebrew
 # $ brew install wget
@@ -31,4 +31,8 @@
 # and follow the activation notes to use the modulefile configuration.
 # 
 ##
+
+#
+# Define the additional packages for this platform.
+#PACKAGES="once:cmake ${PACKAGES}"
 
