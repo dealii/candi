@@ -91,7 +91,7 @@ if [ ! -z "${LAPACK_DIR}" ]; then
 fi
 
 # Set intel MKL options
-if [ "${MKL}" = "ON" ]; then
+if [ ${MKL} = ON ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
 
     if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then

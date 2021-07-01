@@ -21,15 +21,15 @@ if [ ${CANDI_GMSH_LOAD_TARBALL} = ON ]; then
     # CHECKSUM=762c10f159dab4b042e3140b1c348427
 
     NAME=gmsh-${VERSION}-source
-    SOURCE=http://gmsh.info/src/
-    EXTRACTSTO=gmsh-${VERSION}-source
     PACKING=.tgz
+    EXTRACTSTO=gmsh-${VERSION}-source
+    SOURCE=http://gmsh.info/src/
 else
     VERSION=gmsh_4_8_4
     NAME=gmsh.git
-    SOURCE=https://gitlab.onelab.info/gmsh/
-    EXTRACTSTO=${VERSION}
     PACKING=git
+    EXTRACTSTO=${VERSION}
+    SOURCE=https://gitlab.onelab.info/gmsh/
 fi
 unset CANDI_GMSH_LOAD_TARBALL
 
