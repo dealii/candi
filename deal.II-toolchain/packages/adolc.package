@@ -2,8 +2,11 @@
 ## ADOLC                                                                      ##
 ################################################################################
 
-# Option {ON|OFF}: Choose whether to load the tarball or the git repository.
-CANDI_ADOLC_LOAD_TARBALL=ON
+# By default load the tarball.
+# To load the git repository define a variable CANDI_ADOLC_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_ADOLC_LOAD_TARBALL} ]; then
+    CANDI_ADOLC_LOAD_TARBALL=ON
+fi
 
 if [ ${CANDI_ADOLC_LOAD_TARBALL} = ON ]; then
     # download release tarball

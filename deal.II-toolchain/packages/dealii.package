@@ -222,7 +222,8 @@ fi
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with OPENCASCADE"
     CONFOPTS="${CONFOPTS} \
-      -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
+      -D DEAL_II_WITH_OPENCASCADE:BOOL=ON \
+      -D OPENCASCADE_DIR=${OPENCASCADE_DIR}"
 fi
 
 ########################################
@@ -253,7 +254,8 @@ fi
 if [ ! -z "${SYMENGINE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with SYMENGINE"
     CONFOPTS="${CONFOPTS} \
-      -D DEAL_II_WITH_SYMENGINE:BOOL=ON"
+      -D DEAL_II_WITH_SYMENGINE:BOOL=ON \
+      -D SYMENGINE_DIR=${SYMENGINE_DIR}"
 fi
 
 ########################################
@@ -284,7 +286,8 @@ fi
 if [ ! -z "${ADOLC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with ADOLC"
     CONFOPTS="${CONFOPTS} \
-      -D DEAL_II_WITH_ADOLC:BOOL=ON"
+      -D DEAL_II_WITH_ADOLC:BOOL=ON \
+      -D ADOLC_DIR=${ADOLC_DIR}"
 fi
 
 ################################################################################
