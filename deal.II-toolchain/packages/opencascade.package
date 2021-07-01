@@ -27,20 +27,17 @@ if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
     PACKING=.tar.gz
 else
     # download git repository (huge download)
-    # if possible, try to download a release tarball (see above)
 
     # checkout specific release version
-    # VERSION=OCE-0.18.3
-    # VERSION=OCE-0.18.2
-
-    # or checkout current development version (master)
     VERSION=master
+    #VERSION=OCE-0.18.3
+    #VERSION=OCE-0.18.2
 
     # set up git repository
     NAME=oce.git
-    SOURCE=https://github.com/tpaviot/
-    EXTRACTSTO=OCE-${VERSION}
     PACKING=git
+    EXTRACTSTO=OCE-${VERSION}
+    SOURCE=https://github.com/tpaviot/
 fi
 unset CANDI_OPENCASCADE_LOAD_TARBALL
 
