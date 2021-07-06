@@ -630,7 +630,7 @@ guess_platform() {
             echo rhel${OS_MAJOR_VER}
 
         elif [ "$OS_ID" == "debian" ]; then
-            echo debian${OS_MAJOR_VER}
+            echo debian
 
         elif [ "$OS_ID" == "ubuntu" ]; then
             echo ubuntu${OS_MAJOR_VER}
