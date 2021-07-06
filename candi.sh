@@ -633,7 +633,7 @@ guess_platform() {
             echo debian${OS_MAJOR_VER}
 
         elif [ "$OS_ID" == "ubuntu" ]; then
-            echo ubuntu${OS_MAJOR_VER}
+            echo ubuntu
 
         elif [ "${OS_NAME}" == "openSUSE Leap" ]; then
             echo opensuse15
