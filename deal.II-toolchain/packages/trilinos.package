@@ -183,16 +183,10 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
-  -D   Tpetra_INST_DOUBLE:BOOL=ON \
   -D   Tpetra_INST_INT_LONG:BOOL=ON \
-  -D   Tpetra_INST_COMPLEX_DOUBLE:BOOL=ON \
-  -D   Tpetra_INST_COMPLEX_FLOAT:BOOL=ON \
-  -D   Tpetra_INST_FLOAT:BOOL=ON \
-  -D   Tpetra_INST_SERIAL:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \
-  -D   Teuchos_ENABLE_COMPLEX:BOOL=ON \
   -D   Teuchos_ENABLE_FLOAT:BOOL=ON \
   -D Trilinos_ENABLE_MueLu:BOOL=ON \
   -D Trilinos_ENABLE_ML:BOOL=ON \
@@ -205,7 +199,18 @@ CONFOPTS="\
   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
   -D CMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
   -D BUILD_SHARED_LIBS:BOOL=ON \
-  ${CONFOPTS} \
+  ${CONFOPTS}"
+
+if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
+    CONFOPTS="\
+    -D Trilinos_ENABLE_COMPLEX_DOUBLE=ON \
+    -D Trilinos_ENABLE_COMPLEX_FLOAT=ON \
+    -D Teuchos_ENABLE_COMPLEX:BOOL=ON \
+    ${CONFOPTS}"
+fi
+
+# finally append user options:
+CONFOPTS="${CONFOPTS} \
   ${TRILINOS_CONFOPTS}"
 
 package_specific_register () {
