@@ -13,7 +13,7 @@ package_specific_setup () {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     cd build/gcc
     mkdir -p ${INSTALL_PATH}
-    make -j${PROCS} >> make.output || bdie "Error in make"
+    make -j${JOBS} >> make.output || bdie "Error in make"
     cp bin/astyle ${INSTALL_PATH}/
 }
 

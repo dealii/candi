@@ -39,9 +39,10 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 
 ################################################################################
 # Parse command line input parameters
-PREFIX=~/deal.ii-candi
-PROCS=1
+PREFIX=~/dealii-candi
+JOBS=1
 CMD_PACKAGES=""
+USER_INTERACTION=ON
 
 while [ -n "$1" ]; do
     param="$1"
@@ -53,9 +54,10 @@ while [ -n "$1" ]; do
 	    echo "Usage: $0 [options]"
 	    echo "Options:"
 	    echo "  -p <path>, --prefix=<path>  set a different prefix path (default $PREFIX)"
-	    echo "  -j <N>, -j<N>, --PROCS=<N>  compile with N processes in parallel (default $PROCS)"
+	    echo "  -j <N>, -j<N>, --jobs=<N>   compile with N processes in parallel (default ${JOBS})"
 	    echo "  --platform=<platform>       force usage of a particular platform file"
 	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
+	    echo "  -y, --yes, --assume-yes     automatic yes to prompts"
 	    echo ""
 	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
 	    exit 0
@@ -69,8 +71,6 @@ while [ -n "$1" ]; do
         ;;
         -p=*|--prefix=*)
             PREFIX="${param#*=}"
-            # replace '~' by $HOME
-            PREFIX=${PREFIX/#~\//$HOME\/}
         ;;
 
         #####################################
@@ -81,24 +81,30 @@ while [ -n "$1" ]; do
 
         #####################################
         # Number of maximum processes to use
-        --PROCS=*)
-            PROCS="${param#*=}"
+        --jobs=*)
+            JOBS="${param#*=}"
         ;;
 
         # Make styled processes with or without space
 	-j)
 	    shift
-            PROCS="${1}"
+            JOBS="${1}"
 	;;
 
         -j*)
-            PROCS="${param#*j}"
+            JOBS="${param#*j}"
         ;;
 
         #####################################
         # Specific platform
         -pf=*|--platform=*)
             GIVEN_PLATFORM="${param#*=}"
+        ;;
+        
+        #####################################
+        # Assume yes to prompts
+        -y|--yes|--assume-yes)
+            USER_INTERACTION=OFF
         ;;
 
 	*)
@@ -108,12 +114,15 @@ while [ -n "$1" ]; do
     shift
 done
 
-# replace '~' by $HOME:
+# Check the input argument of the install path and (if used) replace the tilde
+# character '~' by the users home directory ${HOME}. Afterwards clear the
+# PREFIX input variable.
 PREFIX_PATH=${PREFIX/#~\//$HOME\/}
+unset PREFIX
 
 RE='^[0-9]+$'
-if [[ ! "$PROCS" =~ $RE || $PROCS<1 ]] ; then
-  echo "ERROR: invalid number of build processes '$PROCS'"
+if [[ ! "${JOBS}" =~ ${RE} || ${JOBS}<1 ]] ; then
+  echo "ERROR: invalid number of build processes '${JOBS}'"
   exit 1
 fi
 
@@ -163,9 +172,11 @@ cecho() {
 }
 
 cls() {
-    # clear screen
-    COL=$1; shift
-    echo -e "${COL}$@\033c"
+    if [ ${USER_INTERACTION} = ON ]; then
+        # clear screen
+        COL=$1; shift
+        echo -e "${COL}$@\033c"
+    fi
 }
 
 default () {
@@ -192,7 +203,12 @@ quit_if_fail() {
 #  return 1: No checksum provided          (archive found, but unable to verify)
 #  return 2: ARCHIVE_FILE not found        (archive NOT found)
 #  return 3: CHECKSUM mismatch             (archive file corrupted)
-#  return 4: Neither md5 nor md5sum found  (archive found, but unable to verify)
+#  return 4: Not able to compute checksum  (archive found, but unable to verify)
+#  return 5: Checksum algorithm not found  (archive found, but unable to verify)
+# This function tries to verify the downloaded archive by determing and
+# comparing checksums. For a specific package several checksums might be
+# defined. Based on the length of the given checksum the underlying algorithm
+# is determined. The first matching checksum verifies the archive.
 verify_archive() {
     ARCHIVE_FILE=$1
 
@@ -212,34 +228,64 @@ verify_archive() {
         return 1
     fi
 
-    # Skip verifying archive, if CHECKSUM=ignore
-    if [ "${CHECKSUM}" = "ignore" ]; then
+    # Skip verifying archive, if CHECKSUM=skip
+    if [ "${CHECKSUM}" = "skip" ]; then
         cecho ${WARN} "Skipped checksum check for ${ARCHIVE_FILE}"
         return 1
     fi
 
     cecho ${INFO} "Verifying ${ARCHIVE_FILE}"
 
-    # Verify CHECKSUM using md5/md5sum
-    if builtin command -v md5 > /dev/null; then
-	CURRENT="$(md5 -q ${ARCHIVE_FILE})"
-    elif builtin command -v md5sum > /dev/null; then
-	CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
-    else
-        cecho ${BAD} "Neither md5 nor md5sum were found in the PATH"
-        return 4
-    fi
-
     for CHECK in ${CHECKSUM}; do
+        # Verify CHECKSUM using md5/sha1/sha256
+        if [ ${#CHECK} = 32 ]; then
+            ALGORITHM="md5"
+            if builtin command -v md5sum > /dev/null; then
+                CURRENT=$(md5sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v md5 > /dev/null; then
+                CURRENT="$(md5 -q ${ARCHIVE_FILE})"
+            else
+                cecho ${BAD} "Neither md5sum nor md5 were found in the PATH"
+                return 4
+            fi
+        elif [ ${#CHECK} = 40 ]; then
+            ALGORITHM="sha1"
+            if builtin command -v sha1sum > /dev/null; then
+                CURRENT=$(sha1sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v shasum > /dev/null; then
+                CURRENT=$(shasum -a 1 ${ARCHIVE_FILE} | awk '{print $1}')
+            else
+                cecho ${BAD} "Neither sha1sum nor shasum were found in the PATH"
+                return 4
+            fi
+        elif [ ${#CHECK} = 64 ]; then
+            ALGORITHM="sha256"
+            if builtin command -v sha256sum > /dev/null; then
+                CURRENT=$(sha256sum ${ARCHIVE_FILE} | awk '{print $1}')
+            elif builtin command -v shasum > /dev/null; then
+                CURRENT=$(shasum -a 256 ${ARCHIVE_FILE} | awk '{print $1}')
+            else
+                cecho ${BAD} "Neither sha256sum nor shasum were found in the PATH"
+                return 4
+            fi
+        else
+            cecho ${BAD} "Checksum algorithm could not be determined"
+            exit 5
+        fi
+
         test "${CHECK}" = "${CURRENT}"
         if [ $? = 0 ]; then
-            echo "${ARCHIVE_FILE}: OK"
+            cecho ${GOOD} "${ARCHIVE_FILE}: OK(${ALGORITHM})"
             return 0
-	fi
+        else
+            cecho ${BAD} "${ARCHIVE_FILE}: FAILED(${ALGORITHM})"
+            cecho ${BAD} "${CURRENT} does not match given checksum ${CHECK}"
+        fi
     done
+    unset ALGORITHM
 
     cecho ${BAD} "${ARCHIVE_FILE}: FAILED"
-    cecho ${BAD} "${CURRENT} does not match any in ${CHECKSUM}"
+    cecho ${BAD} "Checksum does not match any in ${CHECKSUM}"
     return 3
 }
 
@@ -303,7 +349,7 @@ download_archive () {
         verify_archive ${ARCHIVE_FILE}
         archive_state=$?
         if [ ${archive_state} = 0 ] || [ ${archive_state} = 1 ] || [ ${archive_state} = 4 ]; then
-            # If the download was successful, and the CHECKSUM is matching, ignored, or not possible
+            # If the download was successful, and the CHECKSUM is matching, skipped, or not possible
             return 0;
         fi
         unset archive_state
@@ -325,28 +371,22 @@ package_fetch () {
         quit_if_fail "candi: download_archive ${NAME}${PACKING} failed"
 
     elif [ ${PACKING} = "git" ]; then
+        # Go into the unpack dir
         cd ${UNPACK_PATH}
-        # Suitably clone or update git repositories
+
+        # Clone the git repository if not existing locally
         if [ ! -d ${EXTRACTSTO} ]; then
             git clone ${SOURCE}${NAME} ${EXTRACTSTO}
             quit_if_fail "candi: git clone ${SOURCE}${NAME} ${EXTRACTSTO} failed"
-        else
-            cd ${EXTRACTSTO}
-            git checkout master --force
-            quit_if_fail "candi: git checkout master --force failed"
-
-            git pull
-            quit_if_fail "candi: git pull failed"
-            cd ..
         fi
 
-        if [ ${STABLE_BUILD} = true ]; then
-            cd ${EXTRACTSTO}
-            git checkout ${VERSION} --force
-            quit_if_fail "candi: git checkout ${VERSION} --force failed"
-            cd ..
-        fi
+        # Checkout the desired version
+        cd ${EXTRACTSTO}
+        git checkout ${VERSION} --force
+        quit_if_fail "candi: git checkout ${VERSION} --force failed"
 
+        # Switch to the tmp dir
+        cd ..
     elif [ ${PACKING} = "hg" ]; then
         cd ${UNPACK_PATH}
         # Suitably clone or update hg repositories
@@ -448,7 +488,7 @@ package_build() {
     default BUILDDIR=${BUILD_PATH}/${NAME}
 
     # Clean the build directory if specified
-    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = "true" ]; then
+    if [ -d ${BUILDDIR} ] && [ ${CLEAN_BUILD} = ON ]; then
         rm -rf ${BUILDDIR}
     fi
 
@@ -484,7 +524,7 @@ package_build() {
         fi
 
         for target in "${TARGETS[@]}"; do
-            echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
+            echo make ${MAKEOPTS} -j ${JOBS} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "cmake" ]; then
@@ -492,7 +532,7 @@ package_build() {
         rm -rf ${BUILDDIR}/CMakeFiles
         echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
         for target in "${TARGETS[@]}"; do
-            echo make ${MAKEOPTS} -j ${PROCS} $target >>candi_build
+            echo make ${MAKEOPTS} -j ${JOBS} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "python" ]; then
@@ -502,7 +542,7 @@ package_build() {
     elif [ ${BUILDCHAIN} = "scons" ]; then
         echo cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* . >>candi_configure
         for target in "${TARGETS[@]}"; do
-            echo scons -j ${PROCS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
+            echo scons -j ${JOBS} ${CONFOPTS} prefix=${INSTALL_PATH} $target >>candi_build
         done
 
     elif [ ${BUILDCHAIN} = "custom" ]; then
@@ -562,52 +602,48 @@ guess_platform() {
     elif [ -x /usr/bin/sw_vers ]; then
         local MACOSVER=$(sw_vers -productVersion)
         case ${MACOSVER} in
-            10.11*)  echo elcapitan;;
-            10.12*)  echo sierra;;
-            10.13*)  echo highsierra;;
-            10.14*)  echo mojave;;
-            10.15*)  echo catalina;;
+            10.11*) echo macos_elcapitan;;
+            10.12*) echo macos_sierra;;
+            10.13*) echo macos_highsierra;;
+            10.14*) echo macos_mojave;;
+            10.15*) echo macos_catalina;;
+            11.4*)  echo macos_bigsur;;
         esac
 
     elif [ ! -z "$CRAYOS_VERSION" ]; then
         echo cray
 
-    elif [ -x /usr/bin/lsb_release ]; then
-        local OSVER=$(lsb_release -r -s  |grep -o -E '[0-9]+' |head -n 1)
-
-        if [ -f /etc/fedora-release ]; then
-            echo fedora${OSVER}
-
-        elif [ -f /etc/centos-release ]; then
-            echo centos${OSVER}
-
-        elif [ -f /etc/redhat-release ]; then
-            echo rhel${OSVER}
-
-        else
-            local DISTRO=$(lsb_release -i -s)
-            local CODENAME=$(lsb_release -c -s)
-            local DESCRIPTION=$(lsb_release -d -s)
-            case ${DISTRO}:${CODENAME}:${DESCRIPTION} in
-                *:*:*Debian*9*)       echo debian9;;
-                *:*:*Debian*10*)      echo debian10;;
-                *:*:*Ubuntu*)         echo ubuntu${OSVER};;
-                *:*:*openSUSE\ 12*)   echo opensuse12;;
-                *:*:*openSUSE\ 13*)   echo opensuse13;;
-                *:*:*openSUSE\ 15*)   echo opensuse15;;
-            esac
-        fi
     elif [ -f /etc/os-release ]; then
-	. /etc/os-release
-	if [ "${PRETTY_NAME}" == "openSUSE Leap 15.0" ]; then
-	    echo opensuse15
-	fi
-	if [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
-	    echo arch
-	fi
-	if [ "${PRETTY_NAME}" == "Arch Linux" ]; then
-	    echo arch
-	fi
+        local OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
+        local OS_VERSIONID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+        local OS_MAJOR_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
+        local OS_NAME=$(grep -oP '(?<=^NAME=).+' /etc/os-release | tr -d '"')
+        local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
+
+        if [ "$OS_ID" == "fedora" ]; then
+            echo fedora
+
+        elif [ "$OS_ID" == "centos" ]; then
+            echo centos${OS_VERSIONID}
+
+        elif [ "$OS_ID" == "rhel" ]; then
+            echo rhel${OS_MAJOR_VER}
+
+        elif [ "$OS_ID" == "debian" ]; then
+            echo debian${OS_MAJOR_VER}
+
+        elif [ "$OS_ID" == "ubuntu" ]; then
+            echo ubuntu${OS_MAJOR_VER}
+
+        elif [ "${OS_NAME}" == "openSUSE Leap" ]; then
+            echo opensuse15
+
+        elif [ "${PRETTY_NAME}" == "Arch Linux" ]; then
+            echo arch
+
+        elif [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
+            echo arch
+        fi
     fi
 }
 
@@ -618,15 +654,6 @@ guess_ostype() {
 
     elif [ -x /usr/bin/sw_vers ]; then
         echo macos
-
-    elif [ -f /etc/fedora-release ]; then
-        echo linux
-
-    elif [ -f /etc/redhat-release ]; then
-        echo linux
-
-    elif [ -x /usr/bin/lsb_release ]; then
-        echo linux
 
     elif [ -x /etc/os-release ]; then
         echo linux
@@ -673,8 +700,7 @@ default BUILD_PATH=${PREFIX_PATH}/tmp/build
 default INSTALL_PATH=${PREFIX_PATH}
 default CONFIGURATION_PATH=${INSTALL_PATH}/configuration
 
-default CLEAN_BUILD=false
-default STABLE_BUILD=true
+default CLEAN_BUILD=OFF
 default DEVELOPER_MODE=OFF
 
 default PACKAGES_OFF=""
@@ -815,16 +841,19 @@ echo
 awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
 echo
 
-# Let the user confirm now, that the PLATFORM is set up correctly
-echo "-------------------------------------------------------------------------------"
-cecho ${GOOD} "Please make sure you've read the instructions above and your system"
-cecho ${GOOD} "is ready for installing ${PROJECT}."
-cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
-cecho ${INFO} "Then copy and paste these instructions into this terminal."
-echo
+# If interaction is enabled, let the user confirm, that the platform is set up
+# correctly
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
+    cecho ${GOOD} "Please make sure you've read the instructions above and your system"
+    cecho ${GOOD} "is ready for installing ${PROJECT}."
+    cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
+    cecho ${INFO} "Then copy and paste these instructions into this terminal."
+    echo
 
-cecho ${GOOD} "Once ready, hit enter to continue!"
-read
+    cecho ${GOOD} "Once ready, hit enter to continue!"
+    read
+fi
 
 ################################################################################
 # Output configuration details
@@ -847,7 +876,7 @@ elif [ ${DEVELOPER_MODE} = "ON" ]; then
     cecho ${BAD} "source files from: $(prettify_dir ${UNPACK_PATH})"
     echo
 else
-    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={OFF|ON}; (your specified option is = ${DEVELOPER_MODE})"
+    cecho ${BAD} "candi: bad variable: DEVELOPER_MODE={ON|OFF}; (your specified option is = ${DEVELOPER_MODE})"
     exit 1
 fi
 
@@ -857,7 +886,7 @@ cecho ${GOOD} "Package configuration in: $(prettify_dir ${CONFIGURATION_PATH})"
 echo
 
 echo "-------------------------------------------------------------------------------"
-cecho ${INFO} "Number of (at most) build processes to use: PROCS=${PROCS}"
+cecho ${INFO} "Number of (at most) build processes to use: JOBS=${JOBS}"
 echo
 
 echo "-------------------------------------------------------------------------------"
@@ -865,15 +894,6 @@ cecho ${INFO} "Packages:"
 for PACKAGE in ${PACKAGES[@]}; do
     echo ${PACKAGE}
 done
-echo
-
-
-echo "-------------------------------------------------------------------------------"
-if [ ${STABLE_BUILD} = true ]; then
-    cecho ${INFO} "Building stable releases of ${PROJECT} packages."
-else
-    cecho ${WARN} "Building development versions of ${PROJECT} packages."
-fi
 echo
 
 # if the program 'module' is available, output the currently loaded modulefiles
@@ -961,10 +981,12 @@ if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
 fi
 
 ################################################################################
-# Force the user to accept the current output
-echo "-------------------------------------------------------------------------------"
-cecho ${GOOD} "Once ready, hit enter to continue!"
-read
+# If interaction is enabled, force the user to accept the current output
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
+    cecho ${GOOD} "Once ready, hit enter to continue!"
+    read
+fi
 
 ################################################################################
 # Output configuration details
@@ -1026,7 +1048,7 @@ EOF
 # WARNING: do not overwrite this variables!
 ORIG_INSTALL_PATH=${INSTALL_PATH}
 ORIG_CONFIGURATION_PATH=${CONFIGURATION_PATH}
-ORIG_PROCS=${PROCS}
+ORIG_JOBS=${JOBS}
 
 guess_architecture
 
@@ -1077,7 +1099,7 @@ for PACKAGE in ${PACKAGES[@]}; do
     unset CONFIG_FILE
     unset CHERRYPICKCOMMITS
     TARGETS=('' install)
-    PROCS=${ORIG_PROCS}
+    JOBS=${ORIG_JOBS}
     INSTALL_PATH=${ORIG_INSTALL_PATH}
     CONFIGURATION_PATH=${ORIG_CONFIGURATION_PATH}
 
@@ -1091,12 +1113,6 @@ for PACKAGE in ${PACKAGES[@]}; do
 
     # Fetch information pertinent to the package
     source ${PROJECT}/packages/${PACKAGE}.package
-
-    # Turn to a stable version of the package if that's what the user
-    # wants and it exists
-    if [ ${STABLE_BUILD} = true ] && [ -e ${PROJECT}/packages/${PACKAGE}-stable.package ]; then
-        source ${PROJECT}/packages/${PACKAGE}-stable.package
-    fi
 
     # Ensure that the package file is sanely constructed
     if [ ! "${BUILDCHAIN}" ]; then
@@ -1128,6 +1144,23 @@ for PACKAGE in ${PACKAGES[@]}; do
             package_unpack
         fi
         package_build
+
+        # Clean build directory after install
+        if [ ${INSTANT_CLEAN_BUILD_AFTER_INSTALL} = ON ]; then
+            rm -rf ${BUILDDIR}
+        fi
+
+        # Clean src after install
+        if [ ${INSTANT_CLEAN_SRC_AFTER_INSTALL} = ON ]; then
+            if [ -f ${DOWNLOAD_PATH}/${NAME}${PACKING} ]; then
+                rm -f ${DOWNLOAD_PATH}/${NAME}${PACKING}
+            fi
+        fi
+
+        # Clean unpack directory after install
+        if [ ${INSTANT_CLEAN_UNPACK_AFTER_INSTALL} = ON ]; then
+            rm -rf ${UNPACK_PATH}/${EXTRACTSTO}
+        fi
     else
         if [ ! -z "${LOAD}" ]; then
             # Let the user know we're loading the current package
