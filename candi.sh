@@ -600,8 +600,8 @@ guess_platform() {
         echo cygwin
 
     elif [ -x /usr/bin/sw_vers ]; then
-        local MACOSVER=$(sw_vers -productVersion)
-        case ${MACOSVER} in
+        local MACOS_VERSION=$(sw_vers -productVersion)
+        case ${MACOS_VERSION} in
             10.11*) echo macos_elcapitan;;
             10.12*) echo macos_sierra;;
             10.13*) echo macos_highsierra;;
@@ -610,24 +610,24 @@ guess_platform() {
             11.4*)  echo macos_bigsur;;
         esac
 
-    elif [ ! -z "$CRAYOS_VERSION" ]; then
+    elif [ ! -z "${CRAYOS_VERSION}" ]; then
         echo cray
 
     elif [ -f /etc/os-release ]; then
         local OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
-        local OS_VERSIONID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
-        local OS_MAJOR_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
+        local OS_VERSION_ID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+        local OS_MAJOR_VERSION=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
         local OS_NAME=$(grep -oP '(?<=^NAME=).+' /etc/os-release | tr -d '"')
         local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
 
-        if [ "$OS_ID" == "fedora" ]; then
+        if [ "${OS_ID}" == "fedora" ]; then
             echo fedora
 
-        elif [ "$OS_ID" == "centos" ]; then
-            echo centos${OS_VERSIONID}
+        elif [ "${OS_ID}" == "centos" ]; then
+            echo centos${OS_VERSION_ID}
 
-        elif [ "$OS_ID" == "rhel" ]; then
-            echo rhel${OS_MAJOR_VER}
+        elif [ "${OS_ID}" == "rhel" ]; then
+            echo rhel${OS_MAJOR_VERSION}
 
         elif [ "$OS_ID" == "debian" ]; then
             echo debian
