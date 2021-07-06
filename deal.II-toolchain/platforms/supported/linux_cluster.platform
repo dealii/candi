@@ -1,21 +1,24 @@
 # linux
-# 
+#
 # This build script assumes that you have at least the packages:
+#
 #   automake, autoconf, cmake, gcc, openmpi, blas, lapack, and
 #   git, cmake, zlib and bzip2
+#
 # installed.
-# 
+#
 # The packages
+#
 #   git, cmake, zlib and bzip2
+#
 # can be installed with candi by selecting them in the candi.cfg file.
-# 
+#
 # Please note that this platform description is only a hint for
 # dependencies and cannot ensure a successful build. Look into other
 # platform descriptions for further dependencies.
-# 
+#
 ##
 
 #
 # Define the additional packages for this platform.
 #PACKAGES="once:cmake ${PACKAGES}"
-
