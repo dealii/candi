@@ -812,14 +812,6 @@ if [ -z "${LDSUFFIX}" ]; then
 	exit 1
 fi
 
-# Source default PACKAGES variables, if none were given so far
-if [ -z "${PACKAGES}" ]; then
-    DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
-    if [ -e ${DEFAULT_PACKAGES} ]; then
-        source ${DEFAULT_PACKAGES}
-    fi
-fi
-
 # Source PLATFORM variables if set up correctly
 if [ -z ${PLATFORM} ]; then
     cecho ${BAD} "Please contact the authors, if you have not changed candi!"
