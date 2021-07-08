@@ -1,37 +1,59 @@
-VERSION=4.1.0
-CHECKSUM=83b53a10c38d964bd1e69da0606e2727
-#VERSION=3.3.1
-#CHECKSUM=fc57b024e80ebb13301bd0983826cad3
-NAME=v${VERSION}
-EXTRACTSTO=assimp-${VERSION}
-SOURCE=https://github.com/assimp/assimp/archive/
-PACKING=.tar.gz
+################################################################################
+## ASSIMP                                                                     ##
+################################################################################
+
+# In general, we recommend version 4.1.0 or higher.
+# On Ubuntu the latest sucessfully tested version is 5.0.1.
+
+# By default load the tarball.
+# To load the git repository define a variable CANDI_ASSIMP_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_ASSIMP_LOAD_TARBALL} ]; then
+    CANDI_ASSIMP_LOAD_TARBALL=ON
+fi
+
+if [ ${CANDI_ASSIMP_LOAD_TARBALL} = ON ]; then
+    # VERSION=5.0.1
+    # CHECKSUM=11310ec1f2ad2cd46b95ba88faca8f7aaa1efe9aa12605c55e3de2b977b3dbfc
+    # CHECKSUM="${CHECKSUM} f148ba31dc1e7e00e59cc09b25535af997dc1998"
+    # CHECKSUM="${CHECKSUM} eb7b7385a5c3194ab46d7f869d7ac6cf"
+
+    VERSION=4.1.0
+    CHECKSUM=3520b1e9793b93a2ca3b797199e16f40d61762617e072f2d525fad70f9678a71
+    CHECKSUM="${CHECKSUM} ce3589f9455c743e993fd802bdaaed72838cd3f4"
+    CHECKSUM="${CHECKSUM} 83b53a10c38d964bd1e69da0606e2727"
+
+    NAME=v${VERSION}
+    PACKING=.tar.gz
+    EXTRACTSTO=assimp-${VERSION}
+    SOURCE=https://github.com/assimp/assimp/archive/
+else
+
+    # VERSION=v5.0.1
+    VERSION=v4.1.0
+
+    NAME=assimp
+    PACKING=git
+    SOURCE=https://github.com/assimp/
+    EXTRACTSTO=${NAME}-${VERSION}
+fi
+unset CANDI_ASSIMP_LOAD_TARBALL
+
 BUILDCHAIN=cmake
 
 BUILDDIR=${BUILD_PATH}/assimp-${VERSION}
 INSTALL_PATH=${INSTALL_PATH}/assimp-${VERSION}
 
-CONFOPTS="-D CMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
- -D BUILD_SHARED_LIBS=ON"
+CONFOPTS="-D BUILD_SHARED_LIBS:BOOL=ON"
 
-package_specific_patch () {
-    if [ "${VERSION}" == "3.3.1" ]; then
-        cd ${UNPACK_PATH}/${EXTRACTSTO}
-        cecho ${WARN} "applying patch for assimp D3MFImporter problem"
-        patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/assimp-D3MFImporter.patch || true
-    fi
-}
-
-package_specific_register () {
+package_specific_register() {
     export ASSIMP_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/assimp-${NAME}
     rm -f $CONFIG_FILE
     echo "
 export ASSIMP_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>$CONFIG_FILE
 }
-
