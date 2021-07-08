@@ -42,24 +42,24 @@ for external_pkg in hypre; do
     CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
 done
 
-if [ ! -z "$CC" ]; then
-    CONFOPTS="${CONFOPTS} CC=$CC"
+if [ ! -z "${CC}" ]; then
+    CONFOPTS="${CONFOPTS} CC=${CC}"
 fi
 
-if [ ! -z "$CXX" ]; then
-    CONFOPTS="${CONFOPTS} CXX=$CXX"
+if [ ! -z "${CXX}" ]; then
+    CONFOPTS="${CONFOPTS} CXX=${CXX}"
 fi
 
-if [ ! -z "$FC" ]; then
-    CONFOPTS="${CONFOPTS} FC=$FC"
+if [ ! -z "${FC}" ]; then
+    CONFOPTS="${CONFOPTS} FC=${FC}"
 fi
 
-if [ ! -z "$F77" ]; then
-    CONFOPTS="${CONFOPTS} F77=$F77"
+if [ ! -z "${F77}" ]; then
+    CONFOPTS="${CONFOPTS} F77=${F77}"
 fi
 
-if [ ! -z "$F90" ]; then
-    CONFOPTS="${CONFOPTS} F90=$F90"
+if [ ! -z "${F90}" ]; then
+    CONFOPTS="${CONFOPTS} F90=${F90}"
 fi
 
 if [ ! -z "${MKL_DIR}" ]; then

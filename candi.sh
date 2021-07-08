@@ -898,77 +898,79 @@ fi
 
 ############################################################################
 # Compiler variables check
-echo "Compiler Variables:"
-# Firstly test, if compiler variables are set,
-#   and if not try to set the default mpi-compiler suite
-# finally test, if compiler variables are useful.
+# Firstly test, if compiler variables are set, and if not try to set the
+# default mpi-compiler suite finally test, if compiler variables are useful.
 
-echo "-------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
+cecho ${INFO} "Compiler Variables:"
+echo
 
 # CC test
-if [ ! -n "$CC" ]; then
+if [ ! -n "${CC}" ]; then
     if builtin command -v mpicc > /dev/null; then
-        cecho ${WARN} "CC variable not set, but default mpicc found."
+        cecho ${WARN} "CC  variable not set, but default mpicc  found."
         export CC=mpicc
     fi
 fi
 
-if [ -n "$CC" ]; then
-    cecho ${INFO} "CC  = $(which $CC)"
+if [ -n "${CC}" ]; then
+    cecho ${INFO} "CC  = $(which ${CC})"
 else
-    cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
+    cecho ${BAD} "CC  variable not set. Please set it with \$export CC  = <(MPI) C compiler>"
 fi
 
 # CXX test
-if [ ! -n "$CXX" ]; then
+if [ ! -n "${CXX}" ]; then
     if builtin command -v mpicxx > /dev/null; then
         cecho ${WARN} "CXX variable not set, but default mpicxx found."
         export CXX=mpicxx
     fi
 fi
 
-if [ -n "$CXX" ]; then
-    cecho ${INFO} "CXX = $(which $CXX)"
+if [ -n "${CXX}" ]; then
+    cecho ${INFO} "CXX = $(which ${CXX})"
 else
-    cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
+    cecho ${BAD} "CXX variable not set. Please set it with \$export CXX = <(MPI) C++ compiler>"
 fi
 
 # FC test
-if [ ! -n "$FC" ]; then
+if [ ! -n "${FC}" ]; then
     if builtin command -v mpif90 > /dev/null; then
-        cecho ${WARN} "FC variable not set, but default mpif90 found."
+        cecho ${WARN} "FC  variable not set, but default mpif90 found."
         export FC=mpif90
     fi
 fi
 
-if [ -n "$FC" ]; then
-    cecho ${INFO} "FC  = $(which $FC)"
+if [ -n "${FC}" ]; then
+    cecho ${INFO} "FC  = $(which ${FC})"
 else
-    cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
+    cecho ${BAD} "FC  variable not set. Please set it with \$export FC  = <(MPI) F90 compiler>"
 fi
 
 # FF test
-if [ ! -n "$FF" ]; then
+if [ ! -n "${FF}" ]; then
     if builtin command -v mpif77 > /dev/null; then
-        cecho ${WARN} "FF variable not set, but default mpif77 found."
+        cecho ${WARN} "FF  variable not set, but default mpif77 found."
         export FF=mpif77
     fi
 fi
 
-if [ -n "$FF" ]; then
-    cecho ${INFO} "FF  = $(which $FF)"
+if [ -n "${FF}" ]; then
+    cecho ${INFO} "FF  = $(which ${FF})"
 else
-    cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
+    cecho ${BAD} "FF  variable not set. Please set it with \$export FF  = <(MPI) F77 compiler>"
 fi
+
 echo
 
 # Final test for compiler variables
-if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
+if [ -z "${CC}" ] || [ -z "${CXX}" ] || [ -z "${FC}" ] || [ -z "${FF}" ]; then
     cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-    cecho ${INFO} "Please read your platform information above carefully,"
-    cecho ${INFO} "  how you get those compilers installed and set up!"
-    cecho ${INFO} "Usually the values should be: mpicc, mpicxx, mpif90 and mpif77."
-    cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
+    cecho ${INFO} "Please read your platform information above carefully, how you get those"
+    cecho ${INFO} "compilers installed and set up! Usually the values should be:"
+    cecho ${INFO} "CC=mpicc, CXX=mpicxx, FC=mpif90, FF=mpif77"
+    cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all"
+    cecho ${WARN} "dependencies."
     echo
 fi
 
