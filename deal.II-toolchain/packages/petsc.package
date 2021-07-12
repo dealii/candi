@@ -93,6 +93,16 @@ else
   fi
 fi
 
+if [ ! -z "${MUMPS_DIR}" ]; then
+    cecho ${INFO} "PETSc: configuration with MUMPS"
+    CONFOPTS="${CONFOPTS} \
+        --with-mumps-dir=${MUMPS_DIR}"
+else
+  if [ ! -z "${PARMETIS_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} --download-mumps=1"
+  fi
+fi
+
 #########################################################################
 
 package_specific_setup () {

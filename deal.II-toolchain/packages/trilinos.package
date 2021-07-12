@@ -98,6 +98,14 @@ if [ ! -z "${SCALAPACK_DIR}" ]; then
         -D SCALAPACK_LIBRARY_DIRS=${SCALAPACK_DIR}/lib"
 fi
 
+if [ ! -z "${MUMPS_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with MUMPS_DIR=${MUMPS_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D TPL_ENABLE_MUMPS=ON \
+      -D MUMPS_INCLUDE_DIRS:STRING=${MUMPS_DIR}/include \
+      -D MUMPS_LIBRARY_DIRS:STRING=${MUMPS_DIR}/lib"
+fi
+
 # Set intel MKL options
 if [ ${MKL} = ON ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
