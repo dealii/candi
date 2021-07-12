@@ -1,73 +1,20 @@
 ################################################################################
-## TRILINOS                                                                   ##
+# TRILINOS
+
 ################################################################################
+# TODO
+# - git option
+# - remove variables for trilinos mayor version
 
-if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
-    TRILINOS_MAJOR_VERSION=AUTO
-fi
+VERSION=13-0-1
+CHECKSUM=9d76b494fe1c00cedb93d51dfc666a27
 
-if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
-    TRILINOS_MAJOR_VERSION="12"
-fi
-
-if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
-    # download from github:
-    # this is the last "blessed" version we like:
-    VERSION=dbf41f3b26b0326a1377f219e6e07eab861d181e
-    EXTRACTSTO=trilinos-12.dbf41f
-
-    NAME=Trilinos.git
-    PACKING=git
-    SOURCE=https://github.com/trilinos/
-elif [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
-    VERSION=12-18-1
-    CHECKSUM=9c1d151169949bca6cf203831e4d6aee
-
-    # VERSION=12-14-1
-    # CHECKSUM=de912cca43c2ca3b74aa08528ac39dbd
-
-    # VERSION=12-12-1
-    # CHECKSUM=ecd4606fa332212433c98bf950a69cc7
-
-
-    # note: the official trilinos tarball changed md5sum but we confirmed that the contents is
-    # identical. We accept both hashes here.
-    # VERSION=12-10-1
-    # CHECKSUM="667333dbd7c0f031d47d7c5511fd0810 40f28628b63310f9bd17c26d9ebe32b1"
-    
-    # VERSION=12-4-2
-    # CHECKSUM=4c25a757d86bde3531090bd900a2cea8
-
-    SOURCE=https://github.com/trilinos/Trilinos/archive/
-    NAME=trilinos-release-${VERSION}
-    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
-    PACKING=.tar.gz
-
-elif [ ${TRILINOS_MAJOR_VERSION} = "11" ]; then
-    VERSION=11-14-3
-    CHECKSUM=dea62e57ebe51a886bee0b10a2176969
-    
-    #Note: For Trilinos v11 we need to force SuperLUDist=OFF,
-    #      since only the deprecated SuperLUDist v3.3 together with an Amesos patch
-    #      (and not the current SuperLUDist v4.x with the same Amesos patch)
-    #      is working.
-    #Note: This issue is resolved by setting
-    #          -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG
-    #      for Trilinos v12; this is neglegted by Trilinos v11 since it is unknown.
-    cecho ${BAD} "trilinos: warning: forcing unset SUPERLU_DIR (not supported)"
-    unset SUPERLU_DIR
-
-    SOURCE=https://github.com/trilinos/Trilinos/archive/
-    NAME=trilinos-release-${VERSION}
-    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
-    PACKING=.tar.gz
-else
-    cecho ${BAD} "Unknown Trilinos version ${TRILINOS_MAJOR_VERSION} forced, please use AUTO|12|11."
-    exit
-fi
+SOURCE=https://github.com/trilinos/Trilinos/archive/
+NAME=trilinos-release-${VERSION}
+EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+PACKING=.tar.gz
 
 BUILDCHAIN=cmake
-
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 ################################################################################
@@ -77,101 +24,137 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 ################################################################################
 # Please do not change the following options
 
-# Set blas and lapack directories
-if [ ! -z "${BLAS_DIR}" ]; then
-    cecho ${INFO} "trilinos: configuration with BLAS_DIR=${BLAS_DIR}"
-    CONFOPTS="${CONFOPTS} \
-      -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR}"
+# determine BLAS_LIBRARY_DIRS
+if [ -z "${CANDI_BLAS_LIBRARY_DIRS}" ]; then
+
+    if [ -n "${BLAS_DIR}" ]; then
+        CANDI_BLAS_LIBRARY_DIRS=${BLAS_DIR}
+    fi
+
+    if [ ${MKL} = ON ] &&  [ -z "${BLAS_DIR}" ] && [ -n "${MKL_DIR}" ]; then
+        CANDI_BLAS_LIBRARY_DIRS=${MKL_DIR}
+    fi
 fi
 
-if [ ! -z "${LAPACK_DIR}" ]; then
-    cecho ${INFO} "trilinos: configuration with LAPACK_DIR=${LAPACK_DIR}"
+if [ -n "${CANDI_BLAS_LIBRARY_DIRS}" ]; then
+    cecho ${INFO} "trilinos: setting BLAS_LIBRARY_DIRS:STRING=${CANDI_BLAS_LIBRARY_DIRS}"
+
     CONFOPTS="${CONFOPTS} \
-      -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
+	-D BLAS_LIBRARY_DIRS:STRING=${CANDI_BLAS_LIBRARY_DIRS}"
+
+	#unset CANDI_BLAS_LIBRARY_DIRS
 fi
 
-# Set intel MKL options
+
+# determine LAPACK_LIBRARY_DIRS
+if [ -z "${CANDI_LAPACK_LIBRARY_DIRS}" ]; then
+
+    if [ -n "${LAPACK_DIR}" ]; then
+        CANDI_LAPACK_LIBRARY_DIRS=${LAPACK_DIR}
+    fi
+
+    if [ ${MKL} = ON ] && [ -z "${LAPACK_DIR}" ] && [ -n "${MKL_DIR}" ]; then
+        CANDI_LAPACK_LIBRARY_DIRS=${MKL_DIR}
+    fi
+fi
+
+if [ -n "${CANDI_LAPACK_LIBRARY_DIRS}" ]; then
+    cecho ${INFO} "trilinos: setting LAPACK_LIBRARY_DIRS:STRING=${CANDI_LAPACK_LIBRARY_DIRS}"
+
+    CONFOPTS="${CONFOPTS} \
+	-D LAPACK_LIBRARY_DIRS:STRING=${CANDI_LAPACK_LIBRARY_DIRS}"
+
+	#unset CANDI_LAPACK_LIBRARY_DIRS
+fi
+
+
+# Intel MKL
 if [ ${MKL} = ON ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
 
-    if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then
-        cecho ${INFO} "trilinos: configuration with BLAS_DIR=${MKL_DIR}"
-        cecho ${INFO} "trilinos: configuration with LAPACK_DIR=${MKL_DIR}"
-        CONFOPTS="${CONFOPTS} \
-          -D BLAS_LIBRARY_DIRS:STRING=${MKL_DIR} \
-          -D LAPACK_LIBRARY_DIRS:STRING=${MKL_DIR}"
-    fi
+    CONFOPTS="${CONFOPTS} \
+	-D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
+	-D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
 
-    # Trilinos will complain that MKL does not support HAVE_TEUCHOS_BLASFLOAT. See
-    # the discussion in https://github.com/dealii/candi/pull/92 for more details.
+    # Trilinos will complain that MKL doesn't support HAVE_TEUCHOS_BLASFLOAT
+    # https://github.com/dealii/candi/pull/92
     cecho ${INFO} "trilinos: disabling some Tpetra instantiations because you are using MKL"
-    
+
     CONFOPTS="${CONFOPTS} \
-      -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
-      -D Tpetra_INST_FLOAT:BOOL=OFF \
-      -D Tpetra_INST_COMPLEX_FLOAT:BOOL=OFF \
-      -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
+	-D Tpetra_INST_FLOAT:BOOL=OFF \
+	-D Tpetra_INST_COMPLEX_FLOAT:BOOL=OFF"
+
 else
-    if [ ! -z "${BLAS_LIB}" ]; then
+    # openBLAS
+    if [ -n "${BLAS_LIB}" ]; then
         # We need to specify the full name if using openblas.package:
-        cecho ${INFO} "trilinos: configuration with BLAS_LIB=${BLAS_LIB}"
+        cecho ${INFO} "trilinos: setting TPL_BLAS_LIBRARIES:STRING=${BLAS_LIB}"
+        cecho ${INFO} "trilinos: setting TPL_LAPACK_LIBRARIES:STRING=${BLAS_LIB}"
+
         CONFOPTS="${CONFOPTS} \
-          -D TPL_BLAS_LIBRARIES:STRING=${BLAS_LIB} \
-          -D TPL_LAPACK_LIBRARIES:STRING=${BLAS_LIB}"
+	    -D TPL_BLAS_LIBRARIES:STRING=${BLAS_LIB} \
+        -D TPL_LAPACK_LIBRARIES:STRING=${BLAS_LIB}"
     fi
 fi
 
-# Set compilers & compiler options
-if [ ! -z "${CC}" ]; then
-    CONFOPTS="${CONFOPTS} \
-      -D CMAKE_C_COMPILER=${CC}"
-fi
 
-if [ ! -z "${CXX}" ]; then
-    CONFOPTS="${CONFOPTS} \
-      -D CMAKE_CXX_COMPILER=${CXX}"
-fi
+################################################################################
+# TODO:
+## Set compilers & compiler options
+#if [ ! -z "${CC}" ]; then
+#    CONFOPTS="${CONFOPTS} \
+#      -D CMAKE_C_COMPILER=${CC}"
+#fi
+#
+#if [ ! -z "${CXX}" ]; then
+#    CONFOPTS="${CONFOPTS} \
+#      -D CMAKE_CXX_COMPILER=${CXX}"
+#fi
+#
+#if [ ! -z "${FC}" ]; then
+#    CONFOPTS="${CONFOPTS} \
+#      -D CMAKE_Fortran_COMPILER=${FC}"
+#fi
+#
+#CONFOPTS="${CONFOPTS} \
+#  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
+#  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
+#  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3' \
+#  -D Trilinos_EXTRA_LINK_FLAGS:STRING='-lgfortran'"
 
-if [ ! -z "${FC}" ]; then
-    CONFOPTS="${CONFOPTS} \
-      -D CMAKE_Fortran_COMPILER=${FC}"
-fi
 
-CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
-  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
-  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3' \
-  -D Trilinos_EXTRA_LINK_FLAGS:STRING='-lgfortran'"
+################################################################################
+# External dependencies
 
-# Add ParMETIS, if present
-if [ ! -z "${PARMETIS_DIR}" ]; then
+# ParMETIS
+if [ -n "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with ParMETIS"
 
     # NOTE: if parmetis v4.0.3 is not found, but installed, add
     #  -D HAVE_PARMETIS_VERSION_4_0_3=ON"
 
     CONFOPTS="${CONFOPTS} \
-      ${TRILINOS_PARMETIS_CONFOPTS} \
-      -D TPL_ENABLE_ParMETIS:BOOL=ON \
-      -D TPL_ParMETIS_LIBRARIES:FILEPATH='${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX};${PARMETIS_DIR}/lib/libmetis.${LDSUFFIX}' \
-      -D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
+	${TRILINOS_PARMETIS_CONFOPTS} \
+	-D TPL_ENABLE_ParMETIS:BOOL=ON \
+	-D TPL_ParMETIS_LIBRARIES:FILEPATH='${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX};${PARMETIS_DIR}/lib/libmetis.${LDSUFFIX}' \
+	-D TPL_ParMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include"
 fi
 
-# Add SuperLU_dist, if present
-if [ ! -z "${SUPERLU_DIR}" ]; then
+# SuperLU_dist
+if [ -n "${SUPERLU_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with SuperLU_dist"
 
     CONFOPTS="${CONFOPTS} \
-      -D TPL_ENABLE_SuperLUDist:BOOL=ON \
-      -D TPL_SuperLUDist_LIBRARIES:FILEPATH=${SUPERLU_DIR}/lib/libsuperlu_dist.${LDSUFFIX} \
-      -D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include \
-      -D HAVE_SUPERLUDIST_LUSTRUCTINIT_2ARG:BOOL=ON \
-      -D HAVE_SUPERLUDIST_ENUM_NAMESPACE:BOOL=ON"
+    -D TPL_ENABLE_SuperLUDist:BOOL=ON \
+    -D SuperLUDist_LIBRARY_DIRS:PATH=${SUPERLU_DIR}/lib \
+	-D SuperLUDist_INCLUDE_DIRS:PATH=${SUPERLU_DIR}/include"
 fi
 
-#########################################################################
+
+################################################################################
 # General Trilinos configuration
 
+# TODO: check them all:
 CONFOPTS="\
   -D TPL_ENABLE_MPI:BOOL=ON \
   -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
@@ -183,7 +166,6 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
-  -D   Tpetra_INST_INT_LONG:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \
@@ -201,6 +183,7 @@ CONFOPTS="\
   -D BUILD_SHARED_LIBS:BOOL=ON \
   ${CONFOPTS}"
 
+
 if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
     CONFOPTS="\
     -D Trilinos_ENABLE_COMPLEX_DOUBLE=ON \
@@ -209,10 +192,19 @@ if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
     ${CONFOPTS}"
 fi
 
+
+# Trilinos 13 complains if multiple INT {long long; long} are set
+CONFOPTS="${CONFOPTS} \
+-D Tpetra_INST_INT_LONG_LONG:BOOL=ON \
+-D Tpetra_INST_INT_LONG:BOOL=OFF"
+
+
 # finally append user options:
 CONFOPTS="${CONFOPTS} \
-  ${TRILINOS_CONFOPTS}"
+${TRILINOS_CONFOPTS}"
 
+
+################################################################################
 package_specific_register () {
     export TRILINOS_DIR=${INSTALL_PATH}
 }
