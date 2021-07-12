@@ -80,10 +80,17 @@ if [ ! -z "${PARMETIS_DIR}" ]; then
         ${CONFOPTS} \
         --with-parmetis-dir=${PARMETIS_DIR} \
 	--with-metis-dir=${PARMETIS_DIR}"
+fi
 
-    for external_pkg in scalapack mumps; do
-        CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
-    done
+if [ ! -z "${SCALAPACK_DIR}" ]; then
+    cecho ${INFO} "PETSc: configuration with SCALAPACK"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        --with-scalapack-dir=${SCALAPACK_DIR}"
+else
+  if [ ! -z "${PARMETIS_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} --download-scalapack=1"
+  fi
 fi
 
 #########################################################################
@@ -104,7 +111,7 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${PARMETIS_DIR}" ]; then
+    if [ ! -z "${PARMETIS_DIR}" ] && [ -z "${SCALAPACK_DIR}" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
     fi
 }
@@ -116,7 +123,7 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
-    if [ ! -z "${PARMETIS_DIR}" ]; then
+    if [ ! -z "${PARMETIS_DIR}" ] && [ -z "${SCALAPACK_DIR}" ]; then
        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
     fi
 }

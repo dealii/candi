@@ -1,0 +1,86 @@
+################################################################################
+## ScaLAPACK                                                                  ##
+################################################################################
+
+VERSION=2.1.0
+EXTRACTSTO=scalapack-${VERSION}
+
+NAME=v${VERSION}
+PACKING=.tar.gz
+
+SOURCE=https://github.com/Reference-ScaLAPACK/scalapack/archive/
+CHECKSUM=e9ae970238030fa1e8ee022a9d3e6fbb
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/scalapack-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/scalapack-${VERSION}
+
+
+
+# Set compilers & compiler options
+if [ ! -z "${CC}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_C_COMPILER=${CC}"
+fi
+
+if [ ! -z "${CXX}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_CXX_COMPILER=${CXX}"
+fi
+
+if [ ! -z "${FC}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_Fortran_COMPILER=${FC}"
+fi
+
+# Set Fortran flags
+FORTRAN_MAJOR_VERSION=$(echo __GNUC__ | ${FC} -E -xc - | tail -n 1)
+if [ ${FORTRAN_MAJOR_VERSION} > 9 ]; then
+  CONFOPTS="${CONFOPTS} \
+    -D CMAKE_Fortran_FLAGS='-g -O3 -fallow-argument-mismatch' "
+else
+  CONFOPTS="${CONFOPTS} \
+    -D CMAKE_Fortran_FLAGS='-g -O3' "
+fi
+
+# Set C flags
+CONFOPTS="${CONFOPTS} \
+  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3 ' \
+  -D CMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON"
+
+# Set intel MKL options
+if [ "${MKL}" = "ON" ]; then
+    cecho ${INFO} "MUMPS: configuration with MKL"
+
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D MKLROOT=${MKL_DIR}"
+else 
+  # Set blas and lapack directories (if MKL is not used)
+  if [ ! -z "${BLAS_DIR}" ]; then
+      cecho ${INFO} "SCALAPACK: configuration with BLAS_DIR=${BLAS_DIR}"
+      CONFOPTS="${CONFOPTS} \
+        -D BLAS_LIBRARY_DIRS:STRING=${BLAS_DIR}"
+  fi
+  
+  if [ ! -z "${LAPACK_DIR}" ]; then
+      cecho ${INFO} "SCALAPACK: configuration with LAPACK_DIR=${LAPACK_DIR}"
+      CONFOPTS="${CONFOPTS} \
+        -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
+  fi
+fi
+
+package_specific_register () {
+    export SCALAPACK_DIR=${INSTALL_PATH}
+    export BLACS_DIR=${INSTALL_PATH}/lib
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
+    rm -f $CONFIG_FILE
+    echo "
+export SCALAPACK_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

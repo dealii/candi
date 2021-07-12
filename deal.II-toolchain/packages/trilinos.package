@@ -90,6 +90,14 @@ if [ ! -z "${LAPACK_DIR}" ]; then
       -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
 fi
 
+if [ ! -z "${SCALAPACK_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with SCALAPACK_DIR=${SCALAPACK_DIR}"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D TPL_ENABLE_SCALAPACK:BOOL=ON \
+        -D SCALAPACK_LIBRARY_DIRS=${SCALAPACK_DIR}/lib"
+fi
+
 # Set intel MKL options
 if [ ${MKL} = ON ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
