@@ -88,9 +88,7 @@ if [ ! -z "${SCALAPACK_DIR}" ]; then
         ${CONFOPTS} \
         --with-scalapack-dir=${SCALAPACK_DIR}"
 else
-  if [ ! -z "${PARMETIS_DIR}" ]; then
     CONFOPTS="${CONFOPTS} --download-scalapack=1"
-  fi
 fi
 
 if [ ! -z "${MUMPS_DIR}" ]; then
@@ -98,9 +96,7 @@ if [ ! -z "${MUMPS_DIR}" ]; then
     CONFOPTS="${CONFOPTS} \
         --with-mumps-dir=${MUMPS_DIR}"
 else
-  if [ ! -z "${PARMETIS_DIR}" ]; then
     CONFOPTS="${CONFOPTS} --download-mumps=1"
-  fi
 fi
 
 #########################################################################
@@ -121,7 +117,7 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${PARMETIS_DIR}" ] && [ -z "${SCALAPACK_DIR}" ]; then
+    if [ -z "${SCALAPACK_DIR}" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
     fi
 }
@@ -133,7 +129,7 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
-    if [ ! -z "${PARMETIS_DIR}" ] && [ -z "${SCALAPACK_DIR}" ]; then
+    if [ -z "${SCALAPACK_DIR}" ]; then
        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
     fi
 }
