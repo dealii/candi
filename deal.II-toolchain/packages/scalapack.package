@@ -35,14 +35,17 @@ if [ ! -z "${FC}" ]; then
 fi
 
 # Set Fortran flags
-FORTRAN_MAJOR_VERSION=$(echo __GNUC__ | ${FC} -E -xc - | tail -n 1)
-if [ ${FORTRAN_MAJOR_VERSION} > 9 ]; then
-  CONFOPTS="${CONFOPTS} \
-    -D CMAKE_Fortran_FLAGS='-g -O3 -fallow-argument-mismatch' "
-else
-  CONFOPTS="${CONFOPTS} \
-    -D CMAKE_Fortran_FLAGS='-g -O3' "
+if [ -n ${FC} ]; then
+  FORTRAN_MAJOR_VERSION=$(echo __GNUC__ | ${FC} -E -xc - | tail -n 1)
+  if [ ${FORTRAN_MAJOR_VERSION} > 9 ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_Fortran_FLAGS='-g -O3 -fallow-argument-mismatch' "
+  else
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_Fortran_FLAGS='-g -O3' "
+  fi
 fi
+
 
 # Set C flags
 CONFOPTS="${CONFOPTS} \
@@ -71,9 +74,13 @@ else
   fi
 fi
 
+# BLACS is provided by ScaLAPACK
 package_specific_register () {
     export SCALAPACK_DIR=${INSTALL_PATH}
-    export BLACS_DIR=${INSTALL_PATH}/lib
+    # only export the BLACS dir when MKL is not provided, so we do not override the MKL BLACS_DIR
+    if [ ${MKL} = OFF ]; then
+      export BLACS_DIR=${INSTALL_PATH}/lib
+    fi
 }
 
 package_specific_conf () {
