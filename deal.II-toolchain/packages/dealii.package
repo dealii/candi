@@ -329,6 +329,22 @@ if [ ! -z "${ASSIMP_DIR}" ]; then
       -D ASSIMP_DIR=${ASSIMP_DIR}"
 fi
 
+########################################
+# UMFPACK
+if [[ ${UMFPACK_DIR} =~ 'umfpack' ]]; then
+    if [ ! -z "${UMFPACK_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset UMFPACK_DIR due to forced DEAL_II_WITH_UMFPACK:BOOL=OFF option"
+        unset UMFPACK_DIR
+    fi
+fi
+
+if [ ! -z "${UMFPACK_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with UMFPACK"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_UMFPACK:BOOL=ON \
+      -D UMFPACK_DIR=${UMFPACK_DIR}"
+fi
+
 ################################################################################
 package_specific_install() {
     if [ ${RUN_DEAL_II_TESTS} = ON ]; then

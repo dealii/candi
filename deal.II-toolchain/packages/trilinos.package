@@ -184,6 +184,18 @@ if [ ! -z "${SUPERLU_DIR}" ]; then
       -D HAVE_SUPERLUDIST_ENUM_NAMESPACE:BOOL=ON"
 fi
 
+# Add UMFPACK, if present
+if [ ! -z "${UMFPACK_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with UMFPACK"
+
+    CONFOPTS="${CONFOPTS} \
+      -D TPL_ENABLE_UMFPACK:BOOL=ON \
+      -D UMFPACK_LIBRARY_NAMES:STRING='umfpack' \
+      -D UMFPACK_LIBRARY_DIRS:PATH='${UMFPACK_DIR}/lib' \
+      -D UMFPACK_INCLUDE_DIRS:PATH='${UMFPACK_DIR}/include'"
+fi
+
+
 #########################################################################
 # General Trilinos configuration
 
@@ -210,7 +222,7 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Stratimikos:BOOL=ON \
   -D TPL_ENABLE_Boost:BOOL=OFF \
   -D Trilinos_ENABLE_Belos:BOOL=ON \
-  -D Trilinos_ENABLE_Amesos2:BOOL=ON \
+  -D Trilinos_ENABLE_Amesos2:BOOL=OFF \
   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
   -D CMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
   -D BUILD_SHARED_LIBS:BOOL=ON \

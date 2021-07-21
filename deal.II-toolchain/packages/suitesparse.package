@@ -1,0 +1,71 @@
+################################################################################
+## SuiteSparse                                                                ##
+################################################################################
+
+# By default load the tarball.
+# To load the git repository define a variable CANDI_SUITESPARSE_LOAD_TARBALL=OFF.
+if [ -z "${CANDI_SUITESPARSE_LOAD_TARBALL}" ]; then
+    CANDI_SUITESPARSE_LOAD_TARBALL=ON
+fi
+
+if [ ${CANDI_SUITESPARSE_LOAD_TARBALL} = ON ]; then
+    # download release tarball
+    # 2019/10/21
+    VERSION=5.6.0
+    CHECKSUM=76d34d9f6dafc592b69af14f58c1dc59e24853dcd7c2e8f4c98ffa223f6a1adb
+    CHECKSUM="${CHECKSUM} 3de08b5ab02610ed0446225aad2445696616fae5"
+    CHECKSUM="${CHECKSUM} af8b97cbded4cd5c6672e878bc0c37c2"
+
+    NAME=v${VERSION}
+    PACKING=.tar.gz
+    EXTRACTSTO=SuiteSparse-${VERSION}
+    SOURCE=https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/
+else
+    # download git repository
+    VERSION=v5.6.0
+    NAME=SuiteSparse
+    PACKING=git
+    SOURCE=https://github.com/DrTimothyAldenDavis/
+    EXTRACTSTO=SuiteSparse
+fi
+unset CANDI_SUITESPARSE_LOAD_TARBALL
+
+BUILDCHAIN=custom
+
+BUILDDIR=${BUILD_PATH}/suitesparse-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/suitesparse-${VERSION}
+
+CONFOPTS=""
+
+package_specific_build() {
+
+    # Copy the unpacked directory to the BUILD_DIR
+    cd ${BUILDDIR}
+    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+
+    # Clean the build directory if specified
+    if [ ${CLEAN_BUILD} = ON ]; then
+        make distclean
+    fi
+
+    # Compile with system's blas library without running demos
+    make -j ${JOBS} BLAS=-lblas library
+    quit_if_fail "make failed"
+
+    # Install
+    make install -j ${JOBS} INSTALL=${INSTALL_PATH} BLAS=-lblas
+    quit_if_fail "make install failed"
+}
+
+package_specific_register() {
+    export UMFPACK_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf() {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f ${CONFIG_FILE}
+    echo "
+export UMFPACK_DIR=${INSTALL_PATH}
+" >>${CONFIG_FILE}
+}
