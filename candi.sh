@@ -1023,7 +1023,9 @@ cat > ${CONFIGURATION_PATH}/enable.sh <<"EOF"
 
 # find path of script:
 pushd . >/dev/null
-P="${BASH_SOURCE[0]}";cd `dirname $P`;P=`pwd`;
+P="${BASH_SOURCE[0]:-${(%):-%x}}";
+P=`dirname ${P}`;
+P=`cd ${P};pwd`;
 popd >/dev/null
 
 for f in $P/*
