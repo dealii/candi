@@ -117,7 +117,7 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ -z "${SCALAPACK_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
     fi
 }
@@ -129,7 +129,7 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
-    if [ -z "${SCALAPACK_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ]; then
        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
     fi
 }
