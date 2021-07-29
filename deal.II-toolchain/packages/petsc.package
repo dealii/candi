@@ -73,30 +73,44 @@ else
     fi
 fi
 
-# Add ParMETIS, if present
-if [ ! -z "${PARMETIS_DIR}" ]; then
+# ParMETIS
+if [ -n "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with ParMETIS"
-    CONFOPTS="\
-        ${CONFOPTS} \
+    cecho ${INFO} "PETSc: setting --with-parmetis-dir=${PARMETIS_DIR}"
+    cecho ${INFO} "PETSc: setting --with-metis-dir=${PARMETIS_DIR}"
+    CONFOPTS="${CONFOPTS} \
         --with-parmetis-dir=${PARMETIS_DIR} \
-	--with-metis-dir=${PARMETIS_DIR}"
+        --with-metis-dir=${PARMETIS_DIR}"
 fi
 
-if [ ! -z "${SCALAPACK_DIR}" ]; then
+# ScaLAPACK
+if [ -n "${SCALAPACK_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with SCALAPACK"
-    CONFOPTS="\
-        ${CONFOPTS} \
+    cecho ${INFO} "PETSc: setting --with-scalapack-dir=${SCALAPACK_DIR}"
+    CONFOPTS="${CONFOPTS} \
         --with-scalapack-dir=${SCALAPACK_DIR}"
 else
-    CONFOPTS="${CONFOPTS} --download-scalapack=1"
+    % TODO: petsc install scalapack, mumps if parmetis is present
+    if [ -n "${PARMETIS_DIR}" ]; then
+        cecho ${INFO} "PETSc: setting --download-scalapack=1"
+        CANDI_PETSC_INSTALLS_SCALAPACK=ON
+        CONFOPTS="${CONFOPTS} --download-scalapack=1"
+    fi
 fi
 
-if [ ! -z "${MUMPS_DIR}" ]; then
+# MUMPS
+if [ -n "${MUMPS_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with MUMPS"
+    cecho ${INFO} "PETSc: setting --with-mumps-dir=${MUMPS_DIR}"
     CONFOPTS="${CONFOPTS} \
         --with-mumps-dir=${MUMPS_DIR}"
 else
-    CONFOPTS="${CONFOPTS} --download-mumps=1"
+    % TODO: petsc install scalapack, mumps if parmetis is present
+    if [ -n "${PARMETIS_DIR}" ]; then
+        cecho ${INFO} "PETSc: setting --download-mumps=1"
+        CANDI_PETSC_INSTALLS_MUMPS=ON
+        CONFOPTS="${CONFOPTS} --download-mumps=1"
+    fi
 fi
 
 #########################################################################
@@ -117,8 +131,13 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
+
+    if [ ${CANDI_PETSC_INSTALLS_SCALAPACK} = "ON" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
+    fi
+
+    if [ ${CANDI_PETSC_INSTALLS_MUMPS} = "ON" ]; then
+        export MUMPS_DIR=${INSTALL_PATH}
     fi
 }
 
@@ -126,10 +145,14 @@ package_specific_conf () {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
     rm -f $CONFIG_FILE
-    echo "
-export PETSC_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
-       echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
+
+    echo "export PETSC_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
+
+    if [ ${CANDI_PETSC_INSTALLS_SCALAPACK} = "ON" ]; then
+        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
+    fi
+
+    if [ ${CANDI_PETSC_INSTALLS_MUMPS} = "ON" ]; then
+        echo "export MUMPS_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
     fi
 }
