@@ -79,9 +79,9 @@ package_specific_register () {
     #
     # only export the BLACS dir when MKL is not provided,
     # so we do not override the MKL BLACS_DIR
-    if [ ${MKL} = OFF ]; then
-        export BLACS_DIR=${INSTALL_PATH}/lib
-    fi
+    #if [ ${MKL} = OFF ]; then
+    #    export BLACS_DIR=${INSTALL_PATH}/lib
+    #fi
 }
 
 package_specific_conf () {
