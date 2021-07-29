@@ -1,0 +1,26 @@
+# macOS
+#
+# Detailed Installation Notes:
+# - Install Xcode from AppStore, open it and accept the license.
+# - Open Terminal, and install Xcode command line tools via
+# $  xcode-select --install
+# and then run
+# $  xcodebuild -license
+# and accept the license.
+#
+# - Install Homebrew in a Terminal via
+# $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#
+# - Install the following via Homebrew
+# $  brew install cmake gcc@11 openmpi
+#
+# - Export compiler environment
+# $ export CC=mpicc; export CXX=mpicxx; export FC=mpifort; export FF=mpifort; \
+# OMPI_CC=gcc-11; export OMPI_CXX=g++-11; export OMPI_FC=gfortran-11
+#
+# Run candi again!
+#
+# If you encounter runtime problems with missing *.dylib libraries,
+# you may change the security policy for developments. To do so,
+# enable Terminal in System Preferences / Security & Privacy / Developer Tools .
+##
