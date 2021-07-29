@@ -600,16 +600,23 @@ guess_platform() {
         echo cygwin
 
     elif [ -x /usr/bin/sw_vers ]; then
+        local MACOS_PRODUCT_NAME=$(sw_vers -productName)
         local MACOS_VERSION=$(sw_vers -productVersion)
-        case ${MACOS_VERSION} in
-            10.11*) echo macos_elcapitan;;
-            10.12*) echo macos_sierra;;
-            10.13*) echo macos_highsierra;;
-            10.14*) echo macos_mojave;;
-            10.15*) echo macos_catalina;;
-            11.4*)  echo macos_bigsur;;
-            11.5*)  echo macos_bigsur;;
-        esac
+
+        if [ "${MACOS_PRODUCT_NAME}" == "macOS" ]; then
+            echo macos
+
+        else
+            case ${MACOS_VERSION} in
+                10.11*) echo macos_elcapitan;;
+                10.12*) echo macos_sierra;;
+                10.13*) echo macos_highsierra;;
+                10.14*) echo macos_mojave;;
+                10.15*) echo macos_catalina;;
+                11.4*)  echo macos_bigsur;;
+                11.5*)  echo macos_bigsur;;
+            esac
+        fi
 
     elif [ ! -z "${CRAYOS_VERSION}" ]; then
         echo cray
