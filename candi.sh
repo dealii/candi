@@ -608,6 +608,7 @@ guess_platform() {
             10.14*) echo macos_mojave;;
             10.15*) echo macos_catalina;;
             11.4*)  echo macos_bigsur;;
+            11.5*)  echo macos_bigsur;;
         esac
 
     elif [ ! -z "${CRAYOS_VERSION}" ]; then
