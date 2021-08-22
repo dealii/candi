@@ -42,24 +42,24 @@ for external_pkg in hypre; do
     CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
 done
 
-if [ ! -z "$CC" ]; then
-    CONFOPTS="${CONFOPTS} CC=$CC"
+if [ ! -z "${CC}" ]; then
+    CONFOPTS="${CONFOPTS} CC=${CC}"
 fi
 
-if [ ! -z "$CXX" ]; then
-    CONFOPTS="${CONFOPTS} CXX=$CXX"
+if [ ! -z "${CXX}" ]; then
+    CONFOPTS="${CONFOPTS} CXX=${CXX}"
 fi
 
-if [ ! -z "$FC" ]; then
-    CONFOPTS="${CONFOPTS} FC=$FC"
+if [ ! -z "${FC}" ]; then
+    CONFOPTS="${CONFOPTS} FC=${FC}"
 fi
 
-if [ ! -z "$F77" ]; then
-    CONFOPTS="${CONFOPTS} F77=$F77"
+if [ ! -z "${F77}" ]; then
+    CONFOPTS="${CONFOPTS} F77=${F77}"
 fi
 
-if [ ! -z "$F90" ]; then
-    CONFOPTS="${CONFOPTS} F90=$F90"
+if [ ! -z "${F90}" ]; then
+    CONFOPTS="${CONFOPTS} F90=${F90}"
 fi
 
 if [ ! -z "${MKL_DIR}" ]; then
@@ -80,10 +80,23 @@ if [ ! -z "${PARMETIS_DIR}" ]; then
         ${CONFOPTS} \
         --with-parmetis-dir=${PARMETIS_DIR} \
 	--with-metis-dir=${PARMETIS_DIR}"
+fi
 
-    for external_pkg in scalapack mumps; do
-        CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
-    done
+if [ ! -z "${SCALAPACK_DIR}" ]; then
+    cecho ${INFO} "PETSc: configuration with SCALAPACK"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        --with-scalapack-dir=${SCALAPACK_DIR}"
+else
+    CONFOPTS="${CONFOPTS} --download-scalapack=1"
+fi
+
+if [ ! -z "${MUMPS_DIR}" ]; then
+    cecho ${INFO} "PETSc: configuration with MUMPS"
+    CONFOPTS="${CONFOPTS} \
+        --with-mumps-dir=${MUMPS_DIR}"
+else
+    CONFOPTS="${CONFOPTS} --download-mumps=1"
 fi
 
 #########################################################################
@@ -104,7 +117,7 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${PARMETIS_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
     fi
 }
@@ -116,7 +129,7 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
-    if [ ! -z "${PARMETIS_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ]; then
        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
     fi
 }

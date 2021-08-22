@@ -25,18 +25,18 @@ Follow the instructions on the screen
 
 ### Examples
 
-#### Install deal.II on RHEL 7, CentOS 7 or Fedora 26,27,28:
+#### Install deal.II on RHEL 7, CentOS 7 or Fedora:
 ```bash
   module load mpi/openmpi-`uname -i`
   ./candi.sh
 ```
 
-#### Install deal.II on ubuntu 12.04, 14.xx, 15.xx, 16.xx, 17.xx:
+#### Install deal.II on Ubuntu (16.04), 18.04, 20.xx:
 ```bash
   ./candi.sh
 ```
 
-#### Install deal.II on macOS (10.11), 10.12, 10.13:
+#### Install deal.II on macOS (experimental):
 ```bash
   ./candi.sh
 ```
@@ -45,10 +45,12 @@ Follow the instructions on the screen
 Since the Creators Update in fall 2017 (Windows 10 (1709)) the
 Windows Subsystem for Linux (WSL) is an official part.
 
-For an detailed instruction how to install WSL and a recent Ubuntu distribution
-on Windows 10 you can follow the Microsoft Documentation.
+For a detailed instruction how to install WSL, the new WSL 2 and a recent
+Ubuntu distribution on Windows 10 you can follow the
+[Microsoft Documentation](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Within the ubuntu terminal application clone this repository and run candi
+Within the Ubuntu terminal application, upgrade Ubuntu first, then
+clone this repository and run candi
 
 ```bash
   sudo apt-get update
@@ -91,13 +93,16 @@ Advanced Configuration
 You can get a list of all command line options by running
 ```bash
   ./candi.sh -h
+  ./candi.sh --help
 ```
 
 You can combine the command line options given below.
 
-#### Prefix path: ``[-p=<PATH>]``, ``[--prefix=<PATH>]``
+#### Prefix path: ``[-p <path>]``, ``[-p=<path>]``, ``[--prefix=<path>]``
 ```bash
-  ./candi.sh --prefix=Your/Prefix/Path
+  ./candi.sh -p "/path/to/install/dir"
+  ./candi.sh -p="/path/to/install/dir"
+  ./candi.sh --prefix="/path/to/install/dir"
 ```
 
 #### Multiple build processes: ``[-j<N>]``, ``[-j <N>]``, ``[--jobs=<N>]``
@@ -114,6 +119,7 @@ You can combine the command line options given below.
 #### Specific platform: ``[-pf=<platform>]``, ``[--platform=<platform>]``
 ```bash
   ./candi.sh -pf=./deal.II-toolchain/platforms/...
+  ./candi.sh --platform=./deal.II-toolchain/platforms/...
 ```
 
 If your platform is not detected automatically you can specify it with this
@@ -124,6 +130,8 @@ see [deal.II-toolchain/platforms](deal.II-toolchain/platforms).
 #### User interaction: ``[-y]``, ``[--yes]``, ``[--assume-yes]``
 ```bash
   ./candi.sh -y
+  ./candi.sh --yes
+  ./candi.sh --assume-yes
 ```
 
 With this option you skip the user interaction. This might be useful if you
@@ -161,9 +169,8 @@ There are several options within the configuration file, for example:
   NATIVE_OPTIMIZATIONS={ON|OFF}
 ```
 
-* Enable the build of the deal.II examples and documentation
+* Enable the build of the deal.II examples
 ```bash
-  BUILD_DOCUMENTATION={ON|OFF}
   BUILD_EXAMPLES={ON|OFF}
 ```
 

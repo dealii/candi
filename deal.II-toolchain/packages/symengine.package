@@ -2,8 +2,11 @@
 ## SYMENGINE                                                                  ##
 ################################################################################
 
-# Option {ON|OFF}: Choose whether to load the tarball or the git repository.
-CANDI_SYMENGINE_LOAD_TARBALL=OFF
+# By default load the tarball.
+# To load the git repository define a variable CANDI_SYMENGINE_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_SYMENGINE_LOAD_TARBALL} ]; then
+    CANDI_SYMENGINE_LOAD_TARBALL=ON
+fi
 
 if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
     # download release tarball

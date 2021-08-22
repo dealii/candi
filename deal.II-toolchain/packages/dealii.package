@@ -85,17 +85,24 @@ fi
 ################################################################################
 # Add additional packages, if present
 
-# arpack
+########################################
+# ARPACK
+if [[ ${PACKAGES_OFF} =~ 'arpack-ng' ]]; then
+    if [ ! -z "${ARPACK_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ARPACK_DIR due to forced DEAL_II_WITH_ARPACK:BOOL=OFF option"
+        unset ARPACK_DIR
+    fi
+fi
+
 if [ ! -z "${ARPACK_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with ARPACK"
     # We use a recent enough version of arpack, so PARPACK can be enabled
     # even though it is disabled by default, see 
     # https://github.com/dealii/dealii/blob/master/cmake/modules/FindARPACK.cmake
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_ARPACK:BOOL=ON \
-        -D DEAL_II_ARPACK_WITH_PARPACK=ON \
-        -D ARPACK_DIR=${ARPACK_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ARPACK:BOOL=ON \
+      -D DEAL_II_ARPACK_WITH_PARPACK:BOOL=ON \
+      -D ARPACK_DIR=${ARPACK_DIR}"
 fi
 
 # metis
@@ -124,10 +131,9 @@ if [ ! -z "${MUMPS_DIR}" ]; then
         -D MUMPS_DIR=${MUMPS_DIR}"
 fi
 
-# p4est
+########################################
+# P4EST
 if [[ ${PACKAGES_OFF} =~ 'p4est' ]]; then
-    # Disable p4est for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces p4est to be off
     if [ ! -z "${P4EST_DIR}" ]; then
         cecho ${INFO} "deal.II: unset P4EST_DIR due to forced DEAL_II_WITH_P4EST:BOOL=OFF option"
         unset P4EST_DIR
@@ -136,10 +142,9 @@ fi
 
 if [ ! -z "${P4EST_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with P4EST"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_P4EST:BOOL=ON \
-        -D P4EST_DIR=${P4EST_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_P4EST:BOOL=ON \
+      -D P4EST_DIR=${P4EST_DIR}"
 fi
 
 # hdf5
@@ -212,10 +217,9 @@ if [ ! -z "${SLEPC_DIR}" ]; then
         -D SLEPC_DIR=${SLEPC_DIR}"
 fi
 
-# opencascade
+########################################
+# OPENCASCADE
 if [[ ${PACKAGES_OFF} =~ 'opencascade' ]]; then
-    # Disable OPENCASCADE for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces opencascade to be off
     if [ ! -z "${OPENCASCADE_DIR}" ]; then
         cecho ${INFO} "deal.II: unset OPENCASCADE_DIR due to forced DEAL_II_WITH_OPENCASCADE:BOOL=OFF option"
         unset OPENCASCADE_DIR
@@ -224,9 +228,9 @@ fi
 
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with OPENCASCADE"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_OPENCASCADE:BOOL=ON"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_OPENCASCADE:BOOL=ON \
+      -D OPENCASCADE_DIR=${OPENCASCADE_DIR}"
 fi
 
 ########################################
@@ -260,15 +264,92 @@ if [ ! -z "${SYMENGINE_DIR}" ]; then
       -D DEAL_II_WITH_SYMENGINE:BOOL=ON"
 fi
 
-################################################################################
+########################################
+# GINKGO
+if [[ ${PACKAGES_OFF} =~ 'ginkgo' ]]; then
+    if [ ! -z "${GINKGO_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset GINKGO_DIR due to forced DEAL_II_WITH_GINKGO:BOOL=OFF option"
+        unset GINKGO_DIR
+    fi
+fi
 
+if [ ! -z "${GINKGO_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with GINKGO"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_GINKGO:BOOL=ON \
+      -D GINKGO_DIR=${GINKGO_DIR}"
+fi
+
+########################################
+# SYMENGINE
+if [[ ${PACKAGES_OFF} =~ 'symengine' ]]; then
+    if [ ! -z "${SYMENGINE_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
+        unset SYMENGINE_DIR
+    fi
+fi
+
+if [ ! -z "${SYMENGINE_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with SYMENGINE"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_SYMENGINE:BOOL=ON \
+      -D SYMENGINE_DIR=${SYMENGINE_DIR}"
+fi
+
+########################################
+# GMSH
+if [[ ${PACKAGES_OFF} =~ 'gmsh' ]]; then
+    if [ ! -z "${GMSH_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset GMSH_DIR due to forced DEAL_II_WITH_GMSH:BOOL=OFF option"
+        unset GMSH_DIR
+    fi
+fi
+
+if [ ! -z "${GMSH_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with GMSH"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_GMSH:BOOL=ON \
+      -D GMSH_DIR=${GMSH_DIR}"
+fi
+
+########################################
+# ADOLC
+if [[ ${PACKAGES_OFF} =~ 'adolc' ]]; then
+    if [ ! -z "${ADOLC_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ADOLC_DIR due to forced DEAL_II_WITH_ADOLC:BOOL=OFF option"
+        unset ADOLC_DIR
+    fi
+fi
+
+if [ ! -z "${ADOLC_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with ADOLC"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ADOLC:BOOL=ON \
+      -D ADOLC_DIR=${ADOLC_DIR}"
+fi
+
+########################################
+# SUNDIALS
+if [[ ${PACKAGES_OFF} =~ 'sundials' ]]; then
+    if [ ! -z "${SUNDIALS_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset SUNDIALS_DIR due to forced DEAL_II_WITH_SUNDIALS:BOOL=OFF option"
+        unset SUNDIALS_DIR
+    fi
+fi
+
+if [ ! -z "${SUNDIALS_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with SUNDIALS"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_SUNDIALS:BOOL=ON \
+      -D SUNDIALS_DIR=${SUNDIALS_DIR}"
+fi
+
+################################################################################
 package_specific_install() {
     if [ ${RUN_DEAL_II_TESTS} = ON ]; then
         make test 2>&1 | tee candi_test.log
     fi
 }
-
-
 
 package_specific_conf() {
     ############################################################################

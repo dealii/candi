@@ -21,7 +21,7 @@ jobs:
       run: |
         echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="once:p4est dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   ubuntu20-blas:
     name: ubuntu 20.04
@@ -41,7 +41,7 @@ jobs:
       run: |
         # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
         ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   osx-minimal:
     name: OSX clang
@@ -52,9 +52,10 @@ jobs:
     - name: setup
       run: |
         # force cmake version:
-        pip install cmake==3.18.4
+        pip install cmake==3.20.5
         echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
         brew install openmpi
+        brew reinstall gcc@9
     - name: info
       run: |
         mpicxx -v
@@ -63,30 +64,49 @@ jobs:
       run: |
         echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
         ./candi.sh -j 2 --packages="dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
-  osx-gcc:
-    name: OSX gcc
+  macos-gcc:
+    name: macos-gcc
     runs-on: [macos-latest]
 
     steps:
     - uses: actions/checkout@v2
     - name: setup
       run: |
-        # force cmake version:
-        pip install cmake==3.18.4
+        # Force cmake version 3.20.5
+        pip install cmake==3.20.5
         echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
+
+        # Update packages
+        brew update
+        brew upgrade
+
+        # Install openmpi
         brew install openmpi
+
+        # Reinstall gcc
+        brew reinstall gcc@9
+
     - name: info
       run: |
-        export OMPI_CXX=g++-9
-        mpicxx -v
+        # Export the compilers
+        export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
+
+        # Show compilers and cmake versions
+        mpicc --version
+        mpicxx --version
+        mpif90 --version
+        mpif77 --version
         cmake --version
+
     - name: build
       run: |
-        export OMPI_CXX=g++-9
-        export OMPI_CC=gcc-9
-        export OMPI_FC=gfortran-9
+        # Export the compilers
+        export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
+
+        # Compile dealii in DEBUG mode only
         echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+
         ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-        cd ~/deal.ii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test

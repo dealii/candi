@@ -1,0 +1,33 @@
+# Ubuntu
+#
+# This build script assumes that you have several packages already
+# installed via ubuntu's apt-get using the following commands:
+#
+#   sudo apt-get install lsb-release git subversion wget bc libgmp-dev \
+#   build-essential autoconf automake cmake libtool gfortran python \
+#   libboost-all-dev zlib1g-dev \
+#   openmpi-bin openmpi-common libopenmpi-dev \
+#   libblas3 libblas-dev liblapack3 liblapack-dev libsuitesparse-dev
+#
+# Then run candi again.
+#
+# If the default compiler is older than the hardware generation, a newer
+# compiler version is necessary to use native optimizations.
+# For example, to update the GNU Compiler Collection from the default v9 to
+# v10, install the new compilers
+#
+#   sudo apt-get install gcc-10 g++-10 gfortran-10
+#
+# and update the symbolic links to gcc, g++ and gfortran by
+#
+#   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10 \
+#   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20
+#
+#   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10 \
+#   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20
+#
+#   update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 10 \
+#   update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-10 20
+#
+# with super-user privileges and invoke an operating system update.
+##

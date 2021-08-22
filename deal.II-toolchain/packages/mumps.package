@@ -1,0 +1,85 @@
+################################################################################
+## MUMPS                                                                      ##
+################################################################################
+
+VERSION=5.4.0.5
+EXTRACTSTO=mumps-${VERSION}
+
+NAME=v${VERSION}
+PACKING=.tar.gz
+
+SOURCE=https://github.com/scivision/mumps/archive/
+CHECKSUM=0cd3bd9ad9860f7c0092cd561931a36e
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/mumps-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/mumps-${VERSION}
+
+# Set compilers & compiler options
+if [ ! -z "${CC}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_C_COMPILER=${CC}"
+fi
+
+if [ ! -z "${CXX}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_CXX_COMPILER=${CXX}"
+fi
+
+if [ ! -z "${FC}" ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D CMAKE_Fortran_COMPILER=${FC}"
+fi
+
+CONFOPTS="${CONFOPTS} \
+      -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
+      -D CMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON"
+
+if [ ${MKL} = ON ]; then
+    # When MKL is provided, MUMPS will search for the required packages by itself.
+    # Therefore we only need to set MKLROOT.
+    CONFOPTS="${CONFOPTS} \
+      -D MKLROOT=${MKL_DIR}"
+else
+  if [ ! -z "${BLAS_DIR}" ]; then
+      CONFOPTS="${CONFOPTS} \
+        -D pc_blas_LIBRARY_DIRS=${BLAS_DIR}/lib "
+  fi
+
+  if [ ! -z "${LAPACK_DIR}" ]; then
+      CONFOPTS="${CONFOPTS} \
+        -D pc_lapack_LIBRARY_DIRS=${LAPACK_DIR}/lib"
+  fi
+
+  if [ ! -z "${SCALAPACK_DIR}" ]; then
+      CONFOPTS="${CONFOPTS} \
+        -D pc_scalapack_LIBRARY_DIRS=${SCALAPACK_DIR}/lib"
+  else
+      # auto build missing packages
+      CONFOPTS="${CONFOPTS} -D autobuild=true"
+  fi
+fi
+
+# Set metis directories
+if [ ! -z "${METIS_DIR}" ]; then
+    CONFOPTS="${CONFOPTS} \
+        -D metis=true \
+        -D METIS_LIBRARY=${METIS_DIR}/lib/libmetis.so \
+        -D METIS_INCLUDE_DIR=${METIS_DIR}/include \
+        -D PARMETIS_LIBRARY=${PARMETIS_DIR}/lib/libparmetis.so "
+fi
+
+
+package_specific_register () {
+    export MUMPS_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
+    rm -f $CONFIG_FILE
+    echo "
+export MUMPS_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}

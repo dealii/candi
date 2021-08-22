@@ -22,8 +22,11 @@ if [ ! -z "${PACKAGES_OFF}" ]; then
     cecho ${WARN} "deal.II: forcing package skip for: ${PACKAGES_OFF}"
     cecho ${INFO} "This is coming from your personal DEAL_II_CONFOPTS settings!"
     echo
-    cecho ${GOOD} "Please confirm this behaviour by pressing enter..."
-    read
+
+    if [ ${USER_INTERACTION} = ON ]; then
+        cecho ${GOOD} "Please confirm this behaviour by pressing enter..."
+        read
+    fi
 fi
 
 # Check if we hit cmake-3.10+ and deal.II v8.5.1 configure error (MPI / FindMPI)

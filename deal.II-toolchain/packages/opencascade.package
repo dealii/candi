@@ -1,54 +1,61 @@
-# NOTE: uncomment the following line to use the git repository
-#       and not a release tarball:
-#CANDI_OPENCASCADE_FROM_GIT=1
+################################################################################
+## OPENCASCADE                                                                ##
+################################################################################
 
-if [ -n "$CANDI_OPENCASCADE_FROM_GIT" ]; then
+# By default load the tarball.
+# To load the git repository define a variable CANDI_OPENCASCADE_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_OPENCASCADE_LOAD_TARBALL} ]; then
+    CANDI_OPENCASCADE_LOAD_TARBALL=ON
+fi
+
+if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
+    # download release tarball
+    VERSION=0.18.3
+    CHECKSUM=c553d6a7bf52f790abc3b6bb7a1e91a65947e92a426bb1a88a11960c31f0966c
+    CHECKSUM="${CHECKSUM} 452c8e26a469e8b0ba6cdd800848a0b406648b1b"
+    CHECKSUM="${CHECKSUM} 1686393c8493bbbb2f3f242330b33cba"
+
+    # VERSION=0.18.2
+    # CHECKSUM=6dfd68e459e2c62387579888a867281f
+
+    # VERSION=0.18.1
+    # CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
+
+    # VERSION=0.17
+    # CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
+
+    NAME=OCE-${VERSION}
+    SOURCE=https://github.com/tpaviot/oce/archive/
+    EXTRACTSTO=oce-OCE-${VERSION}
+    PACKING=.tar.gz
+else
     # download git repository (huge download)
-    # if possible, try to download a release tarball (see below)
-    
+
     # checkout specific release version
-    # VERSION=OCE-0.18.2
-    # checkout current development version (master)
     VERSION=master
-    
-    if [ "${VERSION}" = "master" ]; then
-        EXTRACTSTO=OCE-master
-    fi
-    
+    #VERSION=OCE-0.18.3
+    #VERSION=OCE-0.18.2
+
     # set up git repository
     NAME=oce.git
     PACKING=git
+    EXTRACTSTO=OCE-${VERSION}
     SOURCE=https://github.com/tpaviot/
-    
-else
-    # download release tarball
-    
-    #VERSION=0.17
-    #CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
-    #VERSION=0.18.1
-    #CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
-    VERSION=0.18.2
-    CHECKSUM=6dfd68e459e2c62387579888a867281f
-
-    NAME=OCE-${VERSION}
-    PACKING=.tar.gz
-    SOURCE=https://github.com/tpaviot/oce/archive/
-    EXTRACTSTO=oce-OCE-${VERSION}
 fi
-unset CANDI_OPENCASCADE_FROM_GIT
+unset CANDI_OPENCASCADE_LOAD_TARBALL
 
 BUILDCHAIN=cmake
 
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
-CONFOPTS="-D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
- -D OCE_VISUALISATION=OFF \
- -D OCE_DISABLE_TKSERVICE_FONT=ON \
- -D OCE_DATAEXCHANGE=ON \
- -D OCE_OCAF=OFF \
- -D OCE_DISABLE_X11=ON \
-"
+CONFOPTS="\
+  -D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
+  -D OCE_VISUALISATION:BOOL=OFF \
+  -D OCE_DISABLE_TKSERVICE_FONT:BOOL=ON \
+  -D OCE_DATAEXCHANGE:BOOL=ON \
+  -D OCE_OCAF:BOOL=OFF \
+  -D OCE_DISABLE_X11:BOOL=ON"
 
 package_specific_patch () {
     cd ${UNPACK_PATH}/${EXTRACTSTO}

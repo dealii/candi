@@ -3,14 +3,13 @@
 # This build script assumes that you have several packages already
 # installed via pacman using the following command:
 #
-# $ sudo pacman -Syu core/gcc extra/openmpi  extra/cmake \
-# core/make core/awk core/which core/sed core/gcc-fortran \
-# core/grep core/file core/binutils core/diffutils extra/git \
-# extra/lapack
+# > sudo pacman -Syu core/gcc extra/openmpi  extra/cmake \
+#   core/make core/awk core/which core/sed core/gcc-fortran \
+#   core/grep core/file core/binutils core/diffutils extra/git \
+#   extra/lapack
 #
 ##
 
 #
 # Define the additional packages for this platform.
 #PACKAGES="once:cmake ${PACKAGES}"
-

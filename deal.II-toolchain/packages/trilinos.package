@@ -90,8 +90,24 @@ if [ ! -z "${LAPACK_DIR}" ]; then
       -D LAPACK_LIBRARY_DIRS:STRING=${LAPACK_DIR}"
 fi
 
+if [ ! -z "${SCALAPACK_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with SCALAPACK_DIR=${SCALAPACK_DIR}"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D TPL_ENABLE_SCALAPACK:BOOL=ON \
+        -D SCALAPACK_LIBRARY_DIRS=${SCALAPACK_DIR}/lib"
+fi
+
+if [ ! -z "${MUMPS_DIR}" ]; then
+    cecho ${INFO} "trilinos: configuration with MUMPS_DIR=${MUMPS_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D TPL_ENABLE_MUMPS=ON \
+      -D MUMPS_INCLUDE_DIRS:STRING=${MUMPS_DIR}/include \
+      -D MUMPS_LIBRARY_DIRS:STRING=${MUMPS_DIR}/lib"
+fi
+
 # Set intel MKL options
-if [ "${MKL}" = "ON" ]; then
+if [ ${MKL} = ON ]; then
     cecho ${INFO} "trilinos: configuration with MKL"
 
     if [ -z "${BLAS_DIR}" ] && [ -z "${LAPACK_DIR}" ]; then
@@ -140,8 +156,7 @@ fi
 CONFOPTS="${CONFOPTS} \
   -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
   -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
-  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3' \
-  -D Trilinos_EXTRA_LINK_FLAGS:STRING='-lgfortran'"
+  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3'"
 
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
@@ -183,16 +198,10 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
-  -D   Tpetra_INST_DOUBLE:BOOL=ON \
   -D   Tpetra_INST_INT_LONG:BOOL=ON \
-  -D   Tpetra_INST_COMPLEX_DOUBLE:BOOL=ON \
-  -D   Tpetra_INST_COMPLEX_FLOAT:BOOL=ON \
-  -D   Tpetra_INST_FLOAT:BOOL=ON \
-  -D   Tpetra_INST_SERIAL:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \
-  -D   Teuchos_ENABLE_COMPLEX:BOOL=ON \
   -D   Teuchos_ENABLE_FLOAT:BOOL=ON \
   -D Trilinos_ENABLE_MueLu:BOOL=ON \
   -D Trilinos_ENABLE_ML:BOOL=ON \
@@ -205,7 +214,18 @@ CONFOPTS="\
   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
   -D CMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
   -D BUILD_SHARED_LIBS:BOOL=ON \
-  ${CONFOPTS} \
+  ${CONFOPTS}"
+
+if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
+    CONFOPTS="\
+    -D Trilinos_ENABLE_COMPLEX_DOUBLE=ON \
+    -D Trilinos_ENABLE_COMPLEX_FLOAT=ON \
+    -D Teuchos_ENABLE_COMPLEX:BOOL=ON \
+    ${CONFOPTS}"
+fi
+
+# finally append user options:
+CONFOPTS="${CONFOPTS} \
   ${TRILINOS_CONFOPTS}"
 
 package_specific_register () {

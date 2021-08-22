@@ -25,7 +25,7 @@ package_specific_build() {
     # Secondly build parmetis
     cd ..
     
-    make config prefix=${INSTALL_PATH} shared=1 cc=$CC cxx=$CXX
+    make config prefix=${INSTALL_PATH} shared=1 cc=${CC} cxx=${CXX}
     quit_if_fail "parmetis make config failed"
     
     make -j${JOBS}

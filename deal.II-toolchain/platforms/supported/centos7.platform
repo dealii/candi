@@ -3,32 +3,38 @@
 # This build script assumes that you have several packages already
 # installed via CentOS's yum using the following command:
 #
-# sudo yum install patch svn git wget \
-# @development-tools gcc-c++ cmake \
-# centos-release-scl devtoolset-9 \
-# openmpi openmpi-devel \
-# patch \
-# libtool libtool-ltdl libtool-ltdl-devel \
-# lua lua-devel \
-# blas blas-devel lapack lapack-devel \
-# doxygen graphviz graphviz-devel qt-devel
-# 
+# > sudo yum install patch svn git wget \
+#   @development-tools gcc-c++ cmake \
+#   centos-release-scl devtoolset-9 \
+#   openmpi openmpi-devel \
+#   patch \
+#   libtool libtool-ltdl libtool-ltdl-devel \
+#   lua lua-devel \
+#   blas blas-devel lapack lapack-devel \
+#   doxygen graphviz graphviz-devel qt-devel \
+#   gmp-devel
+#
 # Be sure to switch to the recent compilers with
-# $ scl enable devtoolset-9 bash 
+#
+# > scl enable devtoolset-9 bash
+#
 # Please load the 'openmpi' compiler with
-# $  module load mpi/openmpi-x86_64
+#
+# > module load mpi/openmpi-x86_64
+#
 # and then set the compiler enviroment variables to
-# $ export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+#
+# > export CC=mpicc; export CXX=mpicxx; export FC=mpif90; export FF=mpif77
+#
 # before you continue!
 ##
 
-# on centos 7 the candi installed parmetis 4.0.3 is not recognized correctly
+# on CentOS 7 the candi installed parmetis 4.0.3 is not recognized correctly
 # for trilinos 12-10-1. We force to assume parmetis version 4.0.3.
 TRILINOS_PARMETIS_CONFOPTS="\
     ${TRILINOS_PARMETIS_CONFOPTS} \
-    -D HAVE_PARMETIS_VERSION_4_0_3=ON"
+    -D HAVE_PARMETIS_VERSION_4_0_3:BOOL=ON"
 
 #
 # Define the additional packages for this platform.
 PACKAGES="once:cmake ${PACKAGES}"
-

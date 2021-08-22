@@ -39,10 +39,10 @@ TIC_GLOBAL="$(${DATE_CMD} +%s)"
 
 ################################################################################
 # Parse command line input parameters
-PREFIX=~/deal.ii-candi
+PREFIX=~/dealii-candi
 JOBS=1
 CMD_PACKAGES=""
-SKIP_READ=false
+USER_INTERACTION=ON
 
 while [ -n "$1" ]; do
     param="$1"
@@ -71,8 +71,6 @@ while [ -n "$1" ]; do
         ;;
         -p=*|--prefix=*)
             PREFIX="${param#*=}"
-            # replace '~' by $HOME
-            PREFIX=${PREFIX/#~\//$HOME\/}
         ;;
 
         #####################################
@@ -106,18 +104,21 @@ while [ -n "$1" ]; do
         #####################################
         # Assume yes to prompts
         -y|--yes|--assume-yes)
-            SKIP_READ=true
+            USER_INTERACTION=OFF
         ;;
 
 	*)
-	    echo "invalid command line option. See -h for more information."
+	    echo "invalid command line option <$param>. See -h for more information."
 	    exit 1
     esac
     shift
 done
 
-# replace '~' by $HOME:
+# Check the input argument of the install path and (if used) replace the tilde
+# character '~' by the users home directory ${HOME}. Afterwards clear the
+# PREFIX input variable.
 PREFIX_PATH=${PREFIX/#~\//$HOME\/}
+unset PREFIX
 
 RE='^[0-9]+$'
 if [[ ! "${JOBS}" =~ ${RE} || ${JOBS}<1 ]] ; then
@@ -171,7 +172,7 @@ cecho() {
 }
 
 cls() {
-    if [ ${SKIP_READ} = false ]; then
+    if [ ${USER_INTERACTION} = ON ]; then
         # clear screen
         COL=$1; shift
         echo -e "${COL}$@\033c"
@@ -599,44 +600,51 @@ guess_platform() {
         echo cygwin
 
     elif [ -x /usr/bin/sw_vers ]; then
-        local MACOSVER=$(sw_vers -productVersion)
-        case ${MACOSVER} in
-            10.11*)  echo elcapitan;;
-            10.12*)  echo sierra;;
-            10.13*)  echo highsierra;;
-            10.14*)  echo mojave;;
-            10.15*)  echo catalina;;
-        esac
+        local MACOS_PRODUCT_NAME=$(sw_vers -productName)
+        local MACOS_VERSION=$(sw_vers -productVersion)
 
-    elif [ ! -z "$CRAYOS_VERSION" ]; then
+        if [ "${MACOS_PRODUCT_NAME}" == "macOS" ]; then
+            echo macos
+
+        else
+            case ${MACOS_VERSION} in
+                10.11*) echo macos_elcapitan;;
+                10.12*) echo macos_sierra;;
+                10.13*) echo macos_highsierra;;
+                10.14*) echo macos_mojave;;
+                10.15*) echo macos_catalina;;
+                11.4*)  echo macos_bigsur;;
+                11.5*)  echo macos_bigsur;;
+            esac
+        fi
+
+    elif [ ! -z "${CRAYOS_VERSION}" ]; then
         echo cray
 
     elif [ -f /etc/os-release ]; then
         local OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
-        local OS_VERSIONID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
-        local OS_MAJOR_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
+        local OS_VERSION_ID=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"')
+        local OS_MAJOR_VERSION=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"' | grep -oE '[0-9]+' | head -n 1)
         local OS_NAME=$(grep -oP '(?<=^NAME=).+' /etc/os-release | tr -d '"')
         local OS_PRETTY_NAME=$(grep -oP '(?<=^PRETTY_NAME=).+' /etc/os-release | tr -d '"')
 
-        if [ "$OS_ID" == "fedora" ]; then
-            echo fedora${OS_VERSIONID}
+        if [ "${OS_ID}" == "fedora" ]; then
+            echo fedora
 
-        elif [ "$OS_ID" == "centos" ]; then
-            echo centos${OS_VERSIONID}
+        elif [ "${OS_ID}" == "centos" ]; then
+            echo centos${OS_VERSION_ID}
 
-        elif [ "$OS_ID" == "rhel" ]; then
-            echo rhel${OS_MAJOR_VER}
+        elif [ "${OS_ID}" == "rhel" ]; then
+            echo rhel${OS_MAJOR_VERSION}
 
         elif [ "$OS_ID" == "debian" ]; then
-            echo debian${OS_MAJOR_VER}
+            echo debian
 
         elif [ "$OS_ID" == "ubuntu" ]; then
-            echo ubuntu${OS_MAJOR_VER}
+            echo ubuntu
 
-        elif [ "$OS_ID" == "opensuse" ]; then
-            if [ "${OS_NAME}" == "openSUSE Leap" ]; then
-                echo opensuse15
-            fi
+        elif [ "${OS_NAME}" == "openSUSE Leap" ]; then
+            echo opensuse15
 
         elif [ "${PRETTY_NAME}" == "Arch Linux" ]; then
             echo arch
@@ -812,14 +820,6 @@ if [ -z "${LDSUFFIX}" ]; then
 	exit 1
 fi
 
-# Source default PACKAGES variables, if none were given so far
-if [ -z "${PACKAGES}" ]; then
-    DEFAULT_PACKAGES=${PROJECT}/packages/default.packages
-    if [ -e ${DEFAULT_PACKAGES} ]; then
-        source ${DEFAULT_PACKAGES}
-    fi
-fi
-
 # Source PLATFORM variables if set up correctly
 if [ -z ${PLATFORM} ]; then
     cecho ${BAD} "Please contact the authors, if you have not changed candi!"
@@ -841,9 +841,10 @@ echo
 awk '/^##/ {exit} {$1=""; print}' <${PLATFORM}
 echo
 
-# Let the user confirm now, that the PLATFORM is set up correctly
-echo "-------------------------------------------------------------------------------"
-if [ ${SKIP_READ} = false ]; then
+# If interaction is enabled, let the user confirm, that the platform is set up
+# correctly
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
     cecho ${GOOD} "Please make sure you've read the instructions above and your system"
     cecho ${GOOD} "is ready for installing ${PROJECT}."
     cecho ${BAD} "If not, please abort the installer by pressing <CTRL> + <C> !"
@@ -905,84 +906,86 @@ fi
 
 ############################################################################
 # Compiler variables check
-echo "Compiler Variables:"
-# Firstly test, if compiler variables are set,
-#   and if not try to set the default mpi-compiler suite
-# finally test, if compiler variables are useful.
+# Firstly test, if compiler variables are set, and if not try to set the
+# default mpi-compiler suite finally test, if compiler variables are useful.
 
-echo "-------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------"
+cecho ${INFO} "Compiler Variables:"
+echo
 
 # CC test
-if [ ! -n "$CC" ]; then
+if [ ! -n "${CC}" ]; then
     if builtin command -v mpicc > /dev/null; then
-        cecho ${WARN} "CC variable not set, but default mpicc found."
+        cecho ${WARN} "CC  variable not set, but default mpicc  found."
         export CC=mpicc
     fi
 fi
 
-if [ -n "$CC" ]; then
-    cecho ${INFO} "CC  = $(which $CC)"
+if [ -n "${CC}" ]; then
+    cecho ${INFO} "CC  = $(which ${CC})"
 else
-    cecho ${BAD} "CC  variable not set. Please set it with $ export CC  = <(MPI) C compiler>"
+    cecho ${BAD} "CC  variable not set. Please set it with \$export CC  = <(MPI) C compiler>"
 fi
 
 # CXX test
-if [ ! -n "$CXX" ]; then
+if [ ! -n "${CXX}" ]; then
     if builtin command -v mpicxx > /dev/null; then
         cecho ${WARN} "CXX variable not set, but default mpicxx found."
         export CXX=mpicxx
     fi
 fi
 
-if [ -n "$CXX" ]; then
-    cecho ${INFO} "CXX = $(which $CXX)"
+if [ -n "${CXX}" ]; then
+    cecho ${INFO} "CXX = $(which ${CXX})"
 else
-    cecho ${BAD} "CXX variable not set. Please set it with $ export CXX = <(MPI) C++ compiler>"
+    cecho ${BAD} "CXX variable not set. Please set it with \$export CXX = <(MPI) C++ compiler>"
 fi
 
 # FC test
-if [ ! -n "$FC" ]; then
+if [ ! -n "${FC}" ]; then
     if builtin command -v mpif90 > /dev/null; then
-        cecho ${WARN} "FC variable not set, but default mpif90 found."
+        cecho ${WARN} "FC  variable not set, but default mpif90 found."
         export FC=mpif90
     fi
 fi
 
-if [ -n "$FC" ]; then
-    cecho ${INFO} "FC  = $(which $FC)"
+if [ -n "${FC}" ]; then
+    cecho ${INFO} "FC  = $(which ${FC})"
 else
-    cecho ${BAD} "FC  variable not set. Please set it with $ export FC  = <(MPI) Fortran 90 compiler>"
+    cecho ${BAD} "FC  variable not set. Please set it with \$export FC  = <(MPI) F90 compiler>"
 fi
 
 # FF test
-if [ ! -n "$FF" ]; then
+if [ ! -n "${FF}" ]; then
     if builtin command -v mpif77 > /dev/null; then
-        cecho ${WARN} "FF variable not set, but default mpif77 found."
+        cecho ${WARN} "FF  variable not set, but default mpif77 found."
         export FF=mpif77
     fi
 fi
 
-if [ -n "$FF" ]; then
-    cecho ${INFO} "FF  = $(which $FF)"
+if [ -n "${FF}" ]; then
+    cecho ${INFO} "FF  = $(which ${FF})"
 else
-    cecho ${BAD} "FF  variable not set. Please set it with $ export FF  = <(MPI) Fortran 77 compiler>"
+    cecho ${BAD} "FF  variable not set. Please set it with \$export FF  = <(MPI) F77 compiler>"
 fi
+
 echo
 
 # Final test for compiler variables
-if [ -z "$CC" ] || [ -z "$CXX" ] || [ -z "$FC" ] || [ -z "$FF" ]; then
+if [ -z "${CC}" ] || [ -z "${CXX}" ] || [ -z "${FC}" ] || [ -z "${FF}" ]; then
     cecho ${WARN} "One or multiple compiler variables (CC,CXX,FC,FF) are not set."
-    cecho ${INFO} "Please read your platform information above carefully,"
-    cecho ${INFO} "  how you get those compilers installed and set up!"
-    cecho ${INFO} "Usually the values should be: mpicc, mpicxx, mpif90 and mpif77."
-    cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all dependencies."
+    cecho ${INFO} "Please read your platform information above carefully, how you get those"
+    cecho ${INFO} "compilers installed and set up! Usually the values should be:"
+    cecho ${INFO} "CC=mpicc, CXX=mpicxx, FC=mpif90, FF=mpif77"
+    cecho ${WARN} "It is strongly recommended to set them to guarantee the same compilers for all"
+    cecho ${WARN} "dependencies."
     echo
 fi
 
 ################################################################################
-# Force the user to accept the current output
-echo "-------------------------------------------------------------------------------"
-if [ ${SKIP_READ} = false ]; then
+# If interaction is enabled, force the user to accept the current output
+if [ ${USER_INTERACTION} = ON ]; then
+    echo "--------------------------------------------------------------------------------"
     cecho ${GOOD} "Once ready, hit enter to continue!"
     read
 fi
@@ -1030,7 +1033,9 @@ cat > ${CONFIGURATION_PATH}/enable.sh <<"EOF"
 
 # find path of script:
 pushd . >/dev/null
-P="${BASH_SOURCE[0]}";cd `dirname $P`;P=`pwd`;
+P="${BASH_SOURCE[0]:-${(%):-%x}}";
+P=`dirname ${P}`;
+P=`cd ${P};pwd`;
 popd >/dev/null
 
 for f in $P/*

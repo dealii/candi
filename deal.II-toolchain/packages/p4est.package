@@ -1,3 +1,7 @@
+################################################################################
+## P4EST                                                                      ##
+################################################################################
+
 #VERSION=1.1;CHECKSUM=37ba7f4410958cfb38a2140339dbf64f
 #VERSION=2.0;CHECKSUM=1b7440a78a28ebf713361acfea70ee78
 
@@ -6,16 +10,17 @@ CHECKSUM=1549cbeba29bee2c35e7cc50a90a04961da5f23b6eada9c8047f511b90a8e438
 CHECKSUM="${CHECKSUM} 28cbaf51a335c8cc8e78bb38bbb99251ba7ebf80"
 CHECKSUM="${CHECKSUM} 6943949a6678589ebf1686ee7bad7ea1"
 
-NAME=p4est-$VERSION
+NAME=p4est-${VERSION}
+PACKING=.tar.gz
 EXTRACTSTO=p4est-${VERSION}
 SOURCE=https://p4est.github.io/release/
-PACKING=.tar.gz
+
 BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_setup () {
-    function bdie () {
+package_specific_setup() {
+    function bdie() {
         echo "Error: $@"
         exit 1
     }
@@ -30,93 +35,93 @@ package_specific_setup () {
         if [ -z "${ZLIB_INCLUDE}" ]; then
             ZLIB_INCLUDE=${ZLIB_DIR}/include
         fi
-        CFLAGS="$CFLAGS -I${ZLIB_INCLUDE}"
+        CFLAGS="${CFLAGS} -I${ZLIB_INCLUDE}"
     fi
 
-    if test -z "$CFLAGS" -a -z "$P4EST_CFLAGS_FAST" ; then
+    if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_FAST}"; then
         export CFLAGS_FAST="-O2"
     else
-        export CFLAGS_FAST="$CFLAGS $P4EST_CFLAGS_FAST"
+        export CFLAGS_FAST="${CFLAGS} ${P4EST_CFLAGS_FAST}"
     fi
-    echo "CFLAGS_FAST: $CFLAGS_FAST"
-    
-    if test -z "$CFLAGS" -a -z "$P4EST_CFLAGS_DEBUG" ; then
+    echo "CFLAGS_FAST: ${CFLAGS_FAST}"
+
+    if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_DEBUG}"; then
         export CFLAGS_DEBUG="-O0 -g"
     else
-        export CFLAGS_DEBUG="$CFLAGS $P4EST_CFLAGS_DEBUG"
+        export CFLAGS_DEBUG="${CFLAGS} ${P4EST_CFLAGS_DEBUG}"
     fi
-    echo "CFLAGS_DEBUG: $CFLAGS_DEBUG"
+    echo "CFLAGS_DEBUG: ${CFLAGS_DEBUG}"
 
-    # choose names for fast and debug build directories
+    # Choose names for fast and debug build directories
     BUILD_FAST="${BUILD_PATH}/${NAME}/FAST"
     BUILD_DEBUG="${BUILD_PATH}/${NAME}/DEBUG"
-    
-    # choose names for fast and debug installation directories
+
+    # Choose names for fast and debug installation directories
     INSTALL_FAST="${INSTALL_PATH}/FAST"
     INSTALL_DEBUG="${INSTALL_PATH}/DEBUG"
-    
+
     echo
     echo "This script tries configure and build the p4est library."
-    echo "Build FAST: $BUILD_FAST"
-    echo "Build DEBUG: $BUILD_DEBUG"
-    echo "Install FAST: $INSTALL_FAST"
-    echo "Install DEBUG: $INSTALL_DEBUG"
+    echo "Build FAST: ${BUILD_FAST}"
+    echo "Build DEBUG: ${BUILD_DEBUG}"
+    echo "Install FAST: ${INSTALL_FAST}"
+    echo "Install DEBUG: ${INSTALL_DEBUG}"
     echo "Checking environment: CFLAGS P4EST_CFLAGS_FAST P4EST_CFLAGS_DEBUG"
-    
+
     test -f "${UNPACK_PATH}/${EXTRACTSTO}/src/p4est.h" || bdie "Main header file missing"
     test -f "${UNPACK_PATH}/${EXTRACTSTO}/configure" || bdie "Configure script missing"
-    
+
     echo "See output in files .../config.output and .../make.output"
     echo
-    
+
     # remove old versions
     if test -d "${BUILD_PATH}/${NAME}"; then
         rm -rf "${BUILD_PATH}/${NAME}"
         quit_if_fail "p4est: rm -rf ${BUILD_PATH}/${NAME} failed"
     fi
-    
-    echo "Build FAST version in $BUILD_FAST"
-    mkdir -p "$BUILD_FAST"
-    cd "$BUILD_FAST"
+
+    echo "Build FAST version in ${BUILD_FAST}"
+    mkdir -p "${BUILD_FAST}"
+    cd "${BUILD_FAST}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-mpi --enable-shared \
         --disable-vtk-binary --without-blas \
-        --prefix="$INSTALL_FAST" CFLAGS="$CFLAGS_FAST" \
-        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="$FF" \
-        "$@" > config.output || bdie "Error in configure"
-    make -C sc -j${JOBS} > make.output || bdie "Error in make sc"
-    make -j${JOBS} >> make.output || bdie "Error in make p4est"
-    make install >> make.output || bdie "Error in make install"
-    echo "FAST version installed in $INSTALL_FAST"
-    
+        --prefix="${INSTALL_FAST}" CFLAGS="${CFLAGS_FAST}" \
+        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
+        "$@" >config.output || bdie "Error in configure"
+    make -C sc -j${JOBS} >make.output || bdie "Error in make sc"
+    make -j${JOBS} >>make.output || bdie "Error in make p4est"
+    make install >>make.output || bdie "Error in make install"
+    echo "FAST version installed in ${INSTALL_FAST}"
+
     echo
-    echo "Build DEBUG version in $BUILD_DEBUG"
-    mkdir -p "$BUILD_DEBUG"
-    cd "$BUILD_DEBUG"
+    echo "Build DEBUG version in ${BUILD_DEBUG}"
+    mkdir -p "${BUILD_DEBUG}"
+    cd "${BUILD_DEBUG}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-debug --enable-mpi --enable-shared \
         --disable-vtk-binary --without-blas \
-        --prefix="$INSTALL_DEBUG" CFLAGS="$CFLAGS_DEBUG" \
-        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="$FF" \
-        "$@" > config.output || bdie "Error in configure"
-    make -C sc -j${JOBS} > make.output || bdie "Error in make sc"
-    make -j${JOBS} >> make.output || bdie "Error in make p4est"
-    make install >> make.output || bdie "Error in make install"
-    grep -q "#define P4EST_HAVE_ZLIB" $INSTALL_DEBUG/include/p4est_config.h || bdie "Error: p4est couldn't find zlib"
-    echo "DEBUG version installed in $INSTALL_DEBUG"
+        --prefix="${INSTALL_DEBUG}" CFLAGS="${CFLAGS_DEBUG}" \
+        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
+        "$@" >config.output || bdie "Error in configure"
+    make -C sc -j${JOBS} >make.output || bdie "Error in make sc"
+    make -j${JOBS} >>make.output || bdie "Error in make p4est"
+    make install >>make.output || bdie "Error in make install"
+    grep -q "#define P4EST_HAVE_ZLIB" ${INSTALL_DEBUG}/include/p4est_config.h || bdie "Error: p4est couldn't find zlib"
+    echo "DEBUG version installed in ${INSTALL_DEBUG}"
     echo
-    
+
     cd "${BUILD_PATH}/${NAME}"
     touch candi_successful_build
 }
 
-package_specific_register () {
+package_specific_register() {
     export P4EST_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
+package_specific_conf() {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
+    rm -f ${CONFIG_FILE}
     echo "
 export P4EST_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >>${CONFIG_FILE}
 }

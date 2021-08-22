@@ -1,38 +1,62 @@
-# see http://gmsh.info/src/
-VERSION=3.0.6
-CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+################################################################################
+## GMSH                                                                       ##
+################################################################################
 
-#VERSION=2.16.0
-#CHECKSUM=762c10f159dab4b042e3140b1c348427
+# By default load the tarball.
+# To load the git repository define a variable CANDI_GMSH_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_GMSH_LOAD_TARBALL} ]; then
+    CANDI_GMSH_LOAD_TARBALL=ON
+fi
 
-NAME=gmsh-${VERSION}-source
-PACKING=.tgz
-SOURCE=http://gmsh.info/src/
-EXTRACTSTO=gmsh-${VERSION}-source
+if [ ${CANDI_GMSH_LOAD_TARBALL} = ON ]; then
+    # see http://gmsh.info/src/
+
+    # 2021/04/28
+    VERSION=4.8.4
+    CHECKSUM=760dbdc072eaa3c82d066c5ba3b06eacdd3304eb2a97373fe4ada9509f0b6ace
+    CHECKSUM="${CHECKSUM} 465d965d40049c00dab65a196115fe56e1d9d147"
+    CHECKSUM="${CHECKSUM} 1e7212dfb1319d745ffb477a7a3ff124"
+
+    # VERSION=3.0.6
+    # CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+
+    # VERSION=2.16.0
+    # CHECKSUM=762c10f159dab4b042e3140b1c348427
+
+    NAME=gmsh-${VERSION}-source
+    PACKING=.tgz
+    EXTRACTSTO=gmsh-${VERSION}-source
+    SOURCE=http://gmsh.info/src/
+else
+    VERSION=gmsh_4_8_4
+    NAME=gmsh.git
+    PACKING=git
+    EXTRACTSTO=${VERSION}
+    SOURCE=https://gitlab.onelab.info/gmsh/
+fi
+unset CANDI_GMSH_LOAD_TARBALL
 
 BUILDCHAIN=cmake
 
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/gmsh-${VERSION}
 
-# Disable slepc because gmsh is not setting the relative path for the
-# .so correctly.
+CONFOPTS="\
+  -D ENABLE_MPI:BOOL=OFF \
+  -D CMAKE_INSTALL_RPATH_USE_LINK_PATH:BOOL=ON \
+  -D ENABLE_PETSC:BOOL=OFF \
+  -D CMAKE_BUILD_TYPE=Release"
 
-CONFOPTS=" -D ENABLE_MPI=OFF \
- 	   -D CMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE \
-	   -D ENABLE_PETSC=OFF \
-	   -D ENABLE_SLEPC=OFF \
-	   -D CMAKE_BUILD_TYPE=Release"
-
-# options we might consider setting:
+# Manually-specified variables were not used by the project (v4.8.3+):
+# -D ENABLE_SLEPC:BOOL=OFF
+# Options we might consider setting:
 # -D ENABLE_METIS=OFF
 # -D ENABLE_FLTK=OFF
 # -D ENABLE_OCC=OFF
 # -D ENABLE_COMPRESSED_IO=O
-# the following two sadly don't install the .so correctly:
+# The following two sadly don't install the .so correctly:
 # -D ENABLE_BUILD_SHARED=ON
 # -D ENABLE_BUILD_DYNAMIC=ON
-
 
 package_specific_register () {
     export GMSH_DIR=${INSTALL_PATH}
