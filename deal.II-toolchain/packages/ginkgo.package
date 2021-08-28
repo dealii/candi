@@ -2,7 +2,7 @@
 ## GINKGO                                                                     ##
 ################################################################################
 
-VERSION=develop
+VERSION=v1.4.0
 NAME=ginkgo.git
 SOURCE=https://github.com/ginkgo-project/
 EXTRACTSTO=ginkgo-${VERSION}
