@@ -59,6 +59,10 @@ CONFOPTS="\
 # -D GINKGO_BUILD_HIP:BOOL=OFF \
 # -D GINKGO_BUILD_DPCPP:BOOL=OFF \
 
+# Advanced configuration options
+# -D GINKGO_MIXED_PRECISION:BOOL=ON \
+# -D GINKGO_JACOBI_FULL_OPTIMIZATIONS:BOOL=ON \
+
 package_specific_register () {
     export GINKGO_DIR=${INSTALL_PATH}
 }
