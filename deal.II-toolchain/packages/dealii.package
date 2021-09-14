@@ -313,6 +313,22 @@ if [ ! -z "${SUNDIALS_DIR}" ]; then
       -D SUNDIALS_DIR=${SUNDIALS_DIR}"
 fi
 
+########################################
+# ASSIMP
+if [[ ${PACKAGES_OFF} =~ 'assimp' ]]; then
+    if [ ! -z "${ASSIMP_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ASSIMP_DIR due to forced DEAL_II_WITH_ASSIMP:BOOL=OFF option"
+        unset ASSIMP_DIR
+    fi
+fi
+
+if [ ! -z "${ASSIMP_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with ASSIMP"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ASSIMP:BOOL=ON \
+      -D ASSIMP_DIR=${ASSIMP_DIR}"
+fi
+
 ################################################################################
 package_specific_install() {
     if [ ${RUN_DEAL_II_TESTS} = ON ]; then
