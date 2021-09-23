@@ -634,6 +634,9 @@ guess_platform() {
         elif [ "${OS_ID}" == "centos" ]; then
             echo centos${OS_VERSION_ID}
 
+        elif [ "${OS_ID}" == "almalinux" ]; then
+            echo almalinux${OS_MAJOR_VERSION}
+
         elif [ "${OS_ID}" == "rhel" ]; then
             echo rhel${OS_MAJOR_VERSION}
 
