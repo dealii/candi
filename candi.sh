@@ -649,10 +649,10 @@ guess_platform() {
         elif [ "${OS_NAME}" == "openSUSE Leap" ]; then
             echo opensuse15
 
-        elif [ "${PRETTY_NAME}" == "Arch Linux" ]; then
+        elif [ "${OS_PRETTY_NAME}" == "Arch Linux" ]; then
             echo arch
 
-        elif [ "${PRETTY_NAME}" == "Manjaro Linux" ]; then
+        elif [ "${OS_PRETTY_NAME}" == "Manjaro Linux" ]; then
             echo arch
         fi
     fi
