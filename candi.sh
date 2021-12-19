@@ -37,6 +37,9 @@ fi
 # Start global timer
 TIC_GLOBAL="$(${DATE_CMD} +%s)"
 
+# unset CMAKE_GENERATOR because we assume the default (make) to be used
+unset CMAKE_GENERATOR
+
 ################################################################################
 # Parse command line input parameters
 PREFIX=~/dealii-candi
