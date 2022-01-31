@@ -261,37 +261,6 @@ fi
 if [ ! -z "${SYMENGINE_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with SYMENGINE"
     CONFOPTS="${CONFOPTS} \
-      -D DEAL_II_WITH_SYMENGINE:BOOL=ON"
-fi
-
-########################################
-# GINKGO
-if [[ ${PACKAGES_OFF} =~ 'ginkgo' ]]; then
-    if [ ! -z "${GINKGO_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset GINKGO_DIR due to forced DEAL_II_WITH_GINKGO:BOOL=OFF option"
-        unset GINKGO_DIR
-    fi
-fi
-
-if [ ! -z "${GINKGO_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with GINKGO"
-    CONFOPTS="${CONFOPTS} \
-      -D DEAL_II_WITH_GINKGO:BOOL=ON \
-      -D GINKGO_DIR=${GINKGO_DIR}"
-fi
-
-########################################
-# SYMENGINE
-if [[ ${PACKAGES_OFF} =~ 'symengine' ]]; then
-    if [ ! -z "${SYMENGINE_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
-        unset SYMENGINE_DIR
-    fi
-fi
-
-if [ ! -z "${SYMENGINE_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with SYMENGINE"
-    CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_SYMENGINE:BOOL=ON \
       -D SYMENGINE_DIR=${SYMENGINE_DIR}"
 fi
@@ -342,6 +311,22 @@ if [ ! -z "${SUNDIALS_DIR}" ]; then
     CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_SUNDIALS:BOOL=ON \
       -D SUNDIALS_DIR=${SUNDIALS_DIR}"
+fi
+
+########################################
+# ASSIMP
+if [[ ${PACKAGES_OFF} =~ 'assimp' ]]; then
+    if [ ! -z "${ASSIMP_DIR}" ]; then
+        cecho ${INFO} "deal.II: unset ASSIMP_DIR due to forced DEAL_II_WITH_ASSIMP:BOOL=OFF option"
+        unset ASSIMP_DIR
+    fi
+fi
+
+if [ ! -z "${ASSIMP_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with ASSIMP"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_ASSIMP:BOOL=ON \
+      -D ASSIMP_DIR=${ASSIMP_DIR}"
 fi
 
 ################################################################################

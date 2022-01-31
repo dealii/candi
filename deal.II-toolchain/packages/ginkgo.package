@@ -2,11 +2,32 @@
 ## GINKGO                                                                     ##
 ################################################################################
 
-VERSION=develop
-NAME=ginkgo.git
-SOURCE=https://github.com/ginkgo-project/
-EXTRACTSTO=ginkgo-${VERSION}
-PACKING=git
+# By default load the tarball.
+# To load the git repository define a variable CANDI_GINKGO_LOAD_TARBALL=OFF.
+if [ -z ${CANDI_GINKGO_LOAD_TARBALL} ]; then
+    CANDI_GINKGO_LOAD_TARBALL=ON
+fi
+
+if [ ${CANDI_GINKGO_LOAD_TARBALL} = ON ]; then
+    # download release tarball
+    VERSION=1.4.0
+    CHECKSUM=6dcadbd3e93f6ec58ef6cda5b980fbf51ea3c7c13e27952ef38804058ac93f08
+    CHECKSUM="${CHECKSUM} 10d244ce127cca3c735587d836c6308cfca0c855"
+    CHECKSUM="${CHECKSUM} d7ff9d564f8ca96b9ad33621821aff48"
+
+    NAME=v${VERSION}
+    SOURCE=https://github.com/ginkgo-project/ginkgo/archive/refs/tags/
+    EXTRACTSTO=ginkgo-${VERSION}
+    PACKING=.tar.gz
+else
+    # download git repository
+    VERSION=v1.4.0
+    NAME=ginkgo.git
+    SOURCE=https://github.com/ginkgo-project/
+    EXTRACTSTO=ginkgo-${VERSION}
+    PACKING=git
+fi
+unset CANDI_GINKGO_LOAD_TARBALL
 
 BUILDCHAIN=cmake
 
@@ -37,6 +58,10 @@ CONFOPTS="\
 # -D GINKGO_BUILD_CUDA:BOOL=OFF \
 # -D GINKGO_BUILD_HIP:BOOL=OFF \
 # -D GINKGO_BUILD_DPCPP:BOOL=OFF \
+
+# Advanced configuration options
+# -D GINKGO_MIXED_PRECISION:BOOL=ON \
+# -D GINKGO_JACOBI_FULL_OPTIMIZATIONS:BOOL=ON \
 
 package_specific_register () {
     export GINKGO_DIR=${INSTALL_PATH}
