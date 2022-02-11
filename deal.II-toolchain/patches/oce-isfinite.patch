@@ -1,0 +1,11 @@
+--- src/OSD/OSD.cxx     2022-02-11 14:34:21.726133403 -0500
++++ src.patched/OSD/OSD.cxx     2022-02-11 14:33:27.025817808 -0500
+@@ -18,7 +18,7 @@
+ #include <math.h>
+ #ifdef WNT
+ # define finite _finite
+-#elif defined(isfinite)
++#else
+ # define finite isfinite
+ #endif
+
