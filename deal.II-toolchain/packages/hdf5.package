@@ -1,10 +1,14 @@
-#MAJORVER=1.10
-#MINORVER=5
-#CHECKSUM=e115eeb66e944fa7814482415dd21cc4
+################################################################################
+## HDF5                                                                       ##
+################################################################################
 
 MAJORVER=1.10
-MINORVER=7
-CHECKSUM=006ed785942f4ed9a6f31556d0ef8ba5
+MINORVER=8
+CHECKSUM=61063043a23dd4a32dcd73a704bb47f2
+
+# MAJORVER=1.10
+# MINORVER=5
+# CHECKSUM=e115eeb66e944fa7814482415dd21cc4
 
 VERSION=${MAJORVER}.${MINORVER}
 NAME=hdf5-${VERSION}
@@ -23,9 +27,8 @@ package_specific_register () {
 package_specific_conf () {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
+    rm -f ${CONFIG_FILE}
     echo "
 export HDF5_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }
-

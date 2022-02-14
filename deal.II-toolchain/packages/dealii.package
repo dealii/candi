@@ -147,10 +147,9 @@ if [ ! -z "${P4EST_DIR}" ]; then
       -D P4EST_DIR=${P4EST_DIR}"
 fi
 
-# hdf5
+########################################
+# HDF5
 if [[ ${PACKAGES_OFF} =~ 'hdf5' ]]; then
-    # Disable hdf5 for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces hdf5 to be off
     if [ ! -z "${HDF5_DIR}" ]; then
         cecho ${INFO} "deal.II: unset HDF5_DIR due to forced DEAL_II_WITH_HDF5:BOOL=OFF option"
         unset HDF5_DIR
@@ -159,10 +158,8 @@ fi
 
 if [ ! -z "${HDF5_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with HDF5"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_HDF5:BOOL=ON \
-        -D HDF5_DIR=${HDF5_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_HDF5:BOOL=ON"
 fi
 
 ########################################
