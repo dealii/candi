@@ -60,7 +60,6 @@ CONFOPTS="\
 
 package_specific_register () {
     export GMSH_DIR=${INSTALL_PATH}
-    export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
 package_specific_conf () {
@@ -69,6 +68,5 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export GMSH_DIR=${INSTALL_PATH}
-export PATH=${INSTALL_PATH}/bin:\$PATH
 " >> $CONFIG_FILE
 }
