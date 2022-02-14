@@ -61,6 +61,8 @@ package_specific_patch () {
     cd ${UNPACK_PATH}/${EXTRACTSTO}
     cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
     patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
+    cecho ${WARN} "applying patch for isfinite"
+    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-isfinite.patch
 }
 
 package_specific_register () {
