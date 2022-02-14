@@ -8,64 +8,63 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_build() {
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
-    # Firstly build metis
-    cd metis
-    
-    make config prefix=${INSTALL_PATH} shared=1
-    quit_if_fail "parmetis/metis make config failed"
-    
-    make -j${JOBS}
-    quit_if_fail "parmetis/metis make failed"
-    
-    make install
-    quit_if_fail "parmetis/metis make install failed"
-    
-    # Secondly build parmetis
-    cd ..
-    
-    make config prefix=${INSTALL_PATH} shared=1 cc=${CC} cxx=${CXX}
-    quit_if_fail "parmetis make config failed"
-    
-    make -j${JOBS}
-    quit_if_fail "parmetis make failed"
-    
-    make install
-    quit_if_fail "parmetis make install failed"
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+
+  # Firstly build metis
+  cd metis
+
+  make config prefix=${INSTALL_PATH} shared=1
+  quit_if_fail "parmetis/metis make config failed"
+
+  make -j${JOBS}
+  quit_if_fail "parmetis/metis make failed"
+
+  make install
+  quit_if_fail "parmetis/metis make install failed"
+
+  # Secondly build parmetis
+  cd ..
+
+  make config prefix=${INSTALL_PATH} shared=1 cc=${CC} cxx=${CXX}
+  quit_if_fail "parmetis make config failed"
+
+  make -j${JOBS}
+  quit_if_fail "parmetis make failed"
+
+  make install
+  quit_if_fail "parmetis make install failed"
 }
 
-package_specific_patch () {
-    if [ ${PLATFORM_OSTYPE} == linux ]; then
-        if [ ${VERSION} == "4.0.3" ]; then
-            cd ${UNPACK_PATH}/${EXTRACTSTO}
-            cecho ${WARN} "applying patch for building METIS shared libraries"
-            patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
-        fi
+package_specific_patch() {
+  if [ ${PLATFORM_OSTYPE} == linux ]; then
+    if [ ${VERSION} == "4.0.3" ]; then
+      cd ${UNPACK_PATH}/${EXTRACTSTO}
+      cecho ${WARN} "applying patch for building METIS shared libraries"
+      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
     fi
+  fi
 }
 
-package_specific_register () {
-    export METIS_DIR=${INSTALL_PATH}
-    export PARMETIS_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export METIS_DIR=${INSTALL_PATH}
+  export PARMETIS_DIR=${INSTALL_PATH}
 
-    if [ ${PLATFORM_OSTYPE} == macos ]; then
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
-    fi
+  if [ ${PLATFORM_OSTYPE} == macos ]; then
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+  fi
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export METIS_DIR=${INSTALL_PATH}
 export PARMETIS_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 
-    if [ ${PLATFORM_OSTYPE} == macos ]; then
-        echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+  if [ ${PLATFORM_OSTYPE} == macos ]; then
+    echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
 " >> $CONFIG_FILE
-    fi
+  fi
 }
-

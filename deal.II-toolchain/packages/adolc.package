@@ -5,27 +5,27 @@
 # By default load the tarball.
 # To load the git repository define a variable CANDI_ADOLC_LOAD_TARBALL=OFF.
 if [ -z ${CANDI_ADOLC_LOAD_TARBALL} ]; then
-    CANDI_ADOLC_LOAD_TARBALL=ON
+  CANDI_ADOLC_LOAD_TARBALL=ON
 fi
 
 if [ ${CANDI_ADOLC_LOAD_TARBALL} = ON ]; then
-    # download release tarball
-    VERSION=2.7.2
-    CHECKSUM=701e0856baae91b98397960d5e0a87a549988de9d4002d0e9a56fa08f5455f6e
-    CHECKSUM="${CHECKSUM} 372c86eaa8b11f83825b2d9e0719b5ce3cb7066d"
-    CHECKSUM="${CHECKSUM} ea05bd8e0d6c92d474204876fdcad04d"
+  # download release tarball
+  VERSION=2.7.2
+  CHECKSUM=701e0856baae91b98397960d5e0a87a549988de9d4002d0e9a56fa08f5455f6e
+  CHECKSUM="${CHECKSUM} 372c86eaa8b11f83825b2d9e0719b5ce3cb7066d"
+  CHECKSUM="${CHECKSUM} ea05bd8e0d6c92d474204876fdcad04d"
 
-    NAME=${VERSION}
-    SOURCE=https://github.com/coin-or/ADOL-C/archive/releases/
-    EXTRACTSTO=ADOL-C-releases-${VERSION}
-    PACKING=.tar.gz
+  NAME=${VERSION}
+  SOURCE=https://github.com/coin-or/ADOL-C/archive/releases/
+  EXTRACTSTO=ADOL-C-releases-${VERSION}
+  PACKING=.tar.gz
 else
-    # download git repository
-    VERSION=master
-    NAME=ADOL-C.git
-    SOURCE=https://github.com/coin-or/
-    EXTRACTSTO=ADOL-C-master
-    PACKING=git
+  # download git repository
+  VERSION=master
+  NAME=ADOL-C.git
+  SOURCE=https://github.com/coin-or/
+  EXTRACTSTO=ADOL-C-master
+  PACKING=git
 fi
 unset CANDI_ADOLC_LOAD_TARBALL
 
@@ -36,15 +36,15 @@ INSTALL_PATH=${INSTALL_PATH}/adolc-${VERSION}
 
 CONFOPTS="--enable-atrig-erf --with-boost=no"
 
-package_specific_register () {
-    export ADOLC_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export ADOLC_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/adolc-${VERSION}
-    rm -f ${CONFIG_FILE}
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/adolc-${VERSION}
+  rm -f ${CONFIG_FILE}
+  echo "
 export ADOLC_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }

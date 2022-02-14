@@ -21,122 +21,121 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 package_specific_setup() {
-    # error message when zlib is not found
-    MISSING_ZLIB_MESSAGE="deal.II requires that p4est be built with zlib support. Please \
+  # error message when zlib is not found
+  MISSING_ZLIB_MESSAGE="deal.II requires that p4est be built with zlib support. Please \
     either ensure that zlib is installed in a standard location or add appropriate \
     flags to LDFLAGS and CPPFLAGS to both calls to configure to describe where zlib's \
     shared object files and headers are (e.g., LDFLAGS=\"-L/path/to/shared-objects/\" \
     and CPPFLAGS=\"-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL -I/path/to/headers/\")."
 
-    function bdie() {
-        echo "Error: $@"
-        exit 1
-    }
+  function bdie() {
+    echo "Error: $@"
+    exit 1
+  }
 
-    # export zlib if we installed it ourselves
-    if [ ! -z "${ZLIB_DIR}" ]; then
-        if [ -z "${ZLIB_LIBPATH}" ]; then
-            ZLIB_LIBPATH=${ZLIB_DIR}/lib
-        fi
-        LIBS="-L${ZLIB_LIBPATH}"
-
-        if [ -z "${ZLIB_INCLUDE}" ]; then
-            ZLIB_INCLUDE=${ZLIB_DIR}/include
-        fi
-        CFLAGS="${CFLAGS} -I${ZLIB_INCLUDE}"
+  # export zlib if we installed it ourselves
+  if [ ! -z "${ZLIB_DIR}" ]; then
+    if [ -z "${ZLIB_LIBPATH}" ]; then
+      ZLIB_LIBPATH=${ZLIB_DIR}/lib
     fi
+    LIBS="-L${ZLIB_LIBPATH}"
 
-    if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_FAST}"; then
-        export CFLAGS_FAST="-O2"
-    else
-        export CFLAGS_FAST="${CFLAGS} ${P4EST_CFLAGS_FAST}"
+    if [ -z "${ZLIB_INCLUDE}" ]; then
+      ZLIB_INCLUDE=${ZLIB_DIR}/include
     fi
-    echo "CFLAGS_FAST: ${CFLAGS_FAST}"
+    CFLAGS="${CFLAGS} -I${ZLIB_INCLUDE}"
+  fi
+  LIBS="-L${ZLIB_LIBPATH}"
 
-    if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_DEBUG}"; then
-        export CFLAGS_DEBUG="-O0 -g"
-    else
-        export CFLAGS_DEBUG="${CFLAGS} ${P4EST_CFLAGS_DEBUG}"
-    fi
-    echo "CFLAGS_DEBUG: ${CFLAGS_DEBUG}"
+  if [ -z "${ZLIB_INCLUDE}" ]; then
+    ZLIB_INCLUDE=${ZLIB_DIR}/include
+  fi
+  echo "CFLAGS_FAST: ${CFLAGS_FAST}"
 
-    # Choose names for fast and debug build directories
-    BUILD_FAST="${BUILD_PATH}/${NAME}/FAST"
-    BUILD_DEBUG="${BUILD_PATH}/${NAME}/DEBUG"
+  if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_DEBUG}"; then
+    export CFLAGS_DEBUG="-O0 -g"
+  else
+    export CFLAGS_DEBUG="${CFLAGS} ${P4EST_CFLAGS_DEBUG}"
+  fi
+  echo "CFLAGS_DEBUG: ${CFLAGS_DEBUG}"
 
-    # Choose names for fast and debug installation directories
-    INSTALL_FAST="${INSTALL_PATH}/FAST"
-    INSTALL_DEBUG="${INSTALL_PATH}/DEBUG"
+  # Choose names for fast and debug build directories
+  BUILD_FAST="${BUILD_PATH}/${NAME}/FAST"
+  BUILD_DEBUG="${BUILD_PATH}/${NAME}/DEBUG"
 
-    echo
-    echo "This script tries configure and build the p4est library."
-    echo "Build FAST: ${BUILD_FAST}"
-    echo "Build DEBUG: ${BUILD_DEBUG}"
-    echo "Install FAST: ${INSTALL_FAST}"
-    echo "Install DEBUG: ${INSTALL_DEBUG}"
-    echo "Checking environment: CFLAGS P4EST_CFLAGS_FAST P4EST_CFLAGS_DEBUG"
+  # Choose names for fast and debug installation directories
+  INSTALL_FAST="${INSTALL_PATH}/FAST"
+  INSTALL_DEBUG="${INSTALL_PATH}/DEBUG"
 
-    test -f "${UNPACK_PATH}/${EXTRACTSTO}/src/p4est.h" || bdie "Main header file missing"
-    test -f "${UNPACK_PATH}/${EXTRACTSTO}/configure" || bdie "Configure script missing"
+  echo
+  echo "This script tries configure and build the p4est library."
+  echo "Build FAST: ${BUILD_FAST}"
+  echo "Build DEBUG: ${BUILD_DEBUG}"
+  echo "Install FAST: ${INSTALL_FAST}"
+  echo "Install DEBUG: ${INSTALL_DEBUG}"
+  echo "Checking environment: CFLAGS P4EST_CFLAGS_FAST P4EST_CFLAGS_DEBUG"
 
-    echo "See output in files .../config.output and .../make.output"
-    echo
+  test -f "${UNPACK_PATH}/${EXTRACTSTO}/src/p4est.h" || bdie "Main header file missing"
+  test -f "${UNPACK_PATH}/${EXTRACTSTO}/configure" || bdie "Configure script missing"
 
-    # remove old versions
-    if test -d "${BUILD_PATH}/${NAME}"; then
-        rm -rf "${BUILD_PATH}/${NAME}"
-        quit_if_fail "p4est: rm -rf ${BUILD_PATH}/${NAME} failed"
-    fi
+  echo "See output in files .../config.output and .../make.output"
+  echo
 
-    echo "Build FAST version in ${BUILD_FAST}"
-    mkdir -p "${BUILD_FAST}"
-    cd "${BUILD_FAST}"
-    "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-mpi --enable-shared \
-        --disable-vtk-binary --without-blas \
-        --prefix="${INSTALL_FAST}" CFLAGS="${CFLAGS_FAST}" \
-        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
-        "$@" >config.output || bdie "Error in configure"
-    make -C sc -j${JOBS} >make.output || bdie "Error in make sc"
-    make -j${JOBS} >>make.output || bdie "Error in make p4est"
-    # ensure that we built p4est with zlib
-    find "${BUILD_FAST}" -name "p4est_config.h" -type f -exec \
+  # remove old versions
+  if test -d "${BUILD_PATH}/${NAME}"; then
+    rm -rf "${BUILD_PATH}/${NAME}"
+    quit_if_fail "p4est: rm -rf ${BUILD_PATH}/${NAME} failed"
+  fi
+
+  echo "Build FAST version in ${BUILD_FAST}"
+  mkdir -p "${BUILD_FAST}"
+  cd "${BUILD_FAST}"
+  "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-mpi --enable-shared \
+    --disable-vtk-binary --without-blas \
+    --prefix="${INSTALL_FAST}" CFLAGS="${CFLAGS_FAST}" \
+    CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
+    "$@" > config.output || bdie "Error in configure"
+  make -C sc -j${JOBS} > make.output || bdie "Error in make sc"
+  make -j${JOBS} >> make.output || bdie "Error in make p4est"
+  # ensure that we built p4est with zlib
+  find "${BUILD_FAST}" -name "p4est_config.h" -type f -exec \
     grep -q "P4EST_HAVE_ZLIB *1" {} \; \
     || bdie "${MISSING_ZLIB_MESSAGE}"
-    make install >>make.output || bdie "Error in make install"
-    echo "FAST version installed in ${INSTALL_FAST}"
+  make install >> make.output || bdie "Error in make install"
+  echo "FAST version installed in ${INSTALL_FAST}"
 
-    echo
-    echo "Build DEBUG version in ${BUILD_DEBUG}"
-    mkdir -p "${BUILD_DEBUG}"
-    cd "${BUILD_DEBUG}"
-    "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-debug --enable-mpi --enable-shared \
-        --disable-vtk-binary --without-blas \
-        --prefix="${INSTALL_DEBUG}" CFLAGS="${CFLAGS_DEBUG}" \
-        CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
-        "$@" >config.output || bdie "Error in configure"
-    make -C sc -j${JOBS} >make.output || bdie "Error in make sc"
-    make -j${JOBS} >>make.output || bdie "Error in make p4est"
-    # ensure that we built p4est with zlib
-    find "$BUILD_DEBUG" -name "p4est_config.h" -type f -exec \
+  echo
+  echo "Build DEBUG version in ${BUILD_DEBUG}"
+  mkdir -p "${BUILD_DEBUG}"
+  cd "${BUILD_DEBUG}"
+  "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-debug --enable-mpi --enable-shared \
+    --disable-vtk-binary --without-blas \
+    --prefix="${INSTALL_DEBUG}" CFLAGS="${CFLAGS_DEBUG}" \
+    CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
+    "$@" > config.output || bdie "Error in configure"
+  make -C sc -j${JOBS} > make.output || bdie "Error in make sc"
+  make -j${JOBS} >> make.output || bdie "Error in make p4est"
+  # ensure that we built p4est with zlib
+  find "$BUILD_DEBUG" -name "p4est_config.h" -type f -exec \
     grep -q "P4EST_HAVE_ZLIB *1" {} \; \
     || bdie "$MISSING_ZLIB_MESSAGE"
-    make install >>make.output || bdie "Error in make install"
-    echo "DEBUG version installed in ${INSTALL_DEBUG}"
-    echo
+  make install >> make.output || bdie "Error in make install"
+  echo "DEBUG version installed in ${INSTALL_DEBUG}"
+  echo
 
-    cd "${BUILD_PATH}/${NAME}"
-    touch candi_successful_build
+  cd "${BUILD_PATH}/${NAME}"
+  touch candi_successful_build
 }
 
 package_specific_register() {
-    export P4EST_DIR=${INSTALL_PATH}
+  export P4EST_DIR=${INSTALL_PATH}
 }
 
 package_specific_conf() {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f ${CONFIG_FILE}
-    echo "
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f ${CONFIG_FILE}
+  echo "
 export P4EST_DIR=${INSTALL_PATH}
-" >>${CONFIG_FILE}
+" >> ${CONFIG_FILE}
 }

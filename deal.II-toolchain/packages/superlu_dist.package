@@ -20,24 +20,24 @@ CONFOPTS="${CONFOPTS} \
   -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
   -D BUILD_SHARED_LIBS:BOOL=ON"
 
-package_specific_register () {
-    export SUPERLU_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export SUPERLU_DIR=${INSTALL_PATH}
 
-    if [ ${PLATFORM_OSTYPE} == macos ]; then
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
-    fi
+  if [ ${PLATFORM_OSTYPE} == macos ]; then
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+  fi
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export SUPERLU_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 
-    if [ ${PLATFORM_OSTYPE} == macos ]; then
-        echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
+  if [ ${PLATFORM_OSTYPE} == macos ]; then
+    echo "export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:${INSTALL_PATH}/lib
 " >> $CONFIG_FILE
-    fi
+  fi
 }

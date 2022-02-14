@@ -8,24 +8,24 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_build () {
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    ./configure --prefix=${INSTALL_PATH}
-    quit_if_fail "git configure failed"
+package_specific_build() {
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+  ./configure --prefix=${INSTALL_PATH}
+  quit_if_fail "git configure failed"
 
-    make install
-    quit_if_fail "git make install failed"
+  make install
+  quit_if_fail "git make install failed"
 }
 
-package_specific_register () {
-    export PATH=${INSTALL_PATH}/bin:$PATH
+package_specific_register() {
+  export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export PATH=${INSTALL_PATH}/bin:\${PATH}
 " >> $CONFIG_FILE
 }

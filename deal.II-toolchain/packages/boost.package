@@ -1,4 +1,5 @@
-VERSION=1_63_0;CHECKSUM=7b493c08bc9557bbde7e29091f28b605
+VERSION=1_63_0
+CHECKSUM=7b493c08bc9557bbde7e29091f28b605
 #VERSION=1_60_0;CHECKSUM=28f58b9a33469388302110562bdf6188
 #VERSION=1_59_0;CHECKSUM=51528a0e3b33d9e10aaa311d9eb451e3
 #VERSION=1_58_0;CHECKSUM=5a5d5614d9a07672e1ab2a250b5defc5
@@ -10,37 +11,37 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_build () {
-    cp -rf ${UNPACK_PATH}/${NAME}/* .
-    ./bootstrap.sh --prefix=${INSTALL_PATH} --without-libraries=python
-    quit_if_fail "boost build ./bootstrap.sh failed"
-    
-    echo "using mpi ;" > user-config.jam
-    ./b2 -j ${JOBS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
-    quit_if_fail "boost build ./b2 failed"
+package_specific_build() {
+  cp -rf ${UNPACK_PATH}/${NAME}/* .
+  ./bootstrap.sh --prefix=${INSTALL_PATH} --without-libraries=python
+  quit_if_fail "boost build ./bootstrap.sh failed"
+
+  echo "using mpi ;" > user-config.jam
+  ./b2 -j ${JOBS} --user-config=user-config.jam --build-dir=candi_build_dir link=shared install ${CONFOPTS}
+  quit_if_fail "boost build ./b2 failed"
 }
 
-package_specific_patch () {
-    if [ "$VERSION" = "1_63_0" ]; then
-      cd ${UNPACK_PATH}/${EXTRACTSTO}
-      cecho ${WARN} "applying patch for zlib bzip conflict"
-      patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/boost-1.63.0-conflict.patch || true
-    fi
+package_specific_patch() {
+  if [ "$VERSION" = "1_63_0" ]; then
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    cecho ${WARN} "applying patch for zlib bzip conflict"
+    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/boost-1.63.0-conflict.patch || true
+  fi
 }
 
-package_specific_register () {
-    export BOOST_DIR=${INSTALL_PATH}
-    export BOOST_ROOT=${INSTALL_PATH}
-    export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
-    export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
-    export BOOST_USE_MULTITHREADED=OFF
+package_specific_register() {
+  export BOOST_DIR=${INSTALL_PATH}
+  export BOOST_ROOT=${INSTALL_PATH}
+  export BOOST_INCLUDEDIR=${INSTALL_PATH}/include
+  export BOOST_LIBRARYDIR=${INSTALL_PATH}/lib
+  export BOOST_USE_MULTITHREADED=OFF
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export BOOST_DIR=${INSTALL_PATH}
 export BOOST_ROOT=${INSTALL_PATH}
 export BOOST_INCLUDEDIR=${INSTALL_PATH}/include

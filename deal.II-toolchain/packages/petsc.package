@@ -26,7 +26,6 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
-
 ################################################################################
 
 CONFOPTS="\
@@ -37,102 +36,102 @@ CONFOPTS="\
   --with-64-bit-indices=0"
 
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
-    CONFOPTS="${CONFOPTS} \
+  CONFOPTS="${CONFOPTS} \
       COPTFLAGS='-O3 -march=native -mtune=native' \
       CXXOPTFLAGS='-O3 -march=native -mtune=native' \
       FOPTFLAGS='-O3 -march=native -mtune=native'"
 fi
 
 for external_pkg in hypre; do
-    CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
+  CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
 done
 
 if [ ! -z "${CC}" ]; then
-    CONFOPTS="${CONFOPTS} CC=${CC}"
+  CONFOPTS="${CONFOPTS} CC=${CC}"
 fi
 
 if [ ! -z "${CXX}" ]; then
-    CONFOPTS="${CONFOPTS} CXX=${CXX}"
+  CONFOPTS="${CONFOPTS} CXX=${CXX}"
 fi
 
 if [ ! -z "${FC}" ]; then
-    CONFOPTS="${CONFOPTS} FC=${FC}"
+  CONFOPTS="${CONFOPTS} FC=${FC}"
 fi
 
 if [ ! -z "${F77}" ]; then
-    CONFOPTS="${CONFOPTS} F77=${F77}"
+  CONFOPTS="${CONFOPTS} F77=${F77}"
 fi
 
 if [ ! -z "${F90}" ]; then
-    CONFOPTS="${CONFOPTS} F90=${F90}"
+  CONFOPTS="${CONFOPTS} F90=${F90}"
 fi
 
 if [ ! -z "${MKL_DIR}" ]; then
-    cecho ${INFO} "petsc: configuration with MKL"
-    cecho ${INFO} "petsc: configuration with blas-lapack-dir=${MKL_DIR}"
-    CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
+  cecho ${INFO} "petsc: configuration with MKL"
+  cecho ${INFO} "petsc: configuration with blas-lapack-dir=${MKL_DIR}"
+  CONFOPTS="${CONFOPTS} --with-blas-lapack-dir=${MKL_DIR}"
 else
-    if [ ! -z "${BLAS_LIB}" ]; then
-        cecho ${INFO} "petsc: configuration with --with-blas-lapack-lib=${BLAS_LIB}"
-        CONFOPTS="${CONFOPTS} --with-blas-lapack-lib=${BLAS_LIB}"
-    fi
+  if [ ! -z "${BLAS_LIB}" ]; then
+    cecho ${INFO} "petsc: configuration with --with-blas-lapack-lib=${BLAS_LIB}"
+    CONFOPTS="${CONFOPTS} --with-blas-lapack-lib=${BLAS_LIB}"
+  fi
 fi
 
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
-    cecho ${INFO} "PETSc: configuration with ParMETIS"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "PETSc: configuration with ParMETIS"
+  CONFOPTS="${CONFOPTS} \
       --with-parmetis-dir=${PARMETIS_DIR} \
       --with-metis-dir=${PARMETIS_DIR}"
 fi
 
 if [ ! -z "${SCALAPACK_DIR}" ]; then
-    cecho ${INFO} "PETSc: configuration with SCALAPACK"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "PETSc: configuration with SCALAPACK"
+  CONFOPTS="${CONFOPTS} \
       --with-scalapack-dir=${SCALAPACK_DIR}"
 else
-    CONFOPTS="${CONFOPTS} --download-scalapack=1"
+  CONFOPTS="${CONFOPTS} --download-scalapack=1"
 fi
 
 if [ ! -z "${MUMPS_DIR}" ]; then
-    cecho ${INFO} "PETSc: configuration with MUMPS"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "PETSc: configuration with MUMPS"
+  CONFOPTS="${CONFOPTS} \
       --with-mumps-dir=${MUMPS_DIR}"
 else
-    CONFOPTS="${CONFOPTS} --download-mumps=1"
+  CONFOPTS="${CONFOPTS} --download-mumps=1"
 fi
 
 ################################################################################
 
-package_specific_setup () {
-    cd ${BUILDDIR}
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+package_specific_setup() {
+  cd ${BUILDDIR}
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    # make sure no other invalid PETSC_DIR is set:
-    unset PETSC_DIR
-    
-    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
-    quit_if_fail "petsc ./configure failed"
-    
-    make all install
-    quit_if_fail "petsc make all install failed"
+  # make sure no other invalid PETSC_DIR is set:
+  unset PETSC_DIR
+
+  ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+  quit_if_fail "petsc ./configure failed"
+
+  make all install
+  quit_if_fail "petsc make all install failed"
 }
 
-package_specific_register () {
-    export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
-        export SCALAPACK_DIR=${INSTALL_PATH}
-    fi
+package_specific_register() {
+  export PETSC_DIR=${INSTALL_PATH}
+  if [ ! -z "${SCALAPACK_DIR}" ]; then
+    export SCALAPACK_DIR=${INSTALL_PATH}
+  fi
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
-    rm -f ${CONFIG_FILE}
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
+  rm -f ${CONFIG_FILE}
+  echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> ${CONFIG_FILE}
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
-       echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> ${CONFIG_FILE}
-    fi
+  if [ ! -z "${SCALAPACK_DIR}" ]; then
+    echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> ${CONFIG_FILE}
+  fi
 }

@@ -5,42 +5,42 @@
 # By default load the tarball.
 # To load the git repository define a variable CANDI_OPENCASCADE_LOAD_TARBALL=OFF.
 if [ -z ${CANDI_OPENCASCADE_LOAD_TARBALL} ]; then
-    CANDI_OPENCASCADE_LOAD_TARBALL=ON
+  CANDI_OPENCASCADE_LOAD_TARBALL=ON
 fi
 
 if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
-    # download release tarball
-    VERSION=0.18.3
-    CHECKSUM=c553d6a7bf52f790abc3b6bb7a1e91a65947e92a426bb1a88a11960c31f0966c
-    CHECKSUM="${CHECKSUM} 452c8e26a469e8b0ba6cdd800848a0b406648b1b"
-    CHECKSUM="${CHECKSUM} 1686393c8493bbbb2f3f242330b33cba"
+  # download release tarball
+  VERSION=0.18.3
+  CHECKSUM=c553d6a7bf52f790abc3b6bb7a1e91a65947e92a426bb1a88a11960c31f0966c
+  CHECKSUM="${CHECKSUM} 452c8e26a469e8b0ba6cdd800848a0b406648b1b"
+  CHECKSUM="${CHECKSUM} 1686393c8493bbbb2f3f242330b33cba"
 
-    # VERSION=0.18.2
-    # CHECKSUM=6dfd68e459e2c62387579888a867281f
+  # VERSION=0.18.2
+  # CHECKSUM=6dfd68e459e2c62387579888a867281f
 
-    # VERSION=0.18.1
-    # CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
+  # VERSION=0.18.1
+  # CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
 
-    # VERSION=0.17
-    # CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
+  # VERSION=0.17
+  # CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
 
-    NAME=OCE-${VERSION}
-    SOURCE=https://github.com/tpaviot/oce/archive/
-    EXTRACTSTO=oce-OCE-${VERSION}
-    PACKING=.tar.gz
+  NAME=OCE-${VERSION}
+  SOURCE=https://github.com/tpaviot/oce/archive/
+  EXTRACTSTO=oce-OCE-${VERSION}
+  PACKING=.tar.gz
 else
-    # download git repository (huge download)
+  # download git repository (huge download)
 
-    # checkout specific release version
-    VERSION=master
-    #VERSION=OCE-0.18.3
-    #VERSION=OCE-0.18.2
+  # checkout specific release version
+  VERSION=master
+  #VERSION=OCE-0.18.3
+  #VERSION=OCE-0.18.2
 
-    # set up git repository
-    NAME=oce.git
-    PACKING=git
-    EXTRACTSTO=OCE-${VERSION}
-    SOURCE=https://github.com/tpaviot/
+  # set up git repository
+  NAME=oce.git
+  PACKING=git
+  EXTRACTSTO=OCE-${VERSION}
+  SOURCE=https://github.com/tpaviot/
 fi
 unset CANDI_OPENCASCADE_LOAD_TARBALL
 
@@ -57,24 +57,24 @@ CONFOPTS="\
   -D OCE_OCAF:BOOL=OFF \
   -D OCE_DISABLE_X11:BOOL=ON"
 
-package_specific_patch () {
-    cd ${UNPACK_PATH}/${EXTRACTSTO}
-    cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
-    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
-    cecho ${WARN} "applying patch for isfinite"
-    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-isfinite.patch
+package_specific_patch() {
+  cd ${UNPACK_PATH}/${EXTRACTSTO}
+  cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
+  patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
+  cecho ${WARN} "applying patch for isfinite"
+  patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-isfinite.patch
 }
 
-package_specific_register () {
-    export OPENCASCADE_DIR=${INSTALL_PATH}
-    export CASROOT=${INSTALL_PATH}
+package_specific_register() {
+  export OPENCASCADE_DIR=${INSTALL_PATH}
+  export CASROOT=${INSTALL_PATH}
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export OPENCASCADE_DIR=${INSTALL_PATH}
 export CASROOT=${INSTALL_PATH}
 " >> $CONFIG_FILE

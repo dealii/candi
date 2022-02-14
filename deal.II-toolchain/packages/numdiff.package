@@ -9,15 +9,15 @@ CONFOPTS=""
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_register () {
-    export PATH=${INSTALL_PATH}/bin:$PATH
+package_specific_register() {
+  export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export PATH=${INSTALL_PATH}/bin:\${PATH}
 " >> $CONFIG_FILE
 }

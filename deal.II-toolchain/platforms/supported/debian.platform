@@ -1,4 +1,4 @@
-# Debian 
+# Debian
 #
 # This build script assumes that you have several packages already
 # installed via debian's apt-get using the following commands:

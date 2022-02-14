@@ -5,34 +5,34 @@
 # By default load the tarball.
 # To load the git repository define a variable CANDI_GMSH_LOAD_TARBALL=OFF.
 if [ -z ${CANDI_GMSH_LOAD_TARBALL} ]; then
-    CANDI_GMSH_LOAD_TARBALL=ON
+  CANDI_GMSH_LOAD_TARBALL=ON
 fi
 
 if [ ${CANDI_GMSH_LOAD_TARBALL} = ON ]; then
-    # see http://gmsh.info/src/
+  # see http://gmsh.info/src/
 
-    # 2021/04/28
-    VERSION=4.8.4
-    CHECKSUM=760dbdc072eaa3c82d066c5ba3b06eacdd3304eb2a97373fe4ada9509f0b6ace
-    CHECKSUM="${CHECKSUM} 465d965d40049c00dab65a196115fe56e1d9d147"
-    CHECKSUM="${CHECKSUM} 1e7212dfb1319d745ffb477a7a3ff124"
+  # 2021/04/28
+  VERSION=4.8.4
+  CHECKSUM=760dbdc072eaa3c82d066c5ba3b06eacdd3304eb2a97373fe4ada9509f0b6ace
+  CHECKSUM="${CHECKSUM} 465d965d40049c00dab65a196115fe56e1d9d147"
+  CHECKSUM="${CHECKSUM} 1e7212dfb1319d745ffb477a7a3ff124"
 
-    # VERSION=3.0.6
-    # CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
+  # VERSION=3.0.6
+  # CHECKSUM=78bbfdd695b29cfef18a99f93226afc5
 
-    # VERSION=2.16.0
-    # CHECKSUM=762c10f159dab4b042e3140b1c348427
+  # VERSION=2.16.0
+  # CHECKSUM=762c10f159dab4b042e3140b1c348427
 
-    NAME=gmsh-${VERSION}-source
-    PACKING=.tgz
-    EXTRACTSTO=gmsh-${VERSION}-source
-    SOURCE=http://gmsh.info/src/
+  NAME=gmsh-${VERSION}-source
+  PACKING=.tgz
+  EXTRACTSTO=gmsh-${VERSION}-source
+  SOURCE=http://gmsh.info/src/
 else
-    VERSION=gmsh_4_8_4
-    NAME=gmsh.git
-    PACKING=git
-    EXTRACTSTO=${VERSION}
-    SOURCE=https://gitlab.onelab.info/gmsh/
+  VERSION=gmsh_4_8_4
+  NAME=gmsh.git
+  PACKING=git
+  EXTRACTSTO=${VERSION}
+  SOURCE=https://gitlab.onelab.info/gmsh/
 fi
 unset CANDI_GMSH_LOAD_TARBALL
 
@@ -58,16 +58,16 @@ CONFOPTS="\
 # -D ENABLE_BUILD_SHARED=ON
 # -D ENABLE_BUILD_DYNAMIC=ON
 
-package_specific_register () {
-    export GMSH_DIR=${INSTALL_PATH}
-    export PATH=${INSTALL_PATH}/bin:$PATH
+package_specific_register() {
+  export GMSH_DIR=${INSTALL_PATH}
+  export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export GMSH_DIR=${INSTALL_PATH}
 export PATH=${INSTALL_PATH}/bin:\$PATH
 " >> $CONFIG_FILE

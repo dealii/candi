@@ -28,29 +28,29 @@ CONFOPTS=" \
 
 # Choice of whether to build the dealii examples
 if [ ${BUILD_EXAMPLES} = ON ] || [ ${BUILD_EXAMPLES} = OFF ]; then
-    CONFOPTS="${CONFOPTS} \
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_COMPONENT_EXAMPLES:BOOL=${BUILD_EXAMPLES}"
 else
-    cecho ${BAD} "candi: bad variable: BUILD_EXAMPLES={ON|OFF}; (your specified option is = ${BUILD_EXAMPLES})"
-    exit 1
+  cecho ${BAD} "candi: bad variable: BUILD_EXAMPLES={ON|OFF}; (your specified option is = ${BUILD_EXAMPLES})"
+  exit 1
 fi
 
 # Choice of whether native compiler optimizations should be enabled
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
-    CONFOPTS="${CONFOPTS} \
+  CONFOPTS="${CONFOPTS} \
       -D CMAKE_CXX_FLAGS='-march=native'"
 fi
 
 if [ ${USE_DEAL_II_CMAKE_MPI_COMPILER} = ON ]; then
-    # Disable CXX, CC for deal.II as recommended in
-    # https://github.com/dealii/dealii/issues/11478 and set MPI_*_COMPILER
-    # cmake variables. This only works for recent CMake versions.
-    CONFOPTS="${CONFOPTS} \
+  # Disable CXX, CC for deal.II as recommended in
+  # https://github.com/dealii/dealii/issues/11478 and set MPI_*_COMPILER
+  # cmake variables. This only works for recent CMake versions.
+  CONFOPTS="${CONFOPTS} \
     -D MPI_CXX_COMPILER=${CXX} \
     -D MPI_C_COMPILER=${CC}"
 
-    unset CXX
-    unset CC
+  unset CXX
+  unset CC
 fi
 
 # add the user-specified flags at the end (so things can be overriden):
@@ -62,24 +62,24 @@ ${DEAL_II_CONFOPTS}"
 # cf. https://github.com/dealii/dealii/issues/5510
 
 if [ ${DEAL_II_VERSION} == "v8.5.1" ]; then
-    # check for cmake version 3.10 and above
-    CMAKE_VER_MAJOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f1)
-    CMAKE_VER_MINOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f2)
-    if [ ${CMAKE_VER_MAJOR}=="3" ] && [ ${CMAKE_VER_MINOR} -gt 9 ]; then
-        cecho ${BAD} "Error: deal.II v8.5.1 can not be configured with your cmake version."
-        cecho ${BAD} "Your cmake version is ${CMAKE_VER_MAJOR}.${CMAKE_VER_MINOR}, which is above 3.9."
-        cecho ${BAD} "Please switch the cmake package in candi.cfg on and run candi again!"
-        exit 1
-    fi
+  # check for cmake version 3.10 and above
+  CMAKE_VER_MAJOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f1)
+  CMAKE_VER_MINOR=$(cmake --version | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/' | cut -d '.' -f2)
+  if [ ${CMAKE_VER_MAJOR}=="3" ] && [ ${CMAKE_VER_MINOR} -gt 9 ]; then
+    cecho ${BAD} "Error: deal.II v8.5.1 can not be configured with your cmake version."
+    cecho ${BAD} "Your cmake version is ${CMAKE_VER_MAJOR}.${CMAKE_VER_MINOR}, which is above 3.9."
+    cecho ${BAD} "Please switch the cmake package in candi.cfg on and run candi again!"
+    exit 1
+  fi
 fi
 
 ################################################################################
 # Check if we have commits to be cherry-picked by git
 
 if [ ! -z "${DEAL_CHERRYPICKCOMMITS}" ]; then
-    CHERRYPICKCOMMITS=" \
+  CHERRYPICKCOMMITS=" \
         ${DEAL_CHERRYPICKCOMMITS}"
-    cecho ${INFO} "deal.II: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
+  cecho ${INFO} "deal.II: git cherry-pick -X theirs ${CHERRYPICKCOMMITS}"
 fi
 
 ################################################################################
@@ -88,18 +88,18 @@ fi
 ########################################
 # ARPACK
 if [[ ${PACKAGES_OFF} =~ 'arpack-ng' ]]; then
-    if [ ! -z "${ARPACK_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset ARPACK_DIR due to forced DEAL_II_WITH_ARPACK:BOOL=OFF option"
-        unset ARPACK_DIR
-    fi
+  if [ ! -z "${ARPACK_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset ARPACK_DIR due to forced DEAL_II_WITH_ARPACK:BOOL=OFF option"
+    unset ARPACK_DIR
+  fi
 fi
 
 if [ ! -z "${ARPACK_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with ARPACK"
-    # We use a recent enough version of arpack, so PARPACK can be enabled
-    # even though it is disabled by default, see 
-    # https://github.com/dealii/dealii/blob/master/cmake/modules/FindARPACK.cmake
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with ARPACK"
+  # We use a recent enough version of arpack, so PARPACK can be enabled
+  # even though it is disabled by default, see
+  # https://github.com/dealii/dealii/blob/master/cmake/modules/FindARPACK.cmake
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_ARPACK:BOOL=ON \
       -D DEAL_II_ARPACK_WITH_PARPACK:BOOL=ON \
       -D ARPACK_DIR=${ARPACK_DIR}"
@@ -107,17 +107,17 @@ fi
 
 # metis
 if [[ ${PACKAGES_OFF} =~ 'metis' ]]; then
-    # Disable METIS for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces metis to be off
-    if [ ! -z "${METIS_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset METIS_DIR due to forced DEAL_II_WITH_METIS:BOOL=OFF option"
-        unset METIS_DIR
-    fi
+  # Disable METIS for deal.II, if a special DEAL_II_CONFOPTS together with
+  # the dealii-prepare loop forces metis to be off
+  if [ ! -z "${METIS_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset METIS_DIR due to forced DEAL_II_WITH_METIS:BOOL=OFF option"
+    unset METIS_DIR
+  fi
 fi
 
 if [ ! -z "${METIS_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with METIS"
-    CONFOPTS="\
+  cecho ${INFO} "deal.II: configuration with METIS"
+  CONFOPTS="\
         ${CONFOPTS} \
         -D DEAL_II_WITH_METIS:BOOL=ON \
         -D METIS_DIR=${METIS_DIR}"
@@ -125,8 +125,8 @@ fi
 
 # mumps
 if [ ! -z "${MUMPS_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with MUMPS"
-    CONFOPTS="\
+  cecho ${INFO} "deal.II: configuration with MUMPS"
+  CONFOPTS="\
         ${CONFOPTS} \
         -D MUMPS_DIR=${MUMPS_DIR}"
 fi
@@ -134,15 +134,15 @@ fi
 ########################################
 # P4EST
 if [[ ${PACKAGES_OFF} =~ 'p4est' ]]; then
-    if [ ! -z "${P4EST_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset P4EST_DIR due to forced DEAL_II_WITH_P4EST:BOOL=OFF option"
-        unset P4EST_DIR
-    fi
+  if [ ! -z "${P4EST_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset P4EST_DIR due to forced DEAL_II_WITH_P4EST:BOOL=OFF option"
+    unset P4EST_DIR
+  fi
 fi
 
 if [ ! -z "${P4EST_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with P4EST"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with P4EST"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_P4EST:BOOL=ON \
       -D P4EST_DIR=${P4EST_DIR}"
 fi
@@ -150,30 +150,30 @@ fi
 ########################################
 # HDF5
 if [[ ${PACKAGES_OFF} =~ 'hdf5' ]]; then
-    if [ ! -z "${HDF5_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset HDF5_DIR due to forced DEAL_II_WITH_HDF5:BOOL=OFF option"
-        unset HDF5_DIR
-    fi
+  if [ ! -z "${HDF5_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset HDF5_DIR due to forced DEAL_II_WITH_HDF5:BOOL=OFF option"
+    unset HDF5_DIR
+  fi
 fi
 
 if [ ! -z "${HDF5_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with HDF5"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with HDF5"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_HDF5:BOOL=ON"
 fi
 
 ########################################
 # TRILINOS
 if [[ ${PACKAGES_OFF} =~ 'trilinos' ]]; then
-    if [ ! -z "${TRILINOS_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset TRILINOS_DIR due to forced DEAL_II_WITH_TRILINOS:BOOL=OFF option"
-        unset TRILINOS_DIR
-    fi
+  if [ ! -z "${TRILINOS_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset TRILINOS_DIR due to forced DEAL_II_WITH_TRILINOS:BOOL=OFF option"
+    unset TRILINOS_DIR
+  fi
 fi
 
 if [ ! -z "${TRILINOS_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with TRILINOS"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with TRILINOS"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_TRILINOS:BOOL=ON \
       -D TRILINOS_DIR=${TRILINOS_DIR}"
 fi
@@ -181,15 +181,15 @@ fi
 ########################################
 # PETSC
 if [[ ${PACKAGES_OFF} =~ 'petsc' ]]; then
-    if [ ! -z "${PETSC_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset PETSC_DIR due to forced DEAL_II_WITH_PETSC:BOOL=OFF option"
-        unset PETSC_DIR
-    fi
+  if [ ! -z "${PETSC_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset PETSC_DIR due to forced DEAL_II_WITH_PETSC:BOOL=OFF option"
+    unset PETSC_DIR
+  fi
 fi
 
 if [ ! -z "${PETSC_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with PETSC"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with PETSC"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_PETSC:BOOL=ON \
       -D PETSC_DIR=${PETSC_DIR}"
 fi
@@ -197,15 +197,15 @@ fi
 ########################################
 # SLEPC
 if [[ ${PACKAGES_OFF} =~ 'slepc' ]]; then
-    if [ ! -z "${SLEPC_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset SLEPC_DIR due to forced DEAL_II_WITH_SLEPC:BOOL=OFF option"
-        unset SLEPC_DIR
-    fi
+  if [ ! -z "${SLEPC_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset SLEPC_DIR due to forced DEAL_II_WITH_SLEPC:BOOL=OFF option"
+    unset SLEPC_DIR
+  fi
 fi
 
 if [ ! -z "${SLEPC_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with SLEPC"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with SLEPC"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_SLEPC:BOOL=ON \
       -D SLEPC_DIR=${SLEPC_DIR}"
 fi
@@ -213,15 +213,15 @@ fi
 ########################################
 # OPENCASCADE
 if [[ ${PACKAGES_OFF} =~ 'opencascade' ]]; then
-    if [ ! -z "${OPENCASCADE_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset OPENCASCADE_DIR due to forced DEAL_II_WITH_OPENCASCADE:BOOL=OFF option"
-        unset OPENCASCADE_DIR
-    fi
+  if [ ! -z "${OPENCASCADE_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset OPENCASCADE_DIR due to forced DEAL_II_WITH_OPENCASCADE:BOOL=OFF option"
+    unset OPENCASCADE_DIR
+  fi
 fi
 
 if [ ! -z "${OPENCASCADE_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with OPENCASCADE"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with OPENCASCADE"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_OPENCASCADE:BOOL=ON \
       -D OPENCASCADE_DIR=${OPENCASCADE_DIR}"
 fi
@@ -229,15 +229,15 @@ fi
 ########################################
 # GINKGO
 if [[ ${PACKAGES_OFF} =~ 'ginkgo' ]]; then
-    if [ ! -z "${GINKGO_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset GINKGO_DIR due to forced DEAL_II_WITH_GINKGO:BOOL=OFF option"
-        unset GINKGO_DIR
-    fi
+  if [ ! -z "${GINKGO_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset GINKGO_DIR due to forced DEAL_II_WITH_GINKGO:BOOL=OFF option"
+    unset GINKGO_DIR
+  fi
 fi
 
 if [ ! -z "${GINKGO_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with GINKGO"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with GINKGO"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_GINKGO:BOOL=ON \
       -D GINKGO_DIR=${GINKGO_DIR}"
 fi
@@ -245,15 +245,15 @@ fi
 ########################################
 # SYMENGINE
 if [[ ${PACKAGES_OFF} =~ 'symengine' ]]; then
-    if [ ! -z "${SYMENGINE_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
-        unset SYMENGINE_DIR
-    fi
+  if [ ! -z "${SYMENGINE_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset SYMENGINE_DIR due to forced DEAL_II_WITH_SYMENGINE:BOOL=OFF option"
+    unset SYMENGINE_DIR
+  fi
 fi
 
 if [ ! -z "${SYMENGINE_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with SYMENGINE"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with SYMENGINE"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_SYMENGINE:BOOL=ON \
       -D SYMENGINE_DIR=${SYMENGINE_DIR}"
 fi
@@ -261,15 +261,15 @@ fi
 ########################################
 # GMSH
 if [[ ${PACKAGES_OFF} =~ 'gmsh' ]]; then
-    if [ ! -z "${GMSH_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset GMSH_DIR due to forced DEAL_II_WITH_GMSH:BOOL=OFF option"
-        unset GMSH_DIR
-    fi
+  if [ ! -z "${GMSH_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset GMSH_DIR due to forced DEAL_II_WITH_GMSH:BOOL=OFF option"
+    unset GMSH_DIR
+  fi
 fi
 
 if [ ! -z "${GMSH_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with GMSH"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with GMSH"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_GMSH:BOOL=ON \
       -D GMSH_DIR=${GMSH_DIR}"
 fi
@@ -277,15 +277,15 @@ fi
 ########################################
 # ADOLC
 if [[ ${PACKAGES_OFF} =~ 'adolc' ]]; then
-    if [ ! -z "${ADOLC_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset ADOLC_DIR due to forced DEAL_II_WITH_ADOLC:BOOL=OFF option"
-        unset ADOLC_DIR
-    fi
+  if [ ! -z "${ADOLC_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset ADOLC_DIR due to forced DEAL_II_WITH_ADOLC:BOOL=OFF option"
+    unset ADOLC_DIR
+  fi
 fi
 
 if [ ! -z "${ADOLC_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with ADOLC"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with ADOLC"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_ADOLC:BOOL=ON \
       -D ADOLC_DIR=${ADOLC_DIR}"
 fi
@@ -293,15 +293,15 @@ fi
 ########################################
 # SUNDIALS
 if [[ ${PACKAGES_OFF} =~ 'sundials' ]]; then
-    if [ ! -z "${SUNDIALS_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset SUNDIALS_DIR due to forced DEAL_II_WITH_SUNDIALS:BOOL=OFF option"
-        unset SUNDIALS_DIR
-    fi
+  if [ ! -z "${SUNDIALS_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset SUNDIALS_DIR due to forced DEAL_II_WITH_SUNDIALS:BOOL=OFF option"
+    unset SUNDIALS_DIR
+  fi
 fi
 
 if [ ! -z "${SUNDIALS_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with SUNDIALS"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with SUNDIALS"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_SUNDIALS:BOOL=ON \
       -D SUNDIALS_DIR=${SUNDIALS_DIR}"
 fi
@@ -309,48 +309,48 @@ fi
 ########################################
 # ASSIMP
 if [[ ${PACKAGES_OFF} =~ 'assimp' ]]; then
-    if [ ! -z "${ASSIMP_DIR}" ]; then
-        cecho ${INFO} "deal.II: unset ASSIMP_DIR due to forced DEAL_II_WITH_ASSIMP:BOOL=OFF option"
-        unset ASSIMP_DIR
-    fi
+  if [ ! -z "${ASSIMP_DIR}" ]; then
+    cecho ${INFO} "deal.II: unset ASSIMP_DIR due to forced DEAL_II_WITH_ASSIMP:BOOL=OFF option"
+    unset ASSIMP_DIR
+  fi
 fi
 
 if [ ! -z "${ASSIMP_DIR}" ]; then
-    cecho ${INFO} "deal.II: configuration with ASSIMP"
-    CONFOPTS="${CONFOPTS} \
+  cecho ${INFO} "deal.II: configuration with ASSIMP"
+  CONFOPTS="${CONFOPTS} \
       -D DEAL_II_WITH_ASSIMP:BOOL=ON \
       -D ASSIMP_DIR=${ASSIMP_DIR}"
 fi
 
 ################################################################################
 package_specific_install() {
-    if [ ${RUN_DEAL_II_TESTS} = ON ]; then
-        make test 2>&1 | tee candi_test.log
-    fi
+  if [ ${RUN_DEAL_II_TESTS} = ON ]; then
+    make test 2>&1 | tee candi_test.log
+  fi
 }
 
 package_specific_conf() {
-    ############################################################################
-    # Generate modulefile
+  ############################################################################
+  # Generate modulefile
 
-# Prepare modulefile path and config file name
-if [ -z "${COMPILER}" ]; then
+  # Prepare modulefile path and config file name
+  if [ -z "${COMPILER}" ]; then
     COMPILER=default
-fi
+  fi
 
-if [ -z "${MODULEFILE_PATH}" ]; then
+  if [ -z "${MODULEFILE_PATH}" ]; then
     MODULEFILE_PATH=${CONFIGURATION_PATH}/modulefiles
-fi
+  fi
 
-CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
+  CONFIG_FILE=${MODULEFILE_PATH}/${COMPILER}
 
-CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
+  CURRENT_MODULES=$(echo ${LOADEDMODULES} | sed 's/:/\ /g')
 
-    # Generate modulefile
-    
-    mkdir -p ${MODULEFILE_PATH}
-    rm -f $CONFIG_FILE
-    echo "#%Module 1.0
+  # Generate modulefile
+
+  mkdir -p ${MODULEFILE_PATH}
+  rm -f $CONFIG_FILE
+  echo "#%Module 1.0
 #
 #  deal.II module for use with 'environment-modules' package:
 #
@@ -360,31 +360,29 @@ module load ${CURRENT_MODULES}
 
 setenv                  DEAL_II_DIR         ${INSTALL_PATH}
 " >> $CONFIG_FILE
-    
-    echo
-    echo "${NAME} has now been installed in"
-    echo
-    cecho ${GOOD} "    ${INSTALL_PATH}"
-    echo
-    echo "To update your environment variables, use the created modulefile:"
-    echo
-    cecho ${GOOD} "    $CONFIG_FILE"
-    echo
 
-    export DEAL_II_DIR=${INSTALL_PATH}
-    
-    ############################################################################
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/deal.II-${VERSION}
-    rm -f $CONFIG_FILE
-    echo "
+  echo
+  echo "${NAME} has now been installed in"
+  echo
+  cecho ${GOOD} "    ${INSTALL_PATH}"
+  echo
+  echo "To update your environment variables, use the created modulefile:"
+  echo
+  cecho ${GOOD} "    $CONFIG_FILE"
+  echo
+
+  export DEAL_II_DIR=${INSTALL_PATH}
+
+  ############################################################################
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/deal.II-${VERSION}
+  rm -f $CONFIG_FILE
+  echo "
 export DEAL_II_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 
-    echo "If you are not using modules, execute the following command instead:"
-    echo
-    cecho ${GOOD} "    source $CONFIG_FILE"
-    echo
+  echo "If you are not using modules, execute the following command instead:"
+  echo
+  cecho ${GOOD} "    source $CONFIG_FILE"
+  echo
 }
-
-

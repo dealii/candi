@@ -28,5 +28,5 @@ package_specific_conf() {
   rm -f $CONFIG_FILE
   echo "
 export ARPACK_DIR=${INSTALL_PATH}
-" >>$CONFIG_FILE
+" >> $CONFIG_FILE
 }

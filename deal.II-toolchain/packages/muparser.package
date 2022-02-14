@@ -11,16 +11,16 @@ BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 CONFOPTS="-D ENABLE_SAMPLES=OFF -D ENABLE_OPENMP=OFF"
 
-package_specific_register () {
-    export MUPARSER_DIR=${INSTALL_PATH}
-    export MUPARSER_INCLUDE_DIR=${INSTALL_PATH}/include
+package_specific_register() {
+  export MUPARSER_DIR=${INSTALL_PATH}
+  export MUPARSER_INCLUDE_DIR=${INSTALL_PATH}/include
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export MUPARSER_DIR=${INSTALL_PATH}
 export MUPARSER_INCLUDE_DIR=${INSTALL_PATH}/include
 " >> $CONFIG_FILE

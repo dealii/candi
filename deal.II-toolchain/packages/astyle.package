@@ -8,24 +8,24 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/astyle-${VERSION}
 
-package_specific_setup () {
-    cd ${BUILDDIR}
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    cd build/gcc
-    mkdir -p ${INSTALL_PATH}
-    make -j${JOBS} >> make.output || bdie "Error in make"
-    cp bin/astyle ${INSTALL_PATH}/
+package_specific_setup() {
+  cd ${BUILDDIR}
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+  cd build/gcc
+  mkdir -p ${INSTALL_PATH}
+  make -j${JOBS} >> make.output || bdie "Error in make"
+  cp bin/astyle ${INSTALL_PATH}/
 }
 
-package_specific_register () {
-    export PATH=${INSTALL_PATH}:$PATH
+package_specific_register() {
+  export PATH=${INSTALL_PATH}:$PATH
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export PATH=${INSTALL_PATH}:\${PATH}
 " >> $CONFIG_FILE
 }

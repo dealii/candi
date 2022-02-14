@@ -16,31 +16,31 @@ INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 BUILDCHAIN=custom
 
-package_specific_build () {
-    cd ${BUILDDIR}
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+package_specific_build() {
+  cd ${BUILDDIR}
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    make -j ${JOBS} PREFIX=${INSTALL_PATH}
-    quit_if_fail "make failed"
+  make -j ${JOBS} PREFIX=${INSTALL_PATH}
+  quit_if_fail "make failed"
 
-    make install -j ${JOBS} PREFIX=${INSTALL_PATH}
-    quit_if_fail "make install failed"
+  make install -j ${JOBS} PREFIX=${INSTALL_PATH}
+  quit_if_fail "make install failed"
 }
 
-package_specific_register () {
-    export LAPACK_DIR=${INSTALL_PATH}/lib
-    export BLAS_DIR=${INSTALL_PATH}/lib
-    export BLAS_LIB=${INSTALL_PATH}/lib/libopenblas.${LDSUFFIX}
-    # older cmake (for example 3.5) does not detect openblas by default so
-    # we force detection by adding to the deal.II configure line:
-    export DEAL_II_CONFOPTS="-D LAPACK_FOUND=true -D LAPACK_LIBRARIES=${INSTALL_PATH}/lib/libopenblas.${LDSUFFIX} ${DEAL_II_CONFOPTS}"
+package_specific_register() {
+  export LAPACK_DIR=${INSTALL_PATH}/lib
+  export BLAS_DIR=${INSTALL_PATH}/lib
+  export BLAS_LIB=${INSTALL_PATH}/lib/libopenblas.${LDSUFFIX}
+  # older cmake (for example 3.5) does not detect openblas by default so
+  # we force detection by adding to the deal.II configure line:
+  export DEAL_II_CONFOPTS="-D LAPACK_FOUND=true -D LAPACK_LIBRARIES=${INSTALL_PATH}/lib/libopenblas.${LDSUFFIX} ${DEAL_II_CONFOPTS}"
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
+  rm -f $CONFIG_FILE
+  echo "
 export LAPACK_DIR=${INSTALL_PATH}/lib
 export BLAS_DIR=${INSTALL_PATH}/lib
 export BLAS_LIB=${INSTALL_PATH}/lib/libopenblas.${LDSUFFIX}

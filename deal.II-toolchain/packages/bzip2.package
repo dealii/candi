@@ -7,26 +7,26 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-package_specific_build () {
-    cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
-    # patch the Makefile
-    patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/bzip2-${VERSION}.patch || true
-    
-    # compile bzip2
-    make install
+package_specific_build() {
+  cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
+
+  # patch the Makefile
+  patch -p1 --forward < ${ORIG_DIR}/${PROJECT}/patches/bzip2-${VERSION}.patch || true
+
+  # compile bzip2
+  make install
 }
 
-package_specific_register () {
-    export BZIP2_INCLUDE=${INSTALL_PATH}/include
-    export BZIP2_LIBPATH=${INSTALL_PATH}/lib
+package_specific_register() {
+  export BZIP2_INCLUDE=${INSTALL_PATH}/include
+  export BZIP2_LIBPATH=${INSTALL_PATH}/lib
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f $CONFIG_FILE
+  echo "
 export BZIP2_INCLUDE=${INSTALL_PATH}/include
 export BZIP2_LIBPATH=${INSTALL_PATH}/lib
 " >> $CONFIG_FILE
