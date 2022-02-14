@@ -1,3 +1,7 @@
+################################################################################
+## SLEPc                                                                      ##
+################################################################################
+
 VERSION=3.16.2
 CHECKSUM=673dbda220e5a4bd2c3a6618267d8e55
 
@@ -22,7 +26,7 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 
-##############################################################################
+################################################################################
 
 if [ -z "${PETSC_DIR}" ]; then
     cecho ${BAD} "slepc: error petsc variable PETSC_DIR not found."
@@ -32,13 +36,13 @@ fi
 package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
-    
+
     # make sure no other invalid SLEPC_DIR is set:
     unset SLEPC_DIR
 
     ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
     quit_if_fail "slepc ./configure failed"
-    
+
     make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} all install
     quit_if_fail "slepc make all install failed"
 }
@@ -50,8 +54,8 @@ package_specific_register () {
 package_specific_conf () {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f $CONFIG_FILE
+    rm -f ${CONFIG_FILE}
     echo "
 export SLEPC_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >> ${CONFIG_FILE}
 }
