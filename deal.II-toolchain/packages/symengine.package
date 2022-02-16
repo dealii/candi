@@ -11,7 +11,7 @@ fi
 if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
   # download release tarball
   VERSION=0.8.1
-  CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
+  CHECKSUM=967b913b365eda9fb30ecb3f1ded46f2
 
   # VERSION=0.7.0
   # CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
