@@ -10,8 +10,11 @@ fi
 
 if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
   # download release tarball
-  VERSION=0.7.0
+  VERSION=0.8.1
   CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
+
+  # VERSION=0.7.0
+  # CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
 
   NAME=symengine-${VERSION}
   SOURCE=https://github.com/symengine/symengine/releases/download/v${VERSION}/
@@ -19,7 +22,9 @@ if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
   PACKING=.tar.gz
 else
   # download git repository
-  VERSION=v0.7.0
+  VERSION=v0.8.1
+
+  # VERSION=v0.7.0
 
   NAME=symengine.git
   SOURCE=https://github.com/symengine/
@@ -36,7 +41,14 @@ INSTALL_PATH=${INSTALL_PATH}/symengine-${VERSION}
 CONFOPTS="\
   -D BUILD_SHARED_LIBS:BOOL=ON \
   -D BUILD_TESTS:BOOL=OFF \
-  -D BUILD_BENCHMARKS:BOOL=OFF"
+  -D BUILD_BENCHMARKS:BOOL=OFF \
+  -D INTEGER_CLASS=flint \
+  -D WITH_BOOST:BOOL=ON \
+  -D WITH_GMP:BOOL=ON \
+  -D WITH_LLVM:BOOL=ON \
+  -D WITH_MPC:BOOL=ON \
+  -D WITH_MPFR:BOOL=ON \
+  -D WITH_SYMENGINE_THREAD_SAFE:BOOL=ON"
 
 package_specific_register() {
   export SYMENGINE_DIR=${INSTALL_PATH}
