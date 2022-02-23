@@ -178,10 +178,9 @@ if [ ! -z "${TRILINOS_DIR}" ]; then
       -D TRILINOS_DIR=${TRILINOS_DIR}"
 fi
 
-# petsc
+########################################
+# PETSC
 if [[ ${PACKAGES_OFF} =~ 'petsc' ]]; then
-    # Disable petsc for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces petsc to be off
     if [ ! -z "${PETSC_DIR}" ]; then
         cecho ${INFO} "deal.II: unset PETSC_DIR due to forced DEAL_II_WITH_PETSC:BOOL=OFF option"
         unset PETSC_DIR
@@ -190,16 +189,14 @@ fi
 
 if [ ! -z "${PETSC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with PETSC"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_PETSC:BOOL=ON \
-        -D PETSC_DIR=${PETSC_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_PETSC:BOOL=ON \
+      -D PETSC_DIR=${PETSC_DIR}"
 fi
 
-# slepc
+########################################
+# SLEPC
 if [[ ${PACKAGES_OFF} =~ 'slepc' ]]; then
-    # Disable slepc for deal.II, if a special DEAL_II_CONFOPTS together with
-    # the dealii-prepare loop forces slepc to be off
     if [ ! -z "${SLEPC_DIR}" ]; then
         cecho ${INFO} "deal.II: unset SLEPC_DIR due to forced DEAL_II_WITH_SLEPC:BOOL=OFF option"
         unset SLEPC_DIR
@@ -208,10 +205,9 @@ fi
 
 if [ ! -z "${SLEPC_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with SLEPC"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        -D DEAL_II_WITH_SLEPC:BOOL=ON \
-        -D SLEPC_DIR=${SLEPC_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_SLEPC:BOOL=ON \
+      -D SLEPC_DIR=${SLEPC_DIR}"
 fi
 
 ########################################

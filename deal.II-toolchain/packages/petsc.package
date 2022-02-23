@@ -1,3 +1,7 @@
+################################################################################
+## PETSc                                                                      ##
+################################################################################
+
 VERSION=3.16.4
 CHECKSUM=7de82ee5543cba9a7c12ca00c81f0b87
 
@@ -23,15 +27,14 @@ BUILDCHAIN=custom
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 
-#########################################################################
+################################################################################
 
-CONFOPTS="
-  --with-debugging=0
-  --with-shared-libraries=1
-  --with-mpi=1
-  --with-x=0
-  --with-64-bit-indices=0
-"
+CONFOPTS="\
+  --with-debugging=0 \
+  --with-shared-libraries=1 \
+  --with-mpi=1 \
+  --with-x=0 \
+  --with-64-bit-indices=0"
 
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
     CONFOPTS="${CONFOPTS} \
@@ -39,7 +42,6 @@ if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
       CXXOPTFLAGS='-O3 -march=native -mtune=native' \
       FOPTFLAGS='-O3 -march=native -mtune=native'"
 fi
-
 
 for external_pkg in hypre; do
     CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
@@ -79,17 +81,15 @@ fi
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with ParMETIS"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        --with-parmetis-dir=${PARMETIS_DIR} \
-	--with-metis-dir=${PARMETIS_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      --with-parmetis-dir=${PARMETIS_DIR} \
+      --with-metis-dir=${PARMETIS_DIR}"
 fi
 
 if [ ! -z "${SCALAPACK_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with SCALAPACK"
-    CONFOPTS="\
-        ${CONFOPTS} \
-        --with-scalapack-dir=${SCALAPACK_DIR}"
+    CONFOPTS="${CONFOPTS} \
+      --with-scalapack-dir=${SCALAPACK_DIR}"
 else
     CONFOPTS="${CONFOPTS} --download-scalapack=1"
 fi
@@ -97,12 +97,12 @@ fi
 if [ ! -z "${MUMPS_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with MUMPS"
     CONFOPTS="${CONFOPTS} \
-        --with-mumps-dir=${MUMPS_DIR}"
+      --with-mumps-dir=${MUMPS_DIR}"
 else
     CONFOPTS="${CONFOPTS} --download-mumps=1"
 fi
 
-#########################################################################
+################################################################################
 
 package_specific_setup () {
     cd ${BUILDDIR}
@@ -128,11 +128,11 @@ package_specific_register () {
 package_specific_conf () {
     # Generate configuration file
     CONFIG_FILE=${CONFIGURATION_PATH}/${EXTRACTSTO}
-    rm -f $CONFIG_FILE
+    rm -f ${CONFIG_FILE}
     echo "
 export PETSC_DIR=${INSTALL_PATH}
-" >> $CONFIG_FILE
+" >> ${CONFIG_FILE}
     if [ ! -z "${SCALAPACK_DIR}" ]; then
-       echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> $CONFIG_FILE
+       echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> ${CONFIG_FILE}
     fi
 }
