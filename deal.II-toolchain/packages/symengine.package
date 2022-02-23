@@ -5,26 +5,31 @@
 # By default load the tarball.
 # To load the git repository define a variable CANDI_SYMENGINE_LOAD_TARBALL=OFF.
 if [ -z ${CANDI_SYMENGINE_LOAD_TARBALL} ]; then
-    CANDI_SYMENGINE_LOAD_TARBALL=ON
+  CANDI_SYMENGINE_LOAD_TARBALL=ON
 fi
 
 if [ ${CANDI_SYMENGINE_LOAD_TARBALL} = ON ]; then
-    # download release tarball
-    VERSION=0.7.0
-    CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
+  # download release tarball
+  VERSION=0.8.1
+  CHECKSUM=967b913b365eda9fb30ecb3f1ded46f2
 
-    NAME=symengine-${VERSION}
-    SOURCE=https://github.com/symengine/symengine/releases/download/v${VERSION}/
-    EXTRACTSTO=${NAME}
-    PACKING=.tar.gz
+  # VERSION=0.7.0
+  # CHECKSUM=72b8f1442fd3084c96e59d9fe87eec1a
+
+  NAME=symengine-${VERSION}
+  SOURCE=https://github.com/symengine/symengine/releases/download/v${VERSION}/
+  EXTRACTSTO=${NAME}
+  PACKING=.tar.gz
 else
-    # download git repository
-    VERSION=v0.7.0
+  # download git repository
+  VERSION=v0.8.1
 
-    NAME=symengine.git
-    SOURCE=https://github.com/symengine/
-    EXTRACTSTO=symengine-${VERSION}
-    PACKING=git
+  # VERSION=v0.7.0
+
+  NAME=symengine.git
+  SOURCE=https://github.com/symengine/
+  EXTRACTSTO=symengine-${VERSION}
+  PACKING=git
 fi
 unset CANDI_SYMENGINE_LOAD_TARBALL
 
@@ -36,17 +41,18 @@ INSTALL_PATH=${INSTALL_PATH}/symengine-${VERSION}
 CONFOPTS="\
   -D BUILD_SHARED_LIBS:BOOL=ON \
   -D BUILD_TESTS:BOOL=OFF \
-  -D BUILD_BENCHMARKS:BOOL=OFF"
+  -D BUILD_BENCHMARKS:BOOL=OFF \
+  -D WITH_SYMENGINE_THREAD_SAFE:BOOL=ON"
 
-package_specific_register () {
-    export SYMENGINE_DIR=${INSTALL_PATH}
+package_specific_register() {
+  export SYMENGINE_DIR=${INSTALL_PATH}
 }
 
-package_specific_conf () {
-    # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
-    rm -f ${CONFIG_FILE}
-    echo "
+package_specific_conf() {
+  # Generate configuration file
+  CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+  rm -f ${CONFIG_FILE}
+  echo "
 export SYMENGINE_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }
