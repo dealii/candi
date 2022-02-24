@@ -52,12 +52,13 @@ checks() {
   SHFMT_VERSION="$(${DEAL_II_SHFMT} --version)"
   SHFMT_MAJOR_VERSION=$(echo "${SHFMT_VERSION}" | sed 's/^[^0-9]*\([0-9]*\).*$/\1/g')
   SHFMT_MINOR_VERSION=$(echo "${SHFMT_VERSION}" | sed 's/^[^0-9]*[0-9]*\.\([0-9]*\).*$/\1/g')
+  SHFMT_PATCH_VERSION=$(echo "${SHFMT_VERSION}" | sed 's/^[^0-9]*[0-9]*\.[0-9]*\.\([0-9]*\).*$/\1/g')
 
-  if [ "${SHFMT_MAJOR_VERSION}" -ne 3 ] || [ "${SHFMT_MINOR_VERSION}" -ne 3 ]; then
-    echo "***   This indent script requires shfmt version 3.3.1,"
-    echo "***   but version ${SHFMT_MAJOR_VERSION}.${SHFMT_MINOR_VERSION} was found instead."
+  if [ "${SHFMT_MAJOR_VERSION}" -lt 3 ] || [ "${SHFMT_MINOR_VERSION}" -lt 3 ] || [ "${SHFMT_PATCH_VERSION}" -lt 1 ]; then
+    echo "***   This indent script requires shfmt version 3.3.1 or later,"
+    echo "***   but version ${SHFMT_MAJOR_VERSION}.${SHFMT_MINOR_VERSION}.${SHFMT_PATCH_VERSION} was found instead."
     echo "***"
-    echo "***   Install shfmt via snap: sudo snap install shfmt"
+    echo "***   Install shfmt via snap: sudo snap install shfmt --channel=latest/stable"
     exit 1
   fi
 
