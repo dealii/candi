@@ -20,8 +20,8 @@ jobs:
     - name: setup
       run: |
         sudo apt-get install --yes snapd
-        sudo snap install shfmt
-        shfmt --version
+        sudo snap install shfmt --channel=latest/stable
+        snap info shfmt
     - name: indent
       run: |
          bash contrib/utilities/check_indentation.sh
