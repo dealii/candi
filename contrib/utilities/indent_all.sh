@@ -63,16 +63,16 @@ process "." ".*\.(package|platform|sh|cfg)" format_file
 
 process "." ".*\.(package|platform|cfg)" fix_permissions
 
-process "." ".*\.(package|platform|sh|cfg)" dos_to_unix
+process "." ".*\.(package|platform|sh|cfg|py)" dos_to_unix
 
 #
 # Removing trailing whitespace
 #
 
-process "." ".*\.(package|platform|sh|cfg)" remove_trailing_whitespace
+process "." ".*\.(package|platform|sh|cfg|py)" remove_trailing_whitespace
 
 #
 # Ensure only a single newline at end of files
 #
 
-process "." ".*\.(package|platform|sh|cfg)" ensure_single_trailing_newline
+process "." ".*\.(package|platform|sh|cfg|py)" ensure_single_trailing_newline
