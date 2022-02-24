@@ -45,10 +45,11 @@ package_specific_setup() {
     fi
     CFLAGS="${CFLAGS} -I${ZLIB_INCLUDE}"
   fi
-  LIBS="-L${ZLIB_LIBPATH}"
 
-  if [ -z "${ZLIB_INCLUDE}" ]; then
-    ZLIB_INCLUDE=${ZLIB_DIR}/include
+  if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_FAST}"; then
+    export CFLAGS_FAST="-O2"
+  else
+    export CFLAGS_FAST="${CFLAGS} ${P4EST_CFLAGS_FAST}"
   fi
   echo "CFLAGS_FAST: ${CFLAGS_FAST}"
 
