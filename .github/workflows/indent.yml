@@ -2,21 +2,13 @@ name: indent
 
 on: [push, pull_request]
 
-concurrency:
-  group: ${ {github.event_name }}-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{github.event_name == 'pull_request'}}
-
 jobs:
   indent:
-    # run the indent checks
-
     name: indent
-    runs-on: [ubuntu-20.04]
+    runs-on: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
       - name: setup
         run: |
           sudo apt-get install --yes snapd
