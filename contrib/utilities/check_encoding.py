@@ -13,6 +13,10 @@
 ## the top level of the deal.II distribution.
 ##
 ## ---------------------------------------------------------------------
+##
+## This is a modified version for dealii/candi.
+##
+## ---------------------------------------------------------------------
 
 # This script checks if the files in the candi repository are encoded with
 # valid UTF8.

@@ -13,6 +13,10 @@
 ## the top level directory of deal.II.
 ##
 ## ---------------------------------------------------------------------
+##
+## This is a modified version for dealii/candi.
+##
+## ---------------------------------------------------------------------
 
 #
 # This is a script that is used by the continuous integration servers

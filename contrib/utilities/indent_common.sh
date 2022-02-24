@@ -13,6 +13,10 @@
 ## the top level of the deal.II distribution.
 ##
 ## ---------------------------------------------------------------------
+##
+## This is a modified version for dealii/candi.
+##
+## ---------------------------------------------------------------------
 
 #
 # This file contains a number of common functions used all indent scripts

@@ -13,6 +13,10 @@
 ## the top level directory of deal.II.
 ##
 ## ---------------------------------------------------------------------
+##
+## This is a modified version for dealii/candi.
+##
+## ---------------------------------------------------------------------
 
 #
 # This script indents all source files of dealii/candi according to our usual
