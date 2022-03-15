@@ -2,111 +2,115 @@ name: CI
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
+
 jobs:
   ubuntu18-minimal:
     name: ubuntu 18.04 minimal
     runs-on: [ubuntu-18.04]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: setup
-      run: |
-        sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin libblas-dev liblapack-dev libblas3 liblapack3
-    - name: info
-      run: |
-        g++ -v
-        mpic++ -v
-        cmake --version
-    - name: build
-      run: |
-        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
-        ./candi.sh -j 2 --packages="once:p4est dealii"
-        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+      - uses: actions/checkout@v2
+      - name: setup
+        run: |
+          sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin libblas-dev liblapack-dev libblas3 liblapack3
+      - name: info
+        run: |
+          g++ -v
+          mpic++ -v
+          cmake --version
+      - name: build
+        run: |
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+          ./candi.sh -j 2 --packages="once:p4est dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   ubuntu20-blas:
     name: ubuntu 20.04
     runs-on: [ubuntu-20.04]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: setup
-      run: |
-        sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin
-    - name: info
-      run: |
-        g++ -v
-        mpic++ -v
-        cmake --version
-    - name: build
-      run: |
-        # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
-        ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
-        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+      - uses: actions/checkout@v2
+      - name: setup
+        run: |
+          sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin
+      - name: info
+        run: |
+          g++ -v
+          mpic++ -v
+          cmake --version
+      - name: build
+        run: |
+          # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
+          ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   osx-minimal:
     name: OSX clang
     runs-on: [macos-latest]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: setup
-      run: |
-        # force cmake version:
-        pip install cmake==3.20.5
-        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
-        brew install openmpi
-        brew reinstall gcc@9
-    - name: info
-      run: |
-        mpicxx -v
-        cmake --version
-    - name: build
-      run: |
-        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
-        ./candi.sh -j 2 --packages="dealii"
-        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+      - uses: actions/checkout@v2
+      - name: setup
+        run: |
+          # force cmake version:
+          pip install cmake==3.20.5
+          echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
+          brew install openmpi
+          brew reinstall gcc@9
+      - name: info
+        run: |
+          mpicxx -v
+          cmake --version
+      - name: build
+        run: |
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+          ./candi.sh -j 2 --packages="dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
   macos-gcc:
     name: macos-gcc
     runs-on: [macos-latest]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: setup
-      run: |
-        # Force cmake version 3.20.5
-        pip install cmake==3.20.5
-        echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
+      - uses: actions/checkout@v2
+      - name: setup
+        run: |
+          # Force cmake version 3.20.5
+          pip install cmake==3.20.5
+          echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
 
-        # Update packages
-        brew update
-        brew upgrade
+          # Update packages
+          brew update
+          brew upgrade
 
-        # Install openmpi
-        brew install openmpi
+          # Install openmpi
+          brew install openmpi
 
-        # Reinstall gcc
-        brew reinstall gcc@9
+          # Reinstall gcc
+          brew reinstall gcc@9
 
-    - name: info
-      run: |
-        # Export the compilers
-        export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
+      - name: info
+        run: |
+          # Export the compilers
+          export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
 
-        # Show compilers and cmake versions
-        mpicc --version
-        mpicxx --version
-        mpif90 --version
-        mpif77 --version
-        cmake --version
+          # Show compilers and cmake versions
+          mpicc --version
+          mpicxx --version
+          mpif90 --version
+          mpif77 --version
+          cmake --version
 
-    - name: build
-      run: |
-        # Export the compilers
-        export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
+      - name: build
+        run: |
+          # Export the compilers
+          export OMPI_CXX=g++-9; export OMPI_CC=gcc-9; export OMPI_FC=gfortran-9
 
-        # Compile dealii in DEBUG mode only
-        echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+          # Compile dealii in DEBUG mode only
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
 
-        ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-        cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+          ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
