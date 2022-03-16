@@ -1,25 +1,32 @@
 ################################################################################
-## SUPERLU_DIST                                                               ##
-################################################################################
+# SUPERLU_DIST
 
-VERSION=5.1.2
-CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
+VERSION=6.4.0
+CHECKSUM=4001999cda77d6176077f160f1a4659a
 
-NAME=superlu_dist_${VERSION}
+# Linking issues with BLAS/LAPACK, maybe CombBLAS is needed for v7.0.0:
+#VERSION=7.0.0
+#CHECKSUM=skip
+
+# NOTE: the tarball is v7.0.0.tar.gz but the folder is superlu_dist-7.0.0
+NAME=v${VERSION}
 PACKING=.tar.gz
-EXTRACTSTO=SuperLU_DIST_${VERSION}
-SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
+EXTRACTSTO=superlu_dist-${VERSION}
+
+SOURCE=https://github.com/xiaoyeli/superlu_dist/archive/refs/tags/
 
 BUILDCHAIN=cmake
-
-INSTALL_PATH=${INSTALL_PATH}/${NAME}
+INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 CONFOPTS="${CONFOPTS} \
+  -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
+  -D TPL_ENABLE_LAPACKLIB:BOOL=ON \
+  -D TPL_ENABLE_PARMETISLIB:BOOL=ON \
   -D TPL_PARMETIS_INCLUDE_DIRS:PATH=${PARMETIS_DIR}/include \
   -D TPL_PARMETIS_LIBRARIES:FILEPATH=${PARMETIS_DIR}/lib/libparmetis.${LDSUFFIX} \
-  -D CMAKE_C_FLAGS:STRING=\"-std=c99 -fPIC\" \
   -D BUILD_SHARED_LIBS:BOOL=ON"
 
+################################################################################
 package_specific_register () {
     export SUPERLU_DIR=${INSTALL_PATH}
 
