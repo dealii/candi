@@ -38,7 +38,8 @@ fi
 # Choice of whether native compiler optimizations should be enabled
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
     CONFOPTS="${CONFOPTS} \
-      -D CMAKE_CXX_FLAGS='-march=native'"
+      -D CMAKE_CXX_FLAGS='-march=native' \
+      -D CMAKE_CXX_FLAGS_RELEASE='-O3'"
 fi
 
 if [ ${USE_DEAL_II_CMAKE_MPI_COMPILER} = ON ]; then
