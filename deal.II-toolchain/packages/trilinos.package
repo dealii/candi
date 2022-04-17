@@ -153,10 +153,17 @@ if [ ! -z "${FC}" ]; then
       -D CMAKE_Fortran_COMPILER=${FC}"
 fi
 
+if [ ${NATIVE_OPTIMIZATIONS} = OFF ]; then
 CONFOPTS="${CONFOPTS} \
   -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
   -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
   -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3'"
+else
+CONFOPTS="${CONFOPTS} \
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 -march=native' \
+  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3 -march=native' \
+  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3 -march=native'"
+fi
 
 # Add ParMETIS, if present
 if [ ! -z "${PARMETIS_DIR}" ]; then

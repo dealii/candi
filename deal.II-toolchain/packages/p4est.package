@@ -40,7 +40,11 @@ package_specific_setup() {
     fi
 
     if test -z "${CFLAGS}" -a -z "${P4EST_CFLAGS_FAST}"; then
-        export CFLAGS_FAST="-O2"
+         if [ ${NATIVE_OPTIMIZATIONS} = OFF ]; then
+             export CFLAGS_FAST="-O2"
+         else
+             export CFLAGS_FAST="-O2 -march=native"
+         fi
     else
         export CFLAGS_FAST="${CFLAGS} ${P4EST_CFLAGS_FAST}"
     fi
