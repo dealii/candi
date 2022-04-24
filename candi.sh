@@ -531,7 +531,7 @@ package_build() {
         done
 
     elif [ ${BUILDCHAIN} = "cmake" ]; then
-        rm -f ${BUILDDDIR}/CMakeCache.txt
+        rm -f ${BUILDDIR}/CMakeCache.txt
         rm -rf ${BUILDDIR}/CMakeFiles
         echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
         for target in "${TARGETS[@]}"; do
