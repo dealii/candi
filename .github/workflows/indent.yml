@@ -1,0 +1,23 @@
+name: indent
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{github.event_name == 'pull_request'}}
+
+jobs:
+  indent:
+    name: indent
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup
+        run: |
+          sudo apt-get install --yes snapd
+          sudo snap install shfmt --channel=latest/stable
+          snap info shfmt
+      - name: indent
+        run: |
+          bash contrib/utilities/check_indentation.sh
