@@ -34,7 +34,7 @@ BUILDCHAIN=autotools
 BUILDDIR=${BUILD_PATH}/adolc-${VERSION}
 INSTALL_PATH=${INSTALL_PATH}/adolc-${VERSION}
 
-CONFOPTS="--enable-atrig-erf --with-boost=no"
+CONFOPTS="--enable-advanced-branching --enable-atrig-erf --enable-traceless_refcounting --enable-stdczero --with-boost=no"
 
 package_specific_register () {
     export ADOLC_DIR=${INSTALL_PATH}
