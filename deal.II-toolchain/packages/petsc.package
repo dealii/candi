@@ -41,7 +41,7 @@ CONFOPTS="\
   --with-shared-libraries=1 \
   --with-mpi=1 \
   --with-x=0 \
-  --with-64-bit-indices=$(with64bit}"
+  --with-64-bit-indices=${with64bit}"
 
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
     CONFOPTS="${CONFOPTS} \

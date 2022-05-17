@@ -40,11 +40,13 @@ package_specific_setup () {
     # make sure no other invalid SLEPC_DIR is set:
     unset SLEPC_DIR
 
-    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH}
     quit_if_fail "slepc ./configure failed"
 
-    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} all install
-    quit_if_fail "slepc make all install failed"
+    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR}
+    quit_if_fail "slepc make failed"
+    make SLEPC_DIR=$PWD PETSC_DIR=${PETSC_DIR} install
+    quit_if_fail "slepc make install failed"
 }
 
 package_specific_register () {
