@@ -7,7 +7,7 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
-    TRILINOS_MAJOR_VERSION="12"
+    TRILINOS_MAJOR_VERSION="13"
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
@@ -19,6 +19,15 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     NAME=Trilinos.git
     PACKING=git
     SOURCE=https://github.com/trilinos/
+elif [ ${TRILINOS_MAJOR_VERSION} = "13" ]; then
+    VERSION=13-2-0
+    CHECKSUM=099680cd3660dba5ec447ddc50a8406c
+    
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
+
 elif [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
     VERSION=12-18-1
     CHECKSUM=9c1d151169949bca6cf203831e4d6aee
@@ -199,13 +208,14 @@ CONFOPTS="\
   -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
   -D TPL_ENABLE_TBB:BOOL=OFF \
   -D Trilinos_VERBOSE_CONFIGURE:BOOL=OFF \
+  -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=ON \
   -D Trilinos_ENABLE_Amesos:BOOL=ON \
   -D Trilinos_ENABLE_Epetra:BOOL=ON \
   -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
-  -D   Tpetra_INST_INT_LONG:BOOL=ON \
+  -D   Tpetra_INST_INT_LONG_LONG:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \
