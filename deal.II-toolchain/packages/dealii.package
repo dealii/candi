@@ -42,6 +42,11 @@ if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
       -D CMAKE_CXX_FLAGS_RELEASE='-O3'"
 fi
 
+if [ ${USE_64_BIT_INDICES} = ON ]; then
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_WITH_64BIT_INDICES=ON"
+fi
+
 if [ ${USE_DEAL_II_CMAKE_MPI_COMPILER} = ON ]; then
     # Disable CXX, CC for deal.II as recommended in
     # https://github.com/dealii/dealii/issues/11478 and set MPI_*_COMPILER

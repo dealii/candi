@@ -29,12 +29,19 @@ INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
 ################################################################################
 
+with64bit=0
+if [ ${USE_64_BIT_INDICES} = ON ]; then
+    with64bit=1
+else
+    with64bit=0
+fi
+
 CONFOPTS="\
   --with-debugging=0 \
   --with-shared-libraries=1 \
   --with-mpi=1 \
   --with-x=0 \
-  --with-64-bit-indices=0"
+  --with-64-bit-indices=${with64bit}"
 
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
     CONFOPTS="${CONFOPTS} \
