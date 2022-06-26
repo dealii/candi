@@ -45,7 +45,7 @@ fi
 
 package_specific_register () {
     export PATH=${INSTALL_PATH}/bin:${PATH}
-    export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
+    export CMAKE_ROOT=${INSTALL_PATH}/share/cmake-${MAJOR}
 }
 
 package_specific_conf () {
@@ -54,6 +54,6 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export PATH=${INSTALL_PATH}/bin:\${PATH}
-export CMAKE_ROOT=${INSTALL_PATH}/share/${MAJOR}
+export CMAKE_ROOT=${INSTALL_PATH}/share/cmake-${MAJOR}
 " >> $CONFIG_FILE
 }
