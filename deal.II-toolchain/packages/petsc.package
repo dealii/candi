@@ -43,11 +43,16 @@ CONFOPTS="\
   --with-x=0 \
   --with-64-bit-indices=${with64bit}"
 
+# It would seem simpler to put the {C|CXX|F}OPTFLAGS directly into the
+# CONFOPTS variable, but there is no easy way to quote the
+# multiarguments and retain the quotes correctly when passing to
+# PETSc. Instead, we specify the individual *OPTFLAGS in the call to
+# ./configure below.
 if [ ${NATIVE_OPTIMIZATIONS} = ON ]; then
-    CONFOPTS="${CONFOPTS} \
-      COPTFLAGS='-O3 -march=native -mtune=native' \
-      CXXOPTFLAGS='-O3 -march=native -mtune=native' \
-      FOPTFLAGS='-O3 -march=native -mtune=native'"
+    OPTFLAGS="-O3 -march=native -mtune=native"
+else
+    # These are the PETSc default:
+    OPTFLAGS="-g -O"
 fi
 
 for external_pkg in hypre; do
@@ -118,7 +123,7 @@ package_specific_setup () {
     # make sure no other invalid PETSC_DIR is set:
     unset PETSC_DIR
     
-    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS}
+    ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS} COPTFLAGS="${OPTFLAGS}" CXXOPTFLAGS="${OPTFLAGS}" FOPTFLAGS="${OPTFLAGS}"
     quit_if_fail "petsc ./configure failed"
     
     make all install
