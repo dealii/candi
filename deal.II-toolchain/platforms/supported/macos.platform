@@ -8,17 +8,39 @@
 # $  xcodebuild -license
 # and accept the license.
 #
+# Make sure you can run
+# $ clang -v
+# (it might trigger an installation the first time you run it).
+#
 # - Install Homebrew in a Terminal via
 # $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #
 # - Install the following via Homebrew
 # $  brew install cmake gcc@11 openmpi
 #
-# - Export compiler environment
+# - Export compiler environment:
+#
+# If you are running an ARM based macOS device (M1, M2, etc.), we strongly recommend
+# using the clang compiler, which is the default. You can check so by running
+# $ mpicxx -v
+# If it reports "clang", you are good to go.
+#
+# If you are not running on an ARM device (traditional Intel based laptops), we
+# strongly recommend using gcc instead of clang. This can be achieved by running
+#
 # $ export CC=mpicc; export CXX=mpicxx; export FC=mpifort; export FF=mpifort; \
 # OMPI_CC=gcc-11; export OMPI_CXX=g++-11; export OMPI_FC=gfortran-11
 #
-# Run candi again!
+# Finally, ARM support is still experimental and not all packages and options work
+# without problems. It might be easiest to start by only enabling the packages
+# you care about.
+#
+# If you are missing any steps, abort this installation now, do the changes and then
+# run candi again!
+#
+# You might also want to consult:
+# - https://github.com/dealii/dealii/wiki/MacOSX
+# - https://github.com/dealii/dealii/wiki/Apple-ARM-M1-OSX
 #
 # If you encounter runtime problems with missing *.dylib libraries,
 # you may change the security policy for developments. To do so,
