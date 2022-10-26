@@ -20,8 +20,8 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     PACKING=git
     SOURCE=https://github.com/trilinos/
 elif [ ${TRILINOS_MAJOR_VERSION} = "13" ]; then
-    VERSION=13-2-0
-    CHECKSUM=099680cd3660dba5ec447ddc50a8406c
+    VERSION=13-4-0;CHECKSUM=8f0c9ef997b7fa1eff0d2dd16fddb7ad
+    #VERSION=13-2-0;CHECKSUM=099680cd3660dba5ec447ddc50a8406c
     
     SOURCE=https://github.com/trilinos/Trilinos/archive/
     NAME=trilinos-release-${VERSION}
