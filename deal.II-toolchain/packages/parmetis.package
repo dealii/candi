@@ -17,16 +17,7 @@ if [ ${USE_64_BIT_INDICES} = ON ]; then
   modifications on other architectures.
  --------------------------------------------------------------------------*/
 -#define IDXTYPEWIDTH 32
-+#define IDXTYPEWIDTH 64
-
-
- /*--------------------------------------------------------------------------
-@@ -40,7 +40,7 @@
-    32 : single precission floating point (float)
-    64 : double precission floating point (double)
- --------------------------------------------------------------------------*/
--#define REALTYPEWIDTH 32
-+#define REALTYPEWIDTH 64"  | tee -a ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch
++#define IDXTYPEWIDTH 64"  | tee -a ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch
 fi
 
 package_specific_build() {
