@@ -21,7 +21,7 @@ package_specific_build () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    make -j ${JOBS} PREFIX=${INSTALL_PATH}
+    make -j ${JOBS} PREFIX=${INSTALL_PATH} DYNAMIC_ARCH=1
     quit_if_fail "make failed"
 
     make install -j ${JOBS} PREFIX=${INSTALL_PATH}
