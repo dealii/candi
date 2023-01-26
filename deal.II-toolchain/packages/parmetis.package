@@ -7,19 +7,6 @@ BUILDCHAIN=custom
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
-if [ ${USE_64_BIT_INDICES} = ON ]; then
-
-    echo "
---- metis/include/metis.h	2013-03-30 16:24:50.000000000 +0000
-+++ metis/include/metis.h	2022-11-27 16:14:07.863359070 +0000
-@@ -30,7 +30,7 @@
-  GCC does provides these definitions in stdint.h, but it may require some
-  modifications on other architectures.
- --------------------------------------------------------------------------*/
--#define IDXTYPEWIDTH 32
-+#define IDXTYPEWIDTH 64"  | tee -a ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch
-fi
-
 package_specific_build() {
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
     
@@ -54,6 +41,12 @@ package_specific_patch () {
             cd ${UNPACK_PATH}/${EXTRACTSTO}
             cecho ${WARN} "applying patch for building METIS shared libraries"
             patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
+
+            if [ ${USE_64_BIT_INDICES} = ON ]; then
+            cd ${UNPACK_PATH}/${EXTRACTSTO}
+            cecho ${WARN} "applying patch for 64bit ParMETIS"
+            patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-64bit.patch || true
+            fi
         fi
     fi
 }
