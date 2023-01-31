@@ -41,6 +41,12 @@ package_specific_patch () {
             cd ${UNPACK_PATH}/${EXTRACTSTO}
             cecho ${WARN} "applying patch for building METIS shared libraries"
             patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-build.patch || true
+
+            if [ ${USE_64_BIT_INDICES} = ON ]; then
+            cd ${UNPACK_PATH}/${EXTRACTSTO}
+            cecho ${WARN} "applying patch for 64bit ParMETIS"
+            patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-64bit.patch || true
+            fi
         fi
     fi
 }
