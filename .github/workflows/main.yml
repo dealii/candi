@@ -47,6 +47,25 @@ jobs:
           ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
+  ubuntu22:
+    name: ubuntu 22.04
+    runs-on: [ubuntu-22.04]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup
+        run: |
+          sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin cmake
+      - name: info
+        run: |
+          g++ -v
+          mpic++ -v
+          cmake --version
+      - name: build
+        run: |
+          ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+
   osx-minimal:
     name: OSX clang
     runs-on: [macos-latest]
