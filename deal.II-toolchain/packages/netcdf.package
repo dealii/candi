@@ -18,7 +18,7 @@ package_specific_register () {
 
 package_specific_conf () {
     # Generate configuration file
-    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    CONFIG_FILE=${CONFIGURATION_PATH}/netcdf-${NAME}
     rm -f $CONFIG_FILE
     echo "
 export NETCDF_DIR=${INSTALL_PATH}
