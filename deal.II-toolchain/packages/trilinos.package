@@ -206,6 +206,7 @@ if [ ! -z "${NETCDF_DIR}" ]; then
 
     CONFOPTS="${CONFOPTS} \
       -D Trilinos_ENABLE_SEACAS=ON \
+      -D TPL_ENABLE_X11=OFF \
       -D TPL_ENABLE_Netcdf=ON \
       -D Netcdf_LIBRARY_DIRS=${NETCDF_DIR}/lib/ \
       -D Netcdf_INCLUDE_DIRS=${NETCDF_DIR}/include/"
