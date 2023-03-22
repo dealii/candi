@@ -46,6 +46,7 @@ PREFIX=~/dealii-candi
 JOBS=1
 CMD_PACKAGES=""
 USER_INTERACTION=ON
+CMAKE=cmake
 
 while [ -n "$1" ]; do
     param="$1"
@@ -61,6 +62,7 @@ while [ -n "$1" ]; do
 	    echo "  --platform=<platform>       force usage of a particular platform file"
 	    echo "  --packages=\"pkg1 pkg2\"      install the given list of packages instead of the default set in candi.cfg"
 	    echo "  -y, --yes, --assume-yes     automatic yes to prompts"
+        echo "  --cmake_path=<path_to_desired_cmake>  use user defined cmake-version"
 	    echo ""
 	    echo "The configuration including the choice of packages to install is stored in candi.cfg, see README.md for more information."
 	    exit 0
@@ -108,6 +110,12 @@ while [ -n "$1" ]; do
         # Assume yes to prompts
         -y|--yes|--assume-yes)
             USER_INTERACTION=OFF
+        ;;
+
+        #####################################
+        # Specific cmake version
+        --cmake_path=*)
+            CMAKE="${param#*=}"
         ;;
 
 	*)
@@ -533,7 +541,7 @@ package_build() {
     elif [ ${BUILDCHAIN} = "cmake" ]; then
         rm -f ${BUILDDIR}/CMakeCache.txt
         rm -rf ${BUILDDIR}/CMakeFiles
-        echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
+        echo ${CMAKE} ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
         for target in "${TARGETS[@]}"; do
             echo make ${MAKEOPTS} -j ${JOBS} $target >>candi_build
         done

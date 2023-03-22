@@ -137,6 +137,13 @@ see [deal.II-toolchain/platforms](deal.II-toolchain/platforms).
 With this option you skip the user interaction. This might be useful if you
 submit the installation to the queueing system of a cluster.
 
+#### Specific cmake version: ``[--cmake_path=<path>]``
+```bash
+  ./candi.sh --cmake_path="/path/to/install/dir"
+```
+With this option you can choose a specific cmake installation. This might be
+necessary if a package requires a minimum cmake version that is not satisfied
+by the version provided by your operating system.
 
 ### Configuration file options
 
