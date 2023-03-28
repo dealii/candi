@@ -161,6 +161,11 @@ INFO="\033[1;34m"
 BOLD="\033[1m"
 
 ################################################################################
+# Ensure that no PETSc environment variables are set.
+unset PETSC_DIR
+unset PETSC_ARCH
+
+################################################################################
 # Define candi helper functions
 
 prettify_dir() {

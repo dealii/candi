@@ -120,9 +120,13 @@ package_specific_setup () {
     cd ${BUILDDIR}
     cp -rf ${UNPACK_PATH}/${EXTRACTSTO}/* .
 
-    # make sure no other invalid PETSC_DIR is set:
+    # Make sure we don't pick up any environment copies of PETSc variables. This
+    # duplicates the same unset commands in candi.sh to ensure that, should this
+    # function run as a shell script (i.e., not with the source command), they
+    # are not reset by .bash_profile or some other shell initialization script.
     unset PETSC_DIR
-    
+    unset PETSC_ARCH
+
     ${PYTHON_INTERPRETER} ./configure --prefix=${INSTALL_PATH} ${CONFOPTS} COPTFLAGS="${OPTFLAGS}" CXXOPTFLAGS="${OPTFLAGS}" FOPTFLAGS="${OPTFLAGS}"
     quit_if_fail "petsc ./configure failed"
     
