@@ -2,13 +2,10 @@
 ## HDF5                                                                       ##
 ################################################################################
 
-MAJORVER=1.10
-MINORVER=8
-CHECKSUM=61063043a23dd4a32dcd73a704bb47f2
+MAJORVER=1.12;MINORVER=2;CHECKSUM=30172c75e436d7f2180e274071a4ca97
 
-# MAJORVER=1.10
-# MINORVER=5
-# CHECKSUM=e115eeb66e944fa7814482415dd21cc4
+#MAJORVER=1.10;MINORVER=8;CHECKSUM=61063043a23dd4a32dcd73a704bb47f2
+#MAJORVER=1.10;MINORVER=5;CHECKSUM=e115eeb66e944fa7814482415dd21cc4
 
 VERSION=${MAJORVER}.${MINORVER}
 NAME=hdf5-${VERSION}
