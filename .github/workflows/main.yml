@@ -23,7 +23,7 @@ jobs:
           cmake --version
       - name: build
         run: |
-          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug -D DEAL_II_LINKER_FLAGS=-fuse-ld=bfd"' >> candi.cfg
           ./candi.sh -j 2 --packages="once:p4est dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
 
@@ -43,6 +43,7 @@ jobs:
           cmake --version
       - name: build
         run: |
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug -D DEAL_II_LINKER_FLAGS=-fuse-ld=bfd"' >> candi.cfg
           # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
           ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
