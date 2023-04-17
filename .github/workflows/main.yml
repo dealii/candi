@@ -7,26 +7,6 @@ concurrency:
   cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
-  ubuntu18-minimal:
-    name: ubuntu 18.04 minimal
-    runs-on: [ubuntu-18.04]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: setup
-        run: |
-          sudo apt-get install gfortran libopenmpi-dev openmpi-common openmpi-bin libblas-dev liblapack-dev libblas3 liblapack3
-      - name: info
-        run: |
-          g++ -v
-          mpic++ -v
-          cmake --version
-      - name: build
-        run: |
-          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug -D DEAL_II_LINKER_FLAGS=-fuse-ld=bfd"' >> candi.cfg
-          ./candi.sh -j 2 --packages="once:p4est dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
-
   ubuntu20-blas:
     name: ubuntu 20.04
     runs-on: [ubuntu-20.04]
