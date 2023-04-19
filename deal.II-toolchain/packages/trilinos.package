@@ -201,7 +201,10 @@ if [ ! -z "${SUPERLU_DIR}" ]; then
 fi
 
 # support netCDF and SEACAS (if netCDF is available)
-if [ ! -z "${NETCDF_DIR}" ]; then
+if [ -z "${TRILINOS_WITH_SEACAS}" ]; then
+    TRILINOS_WITH_SEACAS=ON
+fi
+if [ ${TRILINOS_WITH_SEACAS} = ON ] && [ ! -z "${NETCDF_DIR}" ]; then
     cecho ${INFO} "trilinos: configuration with netCDF and SEACAS"
 
     CONFOPTS="${CONFOPTS} \
@@ -227,7 +230,6 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
-  -D   Tpetra_INST_INT_LONG_LONG:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \

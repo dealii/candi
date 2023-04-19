@@ -46,3 +46,12 @@
 # you may change the security policy for developments. To do so,
 # enable Terminal in System Preferences / Security & Privacy / Developer Tools .
 ##
+
+if [ "$(machine)" = "arm64e" ]; then
+  cecho ${INFO} "MacOS on arm64 detected!"
+
+  # Trilinos will link with netcdf and indirectly hdf5, but linking fails. Just
+  # disable this for now.
+  TRILINOS_WITH_SEACAS=OFF
+
+fi
