@@ -1012,16 +1012,19 @@ cecho ${GOOD} "Platform: ${PLATFORM}"
 echo
 
 
-# Figure out what binary to use for python support. Note that older PETSc ./configure only supports python2. For now, prefer
-# using python2 but use what the user supplies as PYTHON_INTERPRETER.
+# Figure out what binary to use for python support. Prefer
+# using python3 but use what the user supplies as PYTHON_INTERPRETER.
+if builtin command -v python3 --version > /dev/null; then
+  default PYTHON_INTERPRETER="python3"
+fi
+if builtin command -v python --version > /dev/null; then
+  default PYTHON_INTERPRETER="python"
+fi
 if builtin command -v python2 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2"
 fi
 if builtin command -v python2.7 --version > /dev/null; then
   default PYTHON_INTERPRETER="python2.7"
-fi
-if builtin command -v python3 --version > /dev/null; then
-  default PYTHON_INTERPRETER="python3"
 fi
 default PYTHON_INTERPRETER="python"
 
