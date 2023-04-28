@@ -2,20 +2,17 @@
 ## SLEPc                                                                      ##
 ################################################################################
 
-VERSION=3.16.2
-CHECKSUM=673dbda220e5a4bd2c3a6618267d8e55
+VERSION=3.19.0;CHECKSUM=673dbda220e5a4bd2c3a6618267d8e55
 
-#VERSION=3.13.2
-#CHECKSUM=74af8d2ff74aa8b1a75a5e96e17ab7d8
+#VERSION=3.16.2;CHECKSUM=673dbda220e5a4bd2c3a6618267d8e55
 
-#VERSION=3.11.2
-#CHECKSUM=89abc5a197dd696a3c73f00f48699d7b
+#VERSION=3.13.2;CHECKSUM=74af8d2ff74aa8b1a75a5e96e17ab7d8
 
-#VERSION=3.7.3
-#CHECKSUM=c7edcb13e0b19e2cf263301962b38f75
+#VERSION=3.11.2;CHECKSUM=89abc5a197dd696a3c73f00f48699d7b
 
-#VERSION=3.6.0
-#CHECKSUM=560a634369fdab3fcaeea35c2cbab6f1
+#VERSION=3.7.3;CHECKSUM=c7edcb13e0b19e2cf263301962b38f75
+
+#VERSION=3.6.0;CHECKSUM=560a634369fdab3fcaeea35c2cbab6f1
 
 NAME=slepc-${VERSION}
 SOURCE=http://slepc.upv.es/download/distrib/
