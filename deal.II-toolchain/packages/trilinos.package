@@ -19,14 +19,26 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     NAME=Trilinos.git
     PACKING=git
     SOURCE=https://github.com/trilinos/
-elif [ ${TRILINOS_MAJOR_VERSION} = "13" ]; then
-    VERSION=13-2-0
-    CHECKSUM=099680cd3660dba5ec447ddc50a8406c
+elif [ ${TRILINOS_MAJOR_VERSION} = "14" ]; then
+
+    VERSION=14-0-0
+    CHECKSUM=24d973894e2e334c6ac9436d8b16f7cc
     
     SOURCE=https://github.com/trilinos/Trilinos/archive/
     NAME=trilinos-release-${VERSION}
     EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
     PACKING=.tar.gz
+
+elif [ ${TRILINOS_MAJOR_VERSION} = "13" ]; then
+
+    VERSION=13-2-0
+    CHECKSUM=099680cd3660dba5ec447ddc50a8406c    
+   
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
+
 
 elif [ ${TRILINOS_MAJOR_VERSION} = "12" ]; then
     VERSION=12-18-1
