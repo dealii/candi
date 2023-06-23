@@ -1,5 +1,5 @@
-MAJOR=3.20
-MINOR=5
+MAJOR=3.26
+MINOR=4
 VERSION=${MAJOR}.${MINOR}
 
 if [ -z ${CANDI_CMAKE_LOAD_TARBALL} ]; then
@@ -15,13 +15,15 @@ if [ ${CANDI_CMAKE_LOAD_TARBALL} = ON ] && [ ${PLATFORM_OSTYPE} == "linux" ]; th
     # tarball install
     NAME=cmake-${VERSION}-linux-x86_64
     PACKING=.tar.gz
-    CHECKSUM=3adc4d6ab87b8d3b46fb5fe98612dd84 # 3.20.5 tarball linux
+    CHECKSUM=ac6d7ce3cad61c5c5a021ababbe3bd17 # 3.26.4 tarball linux
+    #CHECKSUM=3adc4d6ab87b8d3b46fb5fe98612dd84 # 3.20.5 tarball linux
     BUILDCHAIN=ignore
 else
     # configure/make/install
     NAME=cmake-${VERSION}
     PACKING=.tar.gz
-    CHECKSUM=137311bbe83d9a32469f99ac2792a2bc # 3.20.5 src
+    CHECKSUM=9095556a3b268fd88c995d2bb4c90320 # 3.26.4 src
+    #CHECKSUM=137311bbe83d9a32469f99ac2792a2bc # 3.20.5 src
 
     if builtin command -v cmake > /dev/null; then
         # configure/make with cmake (older or newer version already installed)    
