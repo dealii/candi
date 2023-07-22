@@ -91,6 +91,8 @@ jobs:
           mpif90 --version
           mpif77 --version
           cmake --version
+          python --version
+          python3 --version
 
       - name: build
         run: |
