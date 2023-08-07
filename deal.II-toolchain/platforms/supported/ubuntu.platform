@@ -4,7 +4,7 @@
 # installed via ubuntu's apt-get using the following commands:
 #
 #   sudo apt-get install lsb-release git subversion wget bc libgmp-dev \
-#   build-essential autoconf automake cmake libtool gfortran python \
+#   build-essential autoconf automake cmake libtool gfortran python3 \
 #   libboost-all-dev zlib1g-dev \
 #   openmpi-bin openmpi-common libopenmpi-dev \
 #   libblas3 libblas-dev liblapack3 liblapack-dev libsuitesparse-dev
