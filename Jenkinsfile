@@ -24,10 +24,10 @@ pipeline
     {
       when {
         allOf {
-            environment name: 'TRUST_BUILD', value: 'false' 
+            environment name: 'TRUST_BUILD', value: 'false'
             not {branch 'master'}
             not {changeRequest authorEmail: "timo.heister@gmail.com"}
-	    }	    
+	    }
       }
       steps {
           echo "Please ask an admin to rerun Jenkins with TRUST_BUILD=true"
@@ -45,7 +45,7 @@ pipeline
           dir 'contrib/ubuntu2004'
         }
       }
-      
+
       steps
       {
         sh '''#!/bin/bash
@@ -66,11 +66,42 @@ pipeline
       }
     }
 
+    stage ("Ubuntu-22.04")
+    {
+      options {timeout(time: 600, unit: 'MINUTES')}
+      agent
+      {
+        dockerfile
+        {
+          dir 'contrib/ubuntu2204'
+        }
+      }
+
+      steps
+      {
+        sh '''#!/bin/bash
+	set -e
+	set -x
+	mpicxx -v
+	cmake --version
+	rm -rf $WORKSPACE/tmp/
+	rm -f local.cfg
+        ./candi.sh -j 10 -p $WORKSPACE
+        cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
+        '''
+	archiveArtifacts artifacts: 'detailed-ubuntu2204.log', fingerprint: true
+
+        sh '''#!/bin/bash
+        cd $WORKSPACE/tmp/build/deal.II-* && make test
+        '''
+      }
+    }
+
     stage ("OSX-M1")
     {
       options {timeout(time: 600, unit: 'MINUTES')}
       agent
-      {        
+      {
          node
         {
           label 'osx'
