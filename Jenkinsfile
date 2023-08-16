@@ -84,6 +84,8 @@ pipeline
 	set -x
 	mpicxx -v
 	cmake --version
+	rm -rf $WORKSPACE/tmp/
+	rm -f local.cfg
         ./candi.sh -j 10 -p $WORKSPACE
         cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
         '''
