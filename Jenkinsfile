@@ -123,12 +123,10 @@ pipeline
 	archiveArtifacts artifacts: 'detailed-osx.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/tmp/build/deal.II-* && make test
+        cd $WORKSPACE/tmp/build/deal.II-* && ctest -j 4 --output-on-failure
         '''
       }
     }
 
   }
-
-
 }
