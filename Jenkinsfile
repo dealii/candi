@@ -55,13 +55,14 @@ pipeline
 	cmake --version
 	# Ubuntu 20.04 only ships cmake 3.16 not 3.17:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
-        ./candi.sh -j 10 -p $WORKSPACE
-        cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
+	rm -rf $WORKSPACE/install
+        ./candi.sh -j 10 -p $WORKSPACE/install
+        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2004.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/tmp/build/deal.II-* && make test
+        cd $WORKSPACE/install/tmp/build/deal.II-* && make test
         '''
       }
     }
@@ -84,15 +85,15 @@ pipeline
 	set -x
 	mpicxx -v
 	cmake --version
-	rm -rf $WORKSPACE/tmp/
 	rm -f local.cfg
-        ./candi.sh -j 10 -p $WORKSPACE
-        cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
+	rm -rf $WORKSPACE/install/
+        ./candi.sh -j 10 -p $WORKSPACE/install
+        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2204.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/tmp/build/deal.II-* && make test
+        cd $WORKSPACE/install/tmp/build/deal.II-* && make test
         '''
       }
     }
@@ -122,12 +123,10 @@ pipeline
 	archiveArtifacts artifacts: 'detailed-osx.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/tmp/build/deal.II-* && make test
+        cd $WORKSPACE/tmp/build/deal.II-* && ctest -j 4 --output-on-failure
         '''
       }
     }
 
   }
-
-
 }
