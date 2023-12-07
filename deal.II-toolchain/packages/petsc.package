@@ -24,7 +24,7 @@ CHECKSUM=8eb924facc586b3368536ad2b9df1d35
 #CHECKSUM=e7a5253621253eef8f5a19ddc03dd0d4
 
 NAME=petsc-lite-${VERSION}
-SOURCE=http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/
+SOURCE=https://web.cels.anl.gov/projects/petsc/download/release-snapshots/
 PACKING=.tar.gz
 
 EXTRACTSTO=petsc-${VERSION}
