@@ -56,7 +56,7 @@ pipeline
 	# Ubuntu 20.04 only ships cmake 3.16 not 3.17:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
 	rm -rf $WORKSPACE/install
-        ./candi.sh -j 10 -p $WORKSPACE/install
+        ./candi.sh -j 8 -p $WORKSPACE/install
         cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2004.log', fingerprint: true
@@ -87,7 +87,7 @@ pipeline
 	cmake --version
 	rm -f local.cfg
 	rm -rf $WORKSPACE/install/
-        ./candi.sh -j 10 -p $WORKSPACE/install
+        ./candi.sh -j 8 -p $WORKSPACE/install
         cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2204.log', fingerprint: true
