@@ -236,6 +236,7 @@ CONFOPTS="\
   -D TPL_ENABLE_TBB:BOOL=OFF \
   -D Trilinos_VERBOSE_CONFIGURE:BOOL=OFF \
   -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=OFF \
+  -D Trilinos_ENABLE_FLOAT=ON \
   -D Trilinos_ENABLE_Amesos:BOOL=ON \
   -D Trilinos_ENABLE_Epetra:BOOL=ON \
   -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
@@ -245,7 +246,6 @@ CONFOPTS="\
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
   -D Trilinos_ENABLE_Teuchos:BOOL=ON \
-  -D   Teuchos_ENABLE_FLOAT:BOOL=ON \
   -D Trilinos_ENABLE_MueLu:BOOL=ON \
   -D Trilinos_ENABLE_ML:BOOL=ON \
   -D Trilinos_ENABLE_NOX:BOOL=ON \
@@ -263,9 +263,7 @@ CONFOPTS="\
 
 if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
     CONFOPTS="\
-    -D Trilinos_ENABLE_COMPLEX_DOUBLE=ON \
-    -D Trilinos_ENABLE_COMPLEX_FLOAT=ON \
-    -D Teuchos_ENABLE_COMPLEX:BOOL=ON \
+    -D Trilinos_ENABLE_COMPLEX=ON \
     ${CONFOPTS}"
 fi
 
