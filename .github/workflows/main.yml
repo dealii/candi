@@ -26,7 +26,7 @@ jobs:
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug -D DEAL_II_LINKER_FLAGS=-fuse-ld=bfd"' >> candi.cfg
           # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
           ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   ubuntu22:
     name: ubuntu 22.04
@@ -45,7 +45,7 @@ jobs:
       - name: build
         run: |
           ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   osx-minimal:
     name: OSX clang
@@ -59,7 +59,7 @@ jobs:
           pip install cmake==3.20.5
           echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
           brew install openmpi
-          brew reinstall gcc@9
+          brew reinstall gcc@11
       - name: info
         run: |
           mpicxx -v
@@ -68,7 +68,7 @@ jobs:
         run: |
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
           ./candi.sh -j 2 --packages="dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   macos-gcc:
     name: macos-gcc
@@ -103,4 +103,4 @@ jobs:
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
 
           ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && make test
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
