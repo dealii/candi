@@ -7,7 +7,7 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
-    TRILINOS_MAJOR_VERSION="13"
+    TRILINOS_MAJOR_VERSION="14"
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
@@ -21,8 +21,10 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     SOURCE=https://github.com/trilinos/
 elif [ ${TRILINOS_MAJOR_VERSION} = "14" ]; then
 
-    VERSION=14-0-0
-    CHECKSUM=24d973894e2e334c6ac9436d8b16f7cc
+    VERSION=14-4-0;CHECKSUM=334f9c3700c72f6ed5658eaa783ffccd
+    # VERSION=14-2-0;CHECKSUM=ca08601791d1c301473a0cde6c047c2e
+
+    # VERSION=14-0-0;CHECKSUM=24d973894e2e334c6ac9436d8b16f7cc
     
     SOURCE=https://github.com/trilinos/Trilinos/archive/
     NAME=trilinos-release-${VERSION}
@@ -235,7 +237,7 @@ CONFOPTS="\
   -D Trilinos_ENABLE_OpenMP:BOOL=OFF \
   -D TPL_ENABLE_TBB:BOOL=OFF \
   -D Trilinos_VERBOSE_CONFIGURE:BOOL=OFF \
-  -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=OFF \
+  -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=ON \
   -D Trilinos_ENABLE_FLOAT=ON \
   -D Trilinos_ENABLE_Amesos:BOOL=ON \
   -D Trilinos_ENABLE_Epetra:BOOL=ON \

@@ -54,4 +54,7 @@ if [ "$(machine)" = "arm64e" ]; then
   # disable this for now.
   TRILINOS_WITH_SEACAS=OFF
 
+  # Trilinos defaults to c++17 while deal.II 9.5 defaults to c++14 with clang 14,
+  # which then fails to compile when including Kokkos coming from Trilinos:
+  DEAL_II_CONFOPTS="-DCMAKE_CXX_STANDARD=17 ${DEAL_II_CONFOPTS}"
 fi

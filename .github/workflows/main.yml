@@ -103,4 +103,4 @@ jobs:
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
 
           ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && ctest --output-on-failure -j 2
