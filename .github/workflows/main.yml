@@ -67,7 +67,7 @@ jobs:
       - name: build
         run: |
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
-          ./candi.sh -j 2 --packages="dealii"
+          ./candi.sh -j 2 --packages="boost dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   macos-gcc:
