@@ -14,6 +14,7 @@ CONFOPTS="--disable-dap --enable-parallel --enable-netcdf-4 CPPFLAGS=-I${HDF5_DI
 
 package_specific_register () {
     export NETCDF_DIR=${INSTALL_PATH}
+    export PATH=${INSTALL_PATH}/bin:$PATH
 }
 
 package_specific_conf () {
@@ -22,5 +23,6 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export NETCDF_DIR=${INSTALL_PATH}
+export PATH=${INSTALL_PATH}/bin:$PATH
 " >> $CONFIG_FILE
 }
