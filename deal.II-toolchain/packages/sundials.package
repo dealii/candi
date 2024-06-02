@@ -43,6 +43,9 @@ INSTALL_PATH=${INSTALL_PATH}/sundials-${VERSION}
 # new ENABLE_MPI option was used.
 CONFOPTS="\
   -D ENABLE_MPI:BOOL=ON \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D EXAMPLES_ENABLE_C=OFF \
+  -D EXAMPLES_INSTALL=OFF \
   -D BUILD_SHARED_LIBS:BOOL=ON"
 
 package_specific_register() {
