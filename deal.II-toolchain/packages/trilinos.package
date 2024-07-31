@@ -289,6 +289,16 @@ CONFOPTS="\
   -D BUILD_SHARED_LIBS:BOOL=ON \
   ${CONFOPTS}"
 
+if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+    CONFOPTS="${CONFOPTS} \
+  -D TPL_ENABLE_MPI=ON \
+  -D TPL_ENABLE_CUDA=ON \
+  -D Kokkos_ENABLE_CUDA=ON \
+  -D Kokkos_ENABLE_CUDA_LAMBDA=ON \
+  -D Kokkos_ENABLE_CUDA_CONSTEXPR=ON \
+  -D Tpetra_INST_CUDA=ON"
+fi
+
 if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
     CONFOPTS="\
     -D Trilinos_ENABLE_COMPLEX=ON \
@@ -298,6 +308,20 @@ fi
 # finally append user options:
 CONFOPTS="${CONFOPTS} \
   ${TRILINOS_CONFOPTS}"
+
+package_specific_setup () {
+    if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+        export OMPI_CXX=${UNPACK_PATH}/${EXTRACTSTO}/packages/kokkos/bin/nvcc_wrapper
+        echo "SETTING OMPI_CXX to ${OMPI_CXX}"
+    fi
+}
+
+package_specific_install () {
+    if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+        echo "UNSETTING OMPI_CXX"
+        unset OMPI_CXX
+    fi
+}
 
 package_specific_register () {
     export TRILINOS_DIR=${INSTALL_PATH}
