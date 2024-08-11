@@ -980,16 +980,6 @@ else
     cecho ${BAD} "FF  variable not set. Please set it with \$export FF  = <(MPI) F77 compiler>"
 fi
 
-
-# Kokkos/GPU support
-
-if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
-    export OMPI_CXX=${TRILINOS_DIR}/bin/nvcc_wrapper
-
-    cecho ${INFO} "setting OMPI_CXX for use with Kokkos  = ${OMPI_CXX}"
-fi
-
-
 echo
 
 # Final test for compiler variables
