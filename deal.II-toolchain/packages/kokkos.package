@@ -1,0 +1,32 @@
+VERSION=4.4.00;CHECKSUM=95af2e2d4b10a67a63cce09715fba127
+
+NAME=${VERSION}
+PACKING=.tar.gz
+SOURCE=https://github.com/kokkos/kokkos/archive/refs/tags/
+EXTRACTSTO=kokkos-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/kokkos-${NAME}
+BUILDDIR=${BUILD_PATH}/kokkos-${VERSION}
+
+BUILDCHAIN=cmake
+
+CONFOPTS="-D BUILD_SHARED_LIBS=ON"
+
+if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+    CONFOPTS="${CONFOPTS} \
+  -D Kokkos_ENABLE_CUDA=ON \
+  -D Kokkos_ENABLE_CUDA_LAMBDA=ON \
+  -D Kokkos_ENABLE_CUDA_CONSTEXPR=ON"
+fi
+
+package_specific_register () {
+    export KOKKOS_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/kokkos-${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export KOKKOS_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
