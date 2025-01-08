@@ -11,6 +11,8 @@ if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
+
+    # this is very much out of date
     # download from github:
     # this is the last "blessed" version we like:
     VERSION=dbf41f3b26b0326a1377f219e6e07eab861d181e
@@ -19,6 +21,23 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     NAME=Trilinos.git
     PACKING=git
     SOURCE=https://github.com/trilinos/
+elif [ ${TRILINOS_MAJOR_VERSION} = "16" ]; then
+
+    VERSION=16-0-0;CHECKSUM=e6d83f7980800a3aad1b7cab6b901fd5
+
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
+elif [ ${TRILINOS_MAJOR_VERSION} = "15" ]; then
+
+    # broken, at least with gcc 13.3, but we'll leave it here:
+    VERSION=15-1-1;CHECKSUM=99542eebbf2dadefdea7b6a21af68c89
+
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
 elif [ ${TRILINOS_MAJOR_VERSION} = "14" ]; then
 
     VERSION=14-4-0;CHECKSUM=334f9c3700c72f6ed5658eaa783ffccd
