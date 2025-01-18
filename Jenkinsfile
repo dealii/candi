@@ -53,7 +53,7 @@ pipeline
 	set -x
 	mpicxx -v
 	cmake --version
-	# Ubuntu 20.04 only ships cmake 3.16 not 3.17:
+	# Ubuntu 20.04 only ships cmake 3.16 not 3.23:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
 	rm -rf $WORKSPACE/install
         ./candi.sh -j 8 -p $WORKSPACE/install
@@ -67,14 +67,14 @@ pipeline
       }
     }
 
-    stage ("Ubuntu-22.04")
+    stage ("Ubuntu-24.04")
     {
       options {timeout(time: 600, unit: 'MINUTES')}
       agent
       {
         dockerfile
         {
-          dir 'contrib/ubuntu2204'
+          dir 'contrib/ubuntu2404'
         }
       }
 
@@ -88,9 +88,9 @@ pipeline
 	rm -f local.cfg
 	rm -rf $WORKSPACE/install/
         ./candi.sh -j 8 -p $WORKSPACE/install
-        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
+        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2404.log
         '''
-	archiveArtifacts artifacts: 'detailed-ubuntu2204.log', fingerprint: true
+	archiveArtifacts artifacts: 'detailed-ubuntu2404.log', fingerprint: true
 
         sh '''#!/bin/bash
         cd $WORKSPACE/install/tmp/build/deal.II-* && make test

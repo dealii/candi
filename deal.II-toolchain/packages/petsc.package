@@ -2,11 +2,16 @@
 ## PETSc                                                                      ##
 ################################################################################
 
-#VERSION=3.19.4
-#CHECKSUM=477c30e120498dba4fad01020d4b0ffc
 
-VERSION=3.18.6
-CHECKSUM=8eb924facc586b3368536ad2b9df1d35
+VERSION=3.22.2;CHECKSUM=d18caed83d1bf351c4ccb574b0b376e5
+
+#VERSION=3.21.6;CHECKSUM=ab98f5f22731549eda3ae2704b05e9f7
+
+#VERSION=3.21.4;CHECKSUM=e8d76467696fcff970bd56c93dd83476
+
+#VERSION=3.19.4;CHECKSUM=477c30e120498dba4fad01020d4b0ffc
+
+#VERSION=3.18.6;CHECKSUM=8eb924facc586b3368536ad2b9df1d35
 
 #VERSION=3.16.4
 #CHECKSUM=7de82ee5543cba9a7c12ca00c81f0b87
@@ -23,7 +28,7 @@ CHECKSUM=8eb924facc586b3368536ad2b9df1d35
 #VERSION=3.6.4
 #CHECKSUM=e7a5253621253eef8f5a19ddc03dd0d4
 
-NAME=petsc-lite-${VERSION}
+NAME=petsc-${VERSION}
 SOURCE=https://web.cels.anl.gov/projects/petsc/download/release-snapshots/
 PACKING=.tar.gz
 
