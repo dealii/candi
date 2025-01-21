@@ -61,10 +61,10 @@ fi
 
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
     CONFOPTS="${CONFOPTS} \
-      -D CMAKE_CXX_COMPILER=${TRILINOS_DIR}/bin/nvcc_wrapper \
+      -D CMAKE_CXX_COMPILER=${KOKKOS_DIR}/bin/nvcc_wrapper \
       -D DEAL_II_WITH_CUDA=OFF \
       -D DEAL_II_WITH_KOKKOS=ON \
-      -D KOKKOS_DIR=${TRILINOS_DIR} \
+      -D KOKKOS_DIR=${KOKKOS_DIR} \
       -D DEAL_II_MPI_WITH_DEVICE_SUPPORT=OFF"
     # you need a special MPI version to enable DEAL_II_MPI_WITH_DEVICE_SUPPORT
 fi
