@@ -11,7 +11,7 @@ INSTALL_PATH=${INSTALL_PATH}/hypre-${NAME}
 
 CONFOPTS="--enable-shared"
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
-  CONFOPTS="${CONFOPTS} --with-gpu-arch=${USE_CUDA_ARCH} --with-cuda --enable-unified-memory"
+  CONFOPTS="${CONFOPTS} --with-gpu-arch=${SET_CUDA_ARCH} --with-cuda --enable-unified-memory"
 fi
 
 
