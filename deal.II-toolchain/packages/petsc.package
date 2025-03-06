@@ -2,11 +2,9 @@
 ## PETSc                                                                      ##
 ################################################################################
 
-VERSION=3.21.4
-CHECKSUM=e8d76467696fcff970bd56c93dd83476
+VERSION=3.22.4;CHECKSUM=
 
-
-VERSION=3.22.2;CHECKSUM=d18caed83d1bf351c4ccb574b0b376e5
+#VERSION=3.22.2;CHECKSUM=d18caed83d1bf351c4ccb574b0b376e5
 
 #VERSION=3.21.6;CHECKSUM=ab98f5f22731549eda3ae2704b05e9f7
 
@@ -64,6 +62,8 @@ CONFOPTS="\
   --with-kokkos=1 \
   --with-kokkos-kernels=1 \
   --with-cuda=1 \
+  --with-cuda-dir=${CUDA_HOME} \
+  --with-cuda-arch=${CUDA_ARCH} \
   --with-kokkos-dir=${KOKKOS_DIR}"
 fi
 
