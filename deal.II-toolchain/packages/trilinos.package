@@ -23,7 +23,13 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     SOURCE=https://github.com/trilinos/
 elif [ ${TRILINOS_MAJOR_VERSION} = "16" ]; then
 
+    # Trilinos 16.1.0 includes Kokkos 4.5.1 update that
+    # fixes Trilinos "no member named 'sort_option' in 'SPADDHandle'"
+    # compilation error (see issue:
+    # https://github.com/trilinos/Trilinos/issues/13570)
     VERSION=16-1-0;CHECKSUM=d58ba4bcbcde701ee3a3e2e7cc27b6ca
+
+    # VERSION=16-0-0;CHECKSUM=e6d83f7980800a3aad1b7cab6b901fd5
 
     SOURCE=https://github.com/trilinos/Trilinos/archive/
     NAME=trilinos-release-${VERSION}
