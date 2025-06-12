@@ -107,6 +107,44 @@ if [ ! -z "${DEAL_CHERRYPICKCOMMITS}" ]; then
 fi
 
 ################################################################################
+# Handle Homebrew HDF5 conflicts on macOS with robust cleanup
+if [ "$(machine)" = "arm64e" ]; then
+    HDF5_WAS_UNLINKED_BY_DEALII=false
+
+    # Cleanup function for HDF5
+    cleanup_hdf5() {
+        if [ "$HDF5_WAS_UNLINKED_BY_DEALII" = true ]; then
+            cecho ${INFO} "deal.II: Restoring Homebrew HDF5..."
+            if brew link hdf5 2>/dev/null; then
+                cecho ${GOOD} "deal.II: Homebrew HDF5 successfully restored"
+            else
+                cecho ${BAD} "deal.II: Warning - Failed to restore Homebrew HDF5"
+                cecho ${BAD} "deal.II: You may need to run: brew link hdf5"
+            fi
+        fi
+    }
+
+    # Set up trap handlers (only if not already set)
+    if [ -z "$HDF5_TRAP_SET" ]; then
+        trap cleanup_hdf5 EXIT INT TERM HUP
+        export HDF5_TRAP_SET=1
+    fi
+
+    # Check if we're on macOS and have Homebrew HDF5
+    if command -v brew &>/dev/null && brew list hdf5 &>/dev/null 2>&1; then
+        cecho ${INFO} "deal.II: Detected Homebrew HDF5, temporarily unlinking to avoid conflicts"
+
+        if brew unlink hdf5; then
+            HDF5_WAS_UNLINKED_BY_DEALII=true
+            cecho ${GOOD} "deal.II: Homebrew HDF5 unlinked successfully"
+        else
+            cecho ${BAD} "deal.II: Failed to unlink Homebrew HDF5"
+            exit 1
+        fi
+    fi
+fi
+
+################################################################################
 # Add additional packages, if present
 
 ########################################
