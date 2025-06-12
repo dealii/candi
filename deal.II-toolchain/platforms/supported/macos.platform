@@ -48,7 +48,46 @@
 ##
 
 if [ "$(machine)" = "arm64e" ]; then
-  cecho ${INFO} "MacOS on arm64 detected!"
+  cecho ${INFO} "macOS arm64 detected!"
+
+  if command -v brew &>/dev/null; then
+      # Look for homebrew cmake and exit if not installed
+      if brew list "cmake" &>/dev/null; then
+          cecho ${INFO} "Found 'cmake' installed via Homebrew ..."
+      elif command -v "cmake" &>/dev/null; then
+          cecho ${INFO} "Found 'cmake' installed locally ..."
+      else
+          cecho ${BAD} "Error: cmake not found!"
+          cecho ${BAD} "cmake is required to build deal.II."
+          cecho ${BAD} "Install it using: 'brew install cmake'"
+          cecho ${BAD} "and then run candi again."
+          exit 1
+      fi
+
+      # Exit if hdf5 is installed via homebrew because it is not mpi-enabled
+      # and will cause compilation errors
+      if brew list "hdf5" &>/dev/null; then
+          cecho ${BAD} "Error: hdf5 found installed via Homebrew."
+          cecho ${BAD} "This conflicts with the deal.II installation!"
+          cecho ${BAD} "Please uninstall it using: 'brew uninstall hdf5'"
+          cecho ${BAD} "and then run candi again."
+          exit 1
+      fi
+  else
+      cecho ${INFO} "Homebrew not installed."
+      cecho ${INFO} "Skipping Homebrew-specific checks."
+
+      # Look for cmake locally and exit if not installed
+      if command -v "cmake" &>/dev/null; then
+          cecho ${INFO} "Found 'cmake' installed locally ..."
+      else
+          cecho ${BAD} "Error: cmake not found!"
+          cecho ${BAD} "cmake is required to build deal.II."
+          cecho ${BAD} "Either install homebrew and then get cmake using: 'brew install cmake'"
+          cecho ${BAD} "or install cmake yourself locally and run candi again."
+          exit 1
+      fi
+  fi
 
   # Trilinos will link with netcdf and indirectly hdf5, but linking fails. Just
   # disable this for now.
@@ -57,4 +96,9 @@ if [ "$(machine)" = "arm64e" ]; then
   # Trilinos defaults to c++17 while deal.II 9.5 defaults to c++14 with clang 14,
   # which then fails to compile when including Kokkos coming from Trilinos:
   DEAL_II_CONFOPTS="-DCMAKE_CXX_STANDARD=17 ${DEAL_II_CONFOPTS}"
+
+  # Use Trilinos version 16.1 to avoid compilation errors with Kokkos
+  if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
+      TRILINOS_MAJOR_VERSION="16"
+  fi
 fi
