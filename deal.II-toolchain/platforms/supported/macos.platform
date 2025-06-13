@@ -1,29 +1,32 @@
 # macOS
 #
 # Detailed Installation Notes:
-# - Install Xcode from AppStore, open it and accept the license.
 # - Open Terminal, and install Xcode command line tools via
 # $  xcode-select --install
-# and then run
-# $  xcodebuild -license
-# and accept the license.
 #
-# Make sure you can run
+# - Check if Xcode command line tools are installed by running
 # $ clang -v
-# (it might trigger an installation the first time you run it).
 #
-# - Install Homebrew in a Terminal via
+# - Install Homebrew via
 # $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #
-# - Install the following via Homebrew
-# $  brew install cmake gcc@11 openmpi
+# - Install MPI via Homebrew
+# $  brew install open-mpi
 #
 # - Export compiler environment:
+#
+# ------------------- macOS arm64 -------------------
 #
 # If you are running an ARM based macOS device (M1, M2, etc.), we strongly recommend
 # using the clang compiler, which is the default. You can check so by running
 # $ mpicxx -v
 # If it reports "clang", you are good to go.
+#
+# ARM support is still experimental and not all packages and options work
+# without problems. It might be easiest to start by only enabling the packages
+# you care about.
+#
+# ------------------- macOS Intel -------------------
 #
 # If you are not running on an ARM device (traditional Intel based laptops), we
 # strongly recommend using gcc instead of clang. This can be achieved by running
@@ -31,16 +34,14 @@
 # $ export CC=mpicc; export CXX=mpicxx; export FC=mpifort; export FF=mpifort; \
 # OMPI_CC=gcc-11; export OMPI_CXX=g++-11; export OMPI_FC=gfortran-11
 #
-# Finally, ARM support is still experimental and not all packages and options work
-# without problems. It might be easiest to start by only enabling the packages
-# you care about.
+# ---------------------------------------------------
 #
-# If you are missing any steps, abort this installation now, do the changes and then
+# - If you are missing any steps, abort this installation now, do the changes and then
 # run candi again!
 #
 # You might also want to consult:
-# - https://github.com/dealii/dealii/wiki/MacOSX
-# - https://github.com/dealii/dealii/wiki/Apple-ARM-M1-OSX
+# - https://github.com/dealii/dealii/wiki/MacOSX (for Intel Macs)
+# - https://github.com/geodynamics/aspect/wiki/Installation-on-macOS-arm64 (for M1–M4 Macs)
 #
 # If you encounter runtime problems with missing *.dylib libraries,
 # you may change the security policy for developments. To do so,
@@ -48,7 +49,19 @@
 ##
 
 if [ "$(machine)" = "arm64e" ]; then
-  cecho ${INFO} "MacOS on arm64 detected!"
+  cecho ${INFO} "macOS arm64 detected!"
+
+  if command -v brew &>/dev/null; then
+      # Exit if hdf5 is installed via homebrew because it is not mpi-enabled
+      # and will cause compilation errors
+      if brew list "hdf5" &>/dev/null; then
+          cecho ${BAD} "Error: hdf5 found installed via Homebrew."
+          cecho ${BAD} "This conflicts with the deal.II installation!"
+          cecho ${BAD} "Please uninstall it using: 'brew uninstall hdf5'"
+          cecho ${BAD} "and then run candi again."
+          exit 1
+      fi
+  fi
 
   # Trilinos will link with netcdf and indirectly hdf5, but linking fails. Just
   # disable this for now.
@@ -57,4 +70,9 @@ if [ "$(machine)" = "arm64e" ]; then
   # Trilinos defaults to c++17 while deal.II 9.5 defaults to c++14 with clang 14,
   # which then fails to compile when including Kokkos coming from Trilinos:
   DEAL_II_CONFOPTS="-DCMAKE_CXX_STANDARD=17 ${DEAL_II_CONFOPTS}"
+
+  # Use Trilinos version 16.1 to avoid compilation errors with Kokkos
+  if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
+      TRILINOS_MAJOR_VERSION="16"
+  fi
 fi

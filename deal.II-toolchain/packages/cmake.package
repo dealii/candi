@@ -18,6 +18,13 @@ if [ ${CANDI_CMAKE_LOAD_TARBALL} = ON ] && [ ${PLATFORM_OSTYPE} == "linux" ]; th
     CHECKSUM=ac6d7ce3cad61c5c5a021ababbe3bd17 # 3.26.4 tarball linux
     #CHECKSUM=3adc4d6ab87b8d3b46fb5fe98612dd84 # 3.20.5 tarball linux
     BUILDCHAIN=ignore
+elif [ ${CANDI_CMAKE_LOAD_TARBALL} = ON ] && [ ${PLATFORM_OSTYPE} == "macos" ]; then
+    # tarball install
+    NAME=cmake-${VERSION}-macos-universal
+    PACKING=.tar.gz
+    CHECKSUM=9b216f6879ad94e010a2edf336981837 # 3.26.4 tarball macos
+    #CHECKSUM=46a6be910a5f5e7eae25419a3eb5da4b # 3.20.5 tarball macos
+    BUILDCHAIN=ignore
 else
     # configure/make/install
     NAME=cmake-${VERSION}
@@ -41,7 +48,14 @@ INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
 if [ ${BUILDCHAIN} == "ignore" ]; then
     package_specific_install () {
-        cp -rf ${UNPACK_PATH}/${EXTRACTSTO} ${INSTALL_PATH}
+        if [ "${PLATFORM_OSTYPE}" = "macos" ]; then
+            # Flatten install: extract Contents of CMake.app directly to INSTALL_PATH
+            mkdir -p "${INSTALL_PATH}"
+            cp -R "${UNPACK_PATH}/${EXTRACTSTO}/CMake.app/Contents/"* "${INSTALL_PATH}/"
+        else
+            # Normal copy for Linux and other platforms
+            cp -rf "${UNPACK_PATH}/${EXTRACTSTO}" "${INSTALL_PATH}"
+        fi
     }
 fi
 
