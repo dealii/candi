@@ -545,8 +545,9 @@ package_build() {
                 cecho ${INFO} "Found 'cmake' installed locally ..."
             else
                 cecho ${BAD} "candi: Internal error: cmake not found!"
-                cecho ${BAD} "cmake is required to build deal.II."
-                cecho ${BAD} "Install it using: 'brew install cmake'"
+                cecho ${BAD} "cmake is required to build ${NAME}."
+                cecho ${BAD} "The easiest way to get cmake on your macOS system is to install it via Homebrew."
+                cecho ${BAD} "Install cmake using: 'brew install cmake'"
                 cecho ${BAD} "and then run candi again."
                 exit 1
             fi
@@ -556,7 +557,7 @@ package_build() {
                 cecho ${INFO} "Found 'cmake' installed locally ..."
             else
                 cecho ${BAD} "candi: Internal error: cmake not found!"
-                cecho ${BAD} "cmake is required to build deal.II."
+                cecho ${BAD} "cmake is required to build ${NAME}."
                 cecho ${BAD} "Install cmake and run candi again."
                 exit 1
             fi
