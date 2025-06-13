@@ -16,7 +16,7 @@
 # $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #
 # - Install the following via Homebrew
-# $  brew install cmake gcc@11 openmpi
+# $  brew install cmake open-mpi
 #
 # - Export compiler environment:
 #
@@ -39,8 +39,8 @@
 # run candi again!
 #
 # You might also want to consult:
-# - https://github.com/dealii/dealii/wiki/MacOSX
-# - https://github.com/dealii/dealii/wiki/Apple-ARM-M1-OSX
+# - https://github.com/dealii/dealii/wiki/MacOSX (for Intel Macs)
+# - https://github.com/geodynamics/aspect/wiki/Installation-on-macOS-arm64 (for M1–M4 Macs)
 #
 # If you encounter runtime problems with missing *.dylib libraries,
 # you may change the security policy for developments. To do so,
@@ -51,19 +51,6 @@ if [ "$(machine)" = "arm64e" ]; then
   cecho ${INFO} "macOS arm64 detected!"
 
   if command -v brew &>/dev/null; then
-      # Look for homebrew cmake and exit if not installed
-      if brew list "cmake" &>/dev/null; then
-          cecho ${INFO} "Found 'cmake' installed via Homebrew ..."
-      elif command -v "cmake" &>/dev/null; then
-          cecho ${INFO} "Found 'cmake' installed locally ..."
-      else
-          cecho ${BAD} "Error: cmake not found!"
-          cecho ${BAD} "cmake is required to build deal.II."
-          cecho ${BAD} "Install it using: 'brew install cmake'"
-          cecho ${BAD} "and then run candi again."
-          exit 1
-      fi
-
       # Exit if hdf5 is installed via homebrew because it is not mpi-enabled
       # and will cause compilation errors
       if brew list "hdf5" &>/dev/null; then
@@ -71,20 +58,6 @@ if [ "$(machine)" = "arm64e" ]; then
           cecho ${BAD} "This conflicts with the deal.II installation!"
           cecho ${BAD} "Please uninstall it using: 'brew uninstall hdf5'"
           cecho ${BAD} "and then run candi again."
-          exit 1
-      fi
-  else
-      cecho ${INFO} "Homebrew not installed."
-      cecho ${INFO} "Skipping Homebrew-specific checks."
-
-      # Look for cmake locally and exit if not installed
-      if command -v "cmake" &>/dev/null; then
-          cecho ${INFO} "Found 'cmake' installed locally ..."
-      else
-          cecho ${BAD} "Error: cmake not found!"
-          cecho ${BAD} "cmake is required to build deal.II."
-          cecho ${BAD} "Either install homebrew and then get cmake using: 'brew install cmake'"
-          cecho ${BAD} "or install cmake yourself locally and run candi again."
           exit 1
       fi
   fi

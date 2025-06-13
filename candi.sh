@@ -536,6 +536,31 @@ package_build() {
         done
 
     elif [ ${BUILDCHAIN} = "cmake" ]; then
+        # Check for cmake availability before proceeding
+        if command -v brew &>/dev/null; then
+            # Look for homebrew cmake and exit if not installed
+            if brew list "cmake" &>/dev/null; then
+                cecho ${INFO} "Found 'cmake' installed via Homebrew ..."
+            elif command -v "cmake" &>/dev/null; then
+                cecho ${INFO} "Found 'cmake' installed locally ..."
+            else
+                cecho ${BAD} "candi: Internal error: cmake not found!"
+                cecho ${BAD} "cmake is required to build deal.II."
+                cecho ${BAD} "Install it using: 'brew install cmake'"
+                cecho ${BAD} "and then run candi again."
+                exit 1
+            fi
+        else
+            # Look for cmake locally and exit if not installed
+            if command -v "cmake" &>/dev/null; then
+                cecho ${INFO} "Found 'cmake' installed locally ..."
+            else
+                cecho ${BAD} "candi: Internal error: cmake not found!"
+                cecho ${BAD} "cmake is required to build deal.II."
+                cecho ${BAD} "Install cmake and run candi again."
+                exit 1
+            fi
+        fi
         rm -f ${BUILDDIR}/CMakeCache.txt
         rm -rf ${BUILDDIR}/CMakeFiles
         echo cmake ${CONFOPTS} -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} ${UNPACK_PATH}/${EXTRACTSTO} >>candi_configure
