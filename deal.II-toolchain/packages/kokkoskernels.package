@@ -1,0 +1,30 @@
+VERSION=4.4.00;CHECKSUM=a1e596b2153ff260448984c43dacb814
+
+NAME=${VERSION}
+PACKING=.tar.gz
+SOURCE=https://github.com/kokkos/kokkos-kernels/archive/refs/tags/
+EXTRACTSTO=kokkos-kernels-${VERSION}
+BUILDDIR=${BUILD_PATH}/kokkos-kernels-${VERSION}
+
+INSTALL_PATH=${INSTALL_PATH}/kokkoskernels-${VERSION}
+
+BUILDCHAIN=cmake
+
+CONFOPTS="-D BUILD_SHARED_LIBS=ON -D Kokkos_DIR=${KOKKOS_DIR}"
+
+if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+    CONFOPTS="${CONFOPTS}"
+fi
+
+package_specific_register () {
+  export KOKKOSKERNELS_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/kokkoskernels-${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export KOKKOSKERNELS_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
