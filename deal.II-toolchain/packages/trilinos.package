@@ -173,6 +173,7 @@ if [ ${MKL} = ON ]; then
     CONFOPTS="${CONFOPTS} \
       -D BLAS_LIBRARY_NAMES:STRING='mkl_core;mkl_sequential' \
       -D Tpetra_INST_FLOAT:BOOL=OFF \
+      -D Trilinos_ENABLE_FLOAT:BOOL=OFF \
       -D Tpetra_INST_COMPLEX_FLOAT:BOOL=OFF \
       -D LAPACK_LIBRARY_NAMES:STRING=mkl_intel_lp64"
 else
@@ -183,6 +184,8 @@ else
           -D TPL_BLAS_LIBRARIES:STRING=${BLAS_LIB} \
           -D TPL_LAPACK_LIBRARIES:STRING=${BLAS_LIB}"
     fi
+    CONFOPTS="${CONFOPTS} \
+        -D Trilinos_ENABLE_FLOAT:BOOL=ON"
 fi
 
 # Set compilers & compiler options
