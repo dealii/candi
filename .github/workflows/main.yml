@@ -7,9 +7,9 @@ concurrency:
   cancel-in-progress: ${{github.event_name == 'pull_request'}}
 
 jobs:
-  ubuntu20-blas:
-    name: ubuntu 20.04
-    runs-on: [ubuntu-20.04]
+  ubuntu24-blas:
+    name: ubuntu 24.04
+    runs-on: [ubuntu-24.04]
 
     steps:
       - uses: actions/checkout@v3
@@ -24,8 +24,7 @@ jobs:
       - name: build
         run: |
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug -D DEAL_II_LINKER_FLAGS=-fuse-ld=bfd"' >> candi.cfg
-          # use our cmake version, as the runner has 3.19 installed, which is too new for deal.II
-          ./candi.sh -j 2 --packages="once:cmake once:openblas once:p4est dealii"
+          ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   ubuntu22:
