@@ -1,0 +1,29 @@
+VERSION=2.32.0;CHECKSUM=321557481d18242a771096999a253ad8
+#VERSION=2.31.0;CHECKSUM=3e6a9cea4e87d5d87301c95200d28242
+
+NAME=v${VERSION}
+SOURCE=https://github.com/hypre-space/hypre/archive/refs/tags/
+EXTRACTSTO=hypre-${VERSION}/src
+PACKING=.tar.gz
+BUILDDIR=${UNPACK_PATH}/${EXTRACTSTO}
+BUILDCHAIN=autotools
+INSTALL_PATH=${INSTALL_PATH}/hypre-${NAME}
+
+CONFOPTS="--enable-shared"
+if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+  CONFOPTS="${CONFOPTS} --with-gpu-arch=${CUDA_ARCH} --with-cuda --enable-unified-memory"
+fi
+
+
+package_specific_register () {
+    export HYPRE_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf () {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/hypre-${NAME}
+    rm -f ${CONFIG_FILE}
+    echo "
+export HYPRE_DIR=${INSTALL_PATH}
+" >> $CONFIG_FILE
+}
