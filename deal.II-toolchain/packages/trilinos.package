@@ -7,7 +7,7 @@ if [ -z "${TRILINOS_MAJOR_VERSION}" ]; then
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "AUTO" ]; then
-    TRILINOS_MAJOR_VERSION="14"
+    TRILINOS_MAJOR_VERSION="16"
 fi
 
 if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
