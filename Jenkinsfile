@@ -24,6 +24,13 @@ pipeline
             not {changeRequest authorEmail: "timo.heister@gmail.com"}
 	    }
       }
+      agent
+      {
+        dockerfile
+        {
+          dir 'contrib/ubuntu2404'
+        }
+      }
       steps {
         sh '''
         wget -q -O - https://api.github.com/repos/dealii/candi/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
