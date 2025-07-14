@@ -8,7 +8,7 @@ CHECKSUM=0a99bbb5f6c26a9c1d7ab17ea35d4e6f
 NAME=superlu_dist_${VERSION}
 PACKING=.tar.gz
 EXTRACTSTO=SuperLU_DIST_${VERSION}
-SOURCE=http://crd-legacy.lbl.gov/~xiaoye/SuperLU/
+SOURCE=https://crd-legacy.lbl.gov/~xiaoye/SuperLU/
 
 BUILDCHAIN=cmake
 

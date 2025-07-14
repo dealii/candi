@@ -23,7 +23,7 @@ VERSION=3.22.2;CHECKSUM=649601827246366224d512f7b25d972b
 #VERSION=3.6.0;CHECKSUM=560a634369fdab3fcaeea35c2cbab6f1
 
 NAME=slepc-${VERSION}
-SOURCE=http://slepc.upv.es/download/distrib/
+SOURCE=https://slepc.upv.es/download/distrib/
 PACKING=.tar.gz
 
 BUILDCHAIN=custom
