@@ -4,10 +4,6 @@ pipeline
 {
   agent none
 
-  parameters {
-    booleanParam(defaultValue: false, description: 'Is the pull request approved for testing?', name: 'TRUST_BUILD')
-  }
-
   stages {
 
     stage ("info")
@@ -24,14 +20,23 @@ pipeline
     {
       when {
         allOf {
-            environment name: 'TRUST_BUILD', value: 'false'
-            not {branch 'master'}
+            changeRequest()
             not {changeRequest authorEmail: "timo.heister@gmail.com"}
 	    }
       }
+      agent
+      {
+        dockerfile
+        {
+          dir 'contrib/ubuntu2404'
+        }
+      }
       steps {
-          echo "Please ask an admin to rerun Jenkins with TRUST_BUILD=true"
-            sh "exit 1"
+        sh '''
+        wget -q -O - https://api.github.com/repos/dealii/candi/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+        { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
+        '''
+
       }
     }
 
