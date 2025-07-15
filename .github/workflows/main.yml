@@ -47,7 +47,7 @@ jobs:
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
   osx-minimal:
-    name: OSX clang
+    name: OSX arm64 clang
     runs-on: [macos-latest]
 
     steps:
@@ -58,7 +58,7 @@ jobs:
           pip install cmake==3.20.5
           echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
           brew install openmpi
-          brew reinstall gcc@11
+          brew reinstall gcc@13
       - name: info
         run: |
           mpicxx -v
@@ -66,40 +66,5 @@ jobs:
       - name: build
         run: |
           echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
-          ./candi.sh -j 2 --packages="boost dealii"
-          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
-
-  macos-gcc:
-    name: macos-gcc
-    runs-on: [macos-latest]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: setup
-        run: |
-          brew install openmpi gcc@11
-
-      - name: info
-        run: |
-          # Export the compilers
-          export OMPI_CXX=g++-11; export OMPI_CC=gcc-11; export OMPI_FC=gfortran-11
-
-          # Show compilers and cmake versions
-          mpicc --version
-          mpicxx --version
-          mpif90 --version
-          mpif77 --version
-          cmake --version
-          python --version
-          python3 --version
-
-      - name: build
-        run: |
-          # Export the compilers
-          export OMPI_CXX=g++-11; export OMPI_CC=gcc-11; export OMPI_FC=gfortran-11
-
-          # Compile dealii in DEBUG mode only
-          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
-
-          ./candi.sh -j 2 --packages="once:p4est once:petsc dealii"
+          ./candi.sh -j 2 --packages="once:boost once:p4est once:petsc dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log && ctest --output-on-failure -j 2
