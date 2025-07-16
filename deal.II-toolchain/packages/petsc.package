@@ -2,8 +2,9 @@
 ## PETSc                                                                      ##
 ################################################################################
 
+VERSION=3.22.4;CHECKSUM=97503bfdd921069b997dd875a60b7a0d
 
-VERSION=3.22.2;CHECKSUM=d18caed83d1bf351c4ccb574b0b376e5
+#VERSION=3.22.2;CHECKSUM=d18caed83d1bf351c4ccb574b0b376e5
 
 #VERSION=3.21.6;CHECKSUM=ab98f5f22731549eda3ae2704b05e9f7
 
@@ -54,6 +55,20 @@ CONFOPTS="\
   --with-x=0 \
   --with-64-bit-indices=${with64bit}"
 
+
+if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+CONFOPTS="\
+  ${CONFOPTS} \
+  --with-kokkos=1 \
+  --with-kokkos-kernels=1 \
+  --with-cuda=1 \
+  --with-cuda-dir=${CUDA_HOME} \
+  --with-cuda-arch=${CUDA_ARCH} \
+  --with-kokkos-dir=${KOKKOS_DIR} \
+  --with-kokkos-kernels-dir=${KOKKOSKERNELS_DIR} \
+  "
+fi
+
 # It would seem simpler to put the {C|CXX|F}OPTFLAGS directly into the
 # CONFOPTS variable, but there is no easy way to quote the
 # multiarguments and retain the quotes correctly when passing to
@@ -66,9 +81,11 @@ else
     OPTFLAGS="-g -O"
 fi
 
-for external_pkg in hypre; do
-    CONFOPTS="${CONFOPTS} --download-${external_pkg}=1"
-done
+if [ ! -z "${HYPRE_DIR}" ]; then
+  CONFOPTS="${CONFOPTS} --with-hypre=1 --with-hypre-dir=${HYPRE_DIR}"
+else
+  CONFOPTS="${CONFOPTS} --download-hypre=1"
+fi
 
 if [ ! -z "${CC}" ]; then
     CONFOPTS="${CONFOPTS} CC=${CC}"
