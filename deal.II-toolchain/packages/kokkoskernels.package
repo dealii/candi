@@ -10,7 +10,13 @@ INSTALL_PATH=${INSTALL_PATH}/kokkoskernels-${VERSION}
 
 BUILDCHAIN=cmake
 
-CONFOPTS="-D BUILD_SHARED_LIBS=ON -D Kokkos_DIR=${KOKKOS_DIR}/lib64/cmake/Kokkos"
+if [ -d "${KOKKOS_DIR}/lib/cmake/Kokkos" ]; then
+  KOKKOS_PATH="${KOKKOS_DIR}/lib/cmake/Kokkos"
+else
+  KOKKOS_PATH="${KOKKOS_DIR}/lib64/cmake/Kokkos"
+fi
+
+CONFOPTS="-D BUILD_SHARED_LIBS=ON -D Kokkos_DIR=${KOKKOS_PATH}"
 
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
     CONFOPTS="${CONFOPTS}"
