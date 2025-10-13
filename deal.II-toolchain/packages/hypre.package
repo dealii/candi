@@ -14,6 +14,9 @@ CONFOPTS="--enable-shared"
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
   CONFOPTS="${CONFOPTS} --with-gpu-arch=${CUDA_ARCH} --with-cuda --enable-unified-memory"
 fi
+if [ ${USE_KOKKOS_WITH_HIP} = ON ]; then
+  CONFOPTS="${CONFOPTS} --with-hip --enable-unified-memory"
+fi
 
 
 package_specific_register () {
