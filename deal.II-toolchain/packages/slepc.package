@@ -2,7 +2,9 @@
 ## SLEPc                                                                      ##
 ################################################################################
 
-VERSION=3.22.2;CHECKSUM=649601827246366224d512f7b25d972b
+VERSION=3.24.0;CHECKSUM=a691382c0c9647f0eb87efbb67cc8610
+
+#VERSION=3.22.2;CHECKSUM=649601827246366224d512f7b25d972b
 
 #VERSION=3.21.2;CHECKSUM=e541eca2eee8d860e3a5df081a94d523
 
