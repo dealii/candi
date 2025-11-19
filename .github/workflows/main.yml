@@ -56,12 +56,16 @@ jobs:
         run: |
           # force cmake version:
           pip install cmake==3.20.5
-          echo "/Library/Frameworks/Python.framework/Versions/2.7/bin" >> $GITHUB_PATH
           brew install openmpi
           brew reinstall gcc@13
+          echo "OMPI_FC=gfortran-13" >> "$GITHUB_ENV"
+          echo "OMPI_F77=gfortran-13" >> "$GITHUB_ENV"
       - name: info
         run: |
           mpicxx -v
+          mpicc -v
+          mpif90 -v
+          mpif77 -v
           cmake --version
       - name: build
         run: |
