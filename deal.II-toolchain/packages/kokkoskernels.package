@@ -23,6 +23,12 @@ if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
     CONFOPTS="${CONFOPTS}"
 fi
 
+if [ ${USE_KOKKOS_WITH_HIP} = ON ]; then
+    CONFOPTS="${CONFOPTS} \
+    -D CMAKE_PREFIX_PATH=${ROCM_HOME} \
+    -D CMAKE_CXX_COMPILER=hipcc"
+fi
+
 package_specific_register () {
   export KOKKOSKERNELS_DIR=${INSTALL_PATH}
 }
