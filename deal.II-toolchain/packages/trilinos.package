@@ -31,6 +31,15 @@ elif [ ${TRILINOS_MAJOR_VERSION} = "16" ]; then
 
     # VERSION=16-0-0;CHECKSUM=e6d83f7980800a3aad1b7cab6b901fd5
 
+    # Apply patch for a missing include in Trilinos source
+
+    package_specific_patch () {
+    cd ${UNPACK_PATH}/${EXTRACTSTO}
+    cecho ${WARN} "applying patch for missing include in gtest-all.cc"
+    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/Trilinos-gtest-all.patch
+    }
+
+
     SOURCE=https://github.com/trilinos/Trilinos/archive/
     NAME=trilinos-release-${VERSION}
     EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
