@@ -11,8 +11,11 @@
 #CHECKSUM="${CHECKSUM} b41c8ef29ca88be0ae73116dca8afed2743fb2ef"
 #CHECKSUM="${CHECKSUM} 0ea6e4806b6950ad64e62a5607bfabbb"
 
-VERSION=2.3.6
-CHECKSUM=4b35d9cc374e3b05cd29c552070940124f04af8f8e5e01ff046e39833de5e153
+#VERSION=2.3.6
+#CHECKSUM=4b35d9cc374e3b05cd29c552070940124f04af8f8e5e01ff046e39833de5e153
+
+VERSION=2.8.7
+CHECKSUM=0a1e912f3529999ca6d62fee335d51f24b5650b586e95a03ef39ebf73936d7f4
 
 NAME=p4est-${VERSION}
 PACKING=.tar.gz
@@ -99,7 +102,7 @@ package_specific_setup() {
     mkdir -p "${BUILD_FAST}"
     cd "${BUILD_FAST}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-mpi --enable-shared \
-        --disable-vtk-binary --without-blas \
+        --disable-vtk-binary LIBS="-lm" \
         --prefix="${INSTALL_FAST}" CFLAGS="${CFLAGS_FAST}" \
         CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
         "$@" >config.output || bdie "Error in configure"
@@ -117,7 +120,7 @@ package_specific_setup() {
     mkdir -p "${BUILD_DEBUG}"
     cd "${BUILD_DEBUG}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-debug --enable-mpi --enable-shared \
-        --disable-vtk-binary --without-blas \
+        --disable-vtk-binary LIBS="-lm" \
         --prefix="${INSTALL_DEBUG}" CFLAGS="${CFLAGS_DEBUG}" \
         CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
         "$@" >config.output || bdie "Error in configure"
