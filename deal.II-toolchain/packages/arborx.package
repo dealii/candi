@@ -1,0 +1,35 @@
+################################################################################
+## Arborx                                                                     ##
+################################################################################
+
+VERSION=2.0.1;CHECKSUM=a51b0a245c34151f42a4c6120d2aceec
+
+#VERSION=1.5;CHECKSUM=54b2b85a096e1ef8897716f902d21ffc
+
+NAME=v${VERSION}
+PACKING=.tar.gz
+EXTRACTSTO=ArborX-${VERSION}
+SOURCE=https://github.com/arborx/ArborX/archive/refs/tags/
+
+BUILDCHAIN=cmake
+
+BUILDDIR=${BUILD_PATH}/arborx-${VERSION}
+INSTALL_PATH=${INSTALL_PATH}/arborx-${VERSION}
+
+CONFOPTS="\
+  -D ARBORX_ENABLE_MPI=ON \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D Kokkos_DIR=${KOKKOS_ROOT}"
+  
+package_specific_register() {
+    export ARBORX_DIR=${INSTALL_PATH}
+}
+
+package_specific_conf() {
+    # Generate configuration file
+    CONFIG_FILE=${CONFIGURATION_PATH}/${NAME}
+    rm -f $CONFIG_FILE
+    echo "
+export ARBORX_DIR=${INSTALL_PATH}
+" >>$CONFIG_FILE
+}

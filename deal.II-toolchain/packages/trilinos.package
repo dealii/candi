@@ -303,6 +303,7 @@ else
     # TODO: this does not compile correctly, so Tpetra
     # is not usable with 32bit indices
     # CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_INT=ON"
+    CONFOPTS="${CONFOPTS}"
 fi
 
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
@@ -341,6 +342,12 @@ package_specific_install () {
 
 package_specific_register () {
     export TRILINOS_DIR=${INSTALL_PATH}
+    export KOKKOS_DIR=${INSTALL_PATH}
+    if [ -d "${KOKKOS_DIR}/lib/cmake/Kokkos" ]; then
+      export KOKKOS_ROOT="${KOKKOS_DIR}/lib/cmake/Kokkos"
+    else
+      export KOKKOS_ROOT="${KOKKOS_DIR}/lib64/cmake/Kokkos"
+    fi
 }
 
 package_specific_conf () {

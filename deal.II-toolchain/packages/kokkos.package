@@ -29,6 +29,11 @@ fi
 
 package_specific_register () {
     export KOKKOS_DIR=${INSTALL_PATH}
+    if [ -d "${KOKKOS_DIR}/lib/cmake/Kokkos" ]; then
+      export KOKKOS_ROOT="${KOKKOS_DIR}/lib/cmake/Kokkos"
+    else
+      export KOKKOS_ROOT="${KOKKOS_DIR}/lib64/cmake/Kokkos"
+    fi
 }
 
 package_specific_conf () {
