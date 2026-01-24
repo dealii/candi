@@ -102,7 +102,7 @@ package_specific_setup() {
     mkdir -p "${BUILD_FAST}"
     cd "${BUILD_FAST}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-mpi --enable-shared \
-        --disable-vtk-binary  -without-blas LIBS="-lm" \
+        --disable-vtk-binary  --without-blas LIBS="-lm" \
         --prefix="${INSTALL_FAST}" CFLAGS="${CFLAGS_FAST}" \
         CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
         "$@" >config.output || bdie "Error in configure"
@@ -120,7 +120,7 @@ package_specific_setup() {
     mkdir -p "${BUILD_DEBUG}"
     cd "${BUILD_DEBUG}"
     "${UNPACK_PATH}/${EXTRACTSTO}/configure" --enable-debug --enable-mpi --enable-shared \
-        --disable-vtk-binary -without-blas LIBS="-lm" \
+        --disable-vtk-binary --without-blas LIBS="-lm" \
         --prefix="${INSTALL_DEBUG}" CFLAGS="${CFLAGS_DEBUG}" \
         CPPFLAGS="-DSC_LOG_PRIORITY=SC_LP_ESSENTIAL" F77="${FF}" \
         "$@" >config.output || bdie "Error in configure"
