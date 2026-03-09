@@ -300,10 +300,12 @@ CONFOPTS="\
 if [ ${USE_64_BIT_INDICES} = ON ]; then
     CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_LONG_LONG=ON "
 else
-    # TODO: this does not compile correctly, so Tpetra
-    # is not usable with 32bit indices
-    # CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_INT=ON"
-    CONFOPTS="${CONFOPTS}"
+    # TODO: this does compile, but fails a lot of
+    # tests.
+    CONFOPTS="${CONFOPTS} \
+    -D Tpetra_INST_INT_INT=ON \
+    -D Trilinos_ENABLE_ThyraEpetraAdapters=ON \
+    -D Trilinos_ENABLE_ThyraEpetraExtAdapters=ON"
 fi
 
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
