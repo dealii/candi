@@ -276,7 +276,7 @@ CONFOPTS="\
   -D Trilinos_ENABLE_Epetra:BOOL=ON \
   -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
   -D Trilinos_ENABLE_Ifpack:BOOL=ON \
-  -D Trilinos_ENABLE_Ifpack2:BOOL=OFF \
+  -D Trilinos_ENABLE_Ifpack2:BOOL=ON \
   -D Trilinos_ENABLE_Tpetra:BOOL=ON \
   -D Trilinos_ENABLE_AztecOO:BOOL=ON \
   -D Trilinos_ENABLE_Sacado:BOOL=ON \
@@ -298,22 +298,30 @@ CONFOPTS="\
   ${CONFOPTS}"
 
 if [ ${USE_64_BIT_INDICES} = ON ]; then
-    CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_LONG=ON"
+    CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_LONG_LONG=ON "
 else
-    # TODO: this does not compile correctly, so Tpetra
-    # is not usable with 32bit indices
-    # CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_INT=ON"
-    CONFOPTS="${CONFOPTS}"
+    # TODO: this does compile, but fails a lot of
+    # tests.
+    CONFOPTS="${CONFOPTS} \
+    -D Tpetra_INST_INT_INT=ON \
+    -D Trilinos_ENABLE_ThyraEpetraAdapters=ON \
+    -D Trilinos_ENABLE_ThyraEpetraExtAdapters=ON"
 fi
 
 if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
+  # Enable CUDA for Trilinos Kokkos and Tpetra
+  # Also manually enable SERIAL instantiation, otherwise
+  # Host CPU code is no longer instantiated.
     CONFOPTS="${CONFOPTS} \
   -D TPL_ENABLE_MPI=ON \
   -D TPL_ENABLE_CUDA=ON \
   -D Kokkos_ENABLE_CUDA=ON \
   -D Kokkos_ENABLE_CUDA_LAMBDA=ON \
   -D Kokkos_ENABLE_CUDA_CONSTEXPR=ON \
-  -D Tpetra_INST_CUDA=ON"
+  -D Tpetra_INST_CUDA=ON \
+  -D Tpetra_INST_SERIAL=ON \
+  -D Tpetra_ASSUME_GPU_AWARE_MPI=OFF"
+  # you need a special MPI version to enable Tpetra_ASSUME_GPU_AWARE_MPI
 fi
 
 if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
