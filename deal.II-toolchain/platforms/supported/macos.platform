@@ -1,46 +1,50 @@
 # macOS
 #
 # Detailed Installation Notes:
-# - Install Xcode from AppStore, open it and accept the license.
 # - Open Terminal, and install Xcode command line tools via
 # $  xcode-select --install
-# and then run
-# $  xcodebuild -license
-# and accept the license.
 #
-# Make sure you can run
+# - Check if Xcode command line tools are installed by running
 # $ clang -v
-# (it might trigger an installation the first time you run it).
 #
-# - Install Homebrew in a Terminal via
+# - Install Homebrew via
 # $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #
-# - Install the following via Homebrew
-# $  brew install cmake gcc@11 openmpi
+# - Install CMake and Open MPI via Homebrew
+# $  brew install cmake open-mpi
+#
+# - macOS users with Intel machines also need GCC
+# $  brew install gcc@13
 #
 # - Export compiler environment:
+#
+# ------------------- macOS arm64 -------------------
 #
 # If you are running an ARM based macOS device (M1, M2, etc.), we strongly recommend
 # using the clang compiler, which is the default. You can check so by running
 # $ mpicxx -v
 # If it reports "clang", you are good to go.
 #
+# ARM support is still experimental and not all packages and options work
+# without problems. It might be easiest to start by only enabling the packages
+# you care about.
+#
+# ------------------- macOS Intel -------------------
+#
 # If you are not running on an ARM device (traditional Intel based laptops), we
 # strongly recommend using gcc instead of clang. This can be achieved by running
 #
 # $ export CC=mpicc; export CXX=mpicxx; export FC=mpifort; export FF=mpifort; \
-# OMPI_CC=gcc-11; export OMPI_CXX=g++-11; export OMPI_FC=gfortran-11
+# OMPI_CC=gcc-13; export OMPI_CXX=g++-13; export OMPI_FC=gfortran-13
 #
-# Finally, ARM support is still experimental and not all packages and options work
-# without problems. It might be easiest to start by only enabling the packages
-# you care about.
+# ---------------------------------------------------
 #
-# If you are missing any steps, abort this installation now, do the changes and then
+# - If you are missing any steps, abort this installation now, do the changes and then
 # run candi again!
 #
 # You might also want to consult:
-# - https://github.com/dealii/dealii/wiki/MacOSX
-# - https://github.com/dealii/dealii/wiki/Apple-ARM-M1-OSX
+# - https://github.com/dealii/dealii/wiki/MacOSX (for Intel Macs)
+# - https://github.com/dealii/dealii/wiki/Apple-ARM-M1-OSX (for M1–M4 Macs)
 #
 # If you encounter runtime problems with missing *.dylib libraries,
 # you may change the security policy for developments. To do so,
@@ -48,7 +52,10 @@
 ##
 
 if [ "$(machine)" = "arm64e" ]; then
-  cecho ${INFO} "MacOS on arm64 detected!"
+  # Remove cmake from the PACKAGES list because the preferred install method
+  # for cmake on macOS is via Homebrew (so cmake will always be in the path)
+  PACKAGES="${PACKAGES//once:cmake/}"
+  PACKAGES="${PACKAGES//cmake/}"
 
   # Trilinos will link with netcdf and indirectly hdf5, but linking fails. Just
   # disable this for now.
