@@ -21,6 +21,12 @@ if [ ${TRILINOS_MAJOR_VERSION} = "DEV" ];then
     NAME=Trilinos.git
     PACKING=git
     SOURCE=https://github.com/trilinos/
+elif [ ${TRILINOS_MAJOR_VERSION} = "17" ]; then
+    VERSION=17-0-0;CHECKSUM=7adf56e4369749d01f9a7710f41457a2
+    SOURCE=https://github.com/trilinos/Trilinos/archive/
+    NAME=trilinos-release-${VERSION}
+    EXTRACTSTO=Trilinos-trilinos-release-${VERSION}
+    PACKING=.tar.gz
 elif [ ${TRILINOS_MAJOR_VERSION} = "16" ]; then
 
     VERSION=16-2-0;CHECKSUM=1529b29d857cac6cc4b2dc09f92cb08d
@@ -364,5 +370,7 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export TRILINOS_DIR=${INSTALL_PATH}
+export KOKKOS_ROOT=${KOKKOS_ROOT}
+export KOKKOS_DIR=${INSTALL_PATH}
 " >> $CONFIG_FILE
 }

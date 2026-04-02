@@ -44,5 +44,6 @@ package_specific_conf () {
     rm -f $CONFIG_FILE
     echo "
 export KOKKOS_DIR=${INSTALL_PATH}
+export KOKKOS_ROOT=${KOKKOS_ROOT}
 " >> $CONFIG_FILE
 }
