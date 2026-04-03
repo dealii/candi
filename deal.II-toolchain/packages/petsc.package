@@ -2,9 +2,9 @@
 ## PETSc                                                                      ##
 ################################################################################
 
-VERSION=3.25.0;CHECKSUM=0ddd9bb9eca97d80dddeeec5f847e1db
+#VERSION=3.25.0;CHECKSUM=0ddd9bb9eca97d80dddeeec5f847e1db  # requires deal.II > 9.7
 
-#VERSION=3.24.3;CHECKSUM=41966f7489557db1642808d51da6a0b8
+VERSION=3.24.3;CHECKSUM=41966f7489557db1642808d51da6a0b8
 
 #VERSION=3.24.1;CHECKSUM=7a0a37d2a9358f1a55d2ea7d91f07148 # deal.II compile errors
 #VERSION=3.24.0;CHECKSUM=2e798e2af5676d60132518878d83f842
