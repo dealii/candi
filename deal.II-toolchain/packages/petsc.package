@@ -2,6 +2,7 @@
 ## PETSc                                                                      ##
 ################################################################################
 
+#VERSION=3.25.0;CHECKSUM=0ddd9bb9eca97d80dddeeec5f847e1db  # requires deal.II > 9.7
 
 VERSION=3.24.3;CHECKSUM=41966f7489557db1642808d51da6a0b8
 
