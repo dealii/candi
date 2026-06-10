@@ -265,6 +265,16 @@ if [ ${TRILINOS_WITH_SEACAS} = ON ] && [ ! -z "${NETCDF_DIR}" ]; then
       -D Netcdf_INCLUDE_DIRS=${NETCDF_DIR}/include/"
 fi
 
+if [ ${TRILINOS_MAJOR_VERSION} = "DEV" -o ${TRILINOS_MAJOR_VERSION} > "16" ]; then
+    CONFOPTS="\
+    -D Trilinos_ENABLE_gtest:BOOL=OFF \
+    ${CONFOPTS}"
+else
+    CONFOPTS="\
+    -D Trilinos_ENABLE_Gtest:BOOL=OFF \
+    ${CONFOPTS}"
+fi
+
 #########################################################################
 # General Trilinos configuration
 
@@ -274,7 +284,6 @@ CONFOPTS="\
   -D TPL_ENABLE_TBB:BOOL=OFF \
   -D Trilinos_ENABLE_EXAMPLES:BOOL=OFF \
   -D Trilinos_ENABLE_TESTS:BOOL=OFF \
-  -D Trilinos_ENABLE_Gtest:BOOL=OFF \
   -D Trilinos_VERBOSE_CONFIGURE:BOOL=OFF \
   -D Trilinos_ENABLE_EXPLICIT_INSTANTIATION=ON \
   -D Trilinos_ENABLE_FLOAT=ON \
