@@ -132,6 +132,40 @@ pipeline
         '''
       }
     }
+    stage ("cuda")
+    {
+      options {timeout(time: 600, unit: 'MINUTES')}
+      agent
+      {
+         node
+        {
+          label 'cuda'
+        }
+      }
+
+      post { cleanup { cleanWs() } }
+
+      steps
+      {
+        sh '''#!/bin/bash
+        set -e
+        set -x
+        # note, CUDA_HOME/CUDA_ARCH is predefined on this machine
+        echo 'USE_KOKKOS_WITH_CUDA=ON' > local.cfg
+        echo 'NATIVE_OPTIMIZATIONS=ON' >> local.cfg
+        echo 'USE_64_BIT_INDICES=ON' >> local.cfg
+        echo 'DEAL_II_VERSION=master' >> local.cfg
+        ./candi.sh -j 8 --packages="parmetis p4est kokkos kokkoskernels petsc dealii" -p $WORKSPACE
+        cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-cuda.log
+        '''
+
+	archiveArtifacts artifacts: 'detailed-cuda.log', fingerprint: true
+
+        sh '''#!/bin/bash
+        cd $WORKSPACE/tmp/build/deal.II-* && ctest -j 4 --output-on-failure
+        '''
+      }
+    }
 
   }
 }
