@@ -341,6 +341,15 @@ if [ ${USE_KOKKOS_WITH_CUDA} = ON ]; then
 fi
 
 if [ ${TRILINOS_WITH_COMPLEX} = ON ]; then
+    cecho ${WARN} "trilinos: complex support is enabled. deal.II 9.8.0 does not"
+    cecho ${WARN} "trilinos: compile against a Trilinos with complex Tpetra"
+    cecho ${WARN} "trilinos: instantiations: its TpetraWrappers cannot be"
+    cecho ${WARN} "trilinos: instantiated with complex scalars, and FROSch and"
+    cecho ${WARN} "trilinos: Zoltan2 reject complex scalars in Trilinos itself."
+    cecho ${WARN} "trilinos: See dealii/dealii#20164 and trilinos/Trilinos#15625."
+    cecho ${WARN} "trilinos: For complex-valued problems, build PETSc with"
+    cecho ${WARN} "trilinos: --with-scalar-type=complex instead, which deal.II"
+    cecho ${WARN} "trilinos: supports; Trilinos may stay real in that case."
     CONFOPTS="\
     -D Trilinos_ENABLE_COMPLEX=ON \
     ${CONFOPTS}"
