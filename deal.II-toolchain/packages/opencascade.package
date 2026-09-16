@@ -10,37 +10,28 @@ fi
 
 if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
     # download release tarball
-    VERSION=0.18.3
-    CHECKSUM=c553d6a7bf52f790abc3b6bb7a1e91a65947e92a426bb1a88a11960c31f0966c
-    CHECKSUM="${CHECKSUM} 452c8e26a469e8b0ba6cdd800848a0b406648b1b"
-    CHECKSUM="${CHECKSUM} 1686393c8493bbbb2f3f242330b33cba"
+    VERSION=7_7_1
+    CHECKSUM=e2a211e6e89c685802581ecfbda5ee94
 
     # VERSION=0.18.2
     # CHECKSUM=6dfd68e459e2c62387579888a867281f
 
-    # VERSION=0.18.1
-    # CHECKSUM=2a7597f4243ee1f03245aeeb02d00956
-
-    # VERSION=0.17
-    # CHECKSUM=f1a89395c4b0d199bea3db62b85f818d
-
-    NAME=OCE-${VERSION}
-    SOURCE=https://github.com/tpaviot/oce/archive/
-    EXTRACTSTO=oce-OCE-${VERSION}
+    NAME=V${VERSION}
+    SOURCE=https://github.com/Open-Cascade-SAS/OCCT/archive/refs/tags/
+    EXTRACTSTO=OCCT-${VERSION}
     PACKING=.tar.gz
 else
     # download git repository (huge download)
 
     # checkout specific release version
-    VERSION=master
-    #VERSION=OCE-0.18.3
-    #VERSION=OCE-0.18.2
+    #VERSION=master
+    VERSION=V7_7_1
 
     # set up git repository
-    NAME=oce.git
+    NAME=OCCT.git
     PACKING=git
-    EXTRACTSTO=OCE-${VERSION}
-    SOURCE=https://github.com/tpaviot/
+    EXTRACTSTO=opencascade-OCCT-${VERSION}
+    SOURCE=https://github.com/Open-Cascade-SAS/
 fi
 unset CANDI_OPENCASCADE_LOAD_TARBALL
 
@@ -49,26 +40,19 @@ BUILDCHAIN=cmake
 BUILDDIR=${BUILD_PATH}/${EXTRACTSTO}
 INSTALL_PATH=${INSTALL_PATH}/${EXTRACTSTO}
 
-CONFOPTS="\
-  -D OCE_INSTALL_PREFIX=${INSTALL_PATH} \
-  -D OCE_VISUALISATION:BOOL=OFF \
-  -D OCE_DISABLE_TKSERVICE_FONT:BOOL=ON \
-  -D OCE_DATAEXCHANGE:BOOL=ON \
-  -D OCE_OCAF:BOOL=OFF \
-  -D OCE_DISABLE_X11:BOOL=ON"
-
-package_specific_patch () {
-    cd ${UNPACK_PATH}/${EXTRACTSTO}
-    cecho ${WARN} "applying patch for missing xlocale.h for glibc v2.26 and above"
-    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-xlocale.patch || true
-    cecho ${WARN} "applying patch for isfinite"
-    patch -p0 --forward < ${ORIG_DIR}/${PROJECT}/patches/oce-isfinite.patch
-}
-
 package_specific_register () {
     export OPENCASCADE_DIR=${INSTALL_PATH}
     export CASROOT=${INSTALL_PATH}
 }
+
+CONFOPTS="\
+  -D USE_TK=OFF \
+  -D USE_FREETYPE=OFF \
+  -D USE_XLIB=OFF \
+  -D USE_VTK=OFF \
+  -D USE_OPENGL=OFF \
+  -D USE_GLES2=OFF \
+  -D BUILD_MODULE_Draw=OFF"
 
 package_specific_conf () {
     # Generate configuration file
