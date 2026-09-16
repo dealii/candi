@@ -147,12 +147,18 @@ if [ ! -z "${PARMETIS_DIR}" ]; then
       --with-metis-dir=${PARMETIS_DIR}"
 fi
 
+# Remember whether PETSc builds these itself: they are then installed into
+# PETSc's own prefix, and later packages have to be told where to find them.
+PETSC_DOWNLOADS_SCALAPACK=OFF
+PETSC_DOWNLOADS_MUMPS=OFF
+
 if [ ! -z "${SCALAPACK_DIR}" ]; then
     cecho ${INFO} "PETSc: configuration with SCALAPACK"
     CONFOPTS="${CONFOPTS} \
       --with-scalapack-dir=${SCALAPACK_DIR}"
 else
     CONFOPTS="${CONFOPTS} --download-scalapack=1"
+    PETSC_DOWNLOADS_SCALAPACK=ON
 fi
 
 if [ ! -z "${MUMPS_DIR}" ]; then
@@ -161,6 +167,7 @@ if [ ! -z "${MUMPS_DIR}" ]; then
       --with-mumps-dir=${MUMPS_DIR}"
 else
     CONFOPTS="${CONFOPTS} --download-mumps=1"
+    PETSC_DOWNLOADS_MUMPS=ON
 fi
 
 ################################################################################
@@ -185,8 +192,11 @@ package_specific_setup () {
 
 package_specific_register () {
     export PETSC_DIR=${INSTALL_PATH}
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ] || [ "${PETSC_DOWNLOADS_SCALAPACK}" = "ON" ]; then
         export SCALAPACK_DIR=${INSTALL_PATH}
+    fi
+    if [ "${PETSC_DOWNLOADS_MUMPS}" = "ON" ]; then
+        export MUMPS_DIR=${INSTALL_PATH}
     fi
 }
 
@@ -197,7 +207,10 @@ package_specific_conf () {
     echo "
 export PETSC_DIR=${INSTALL_PATH}
 " >> ${CONFIG_FILE}
-    if [ ! -z "${SCALAPACK_DIR}" ]; then
+    if [ ! -z "${SCALAPACK_DIR}" ] || [ "${PETSC_DOWNLOADS_SCALAPACK}" = "ON" ]; then
        echo "export SCALAPACK_DIR=${INSTALL_PATH}" >> ${CONFIG_FILE}
+    fi
+    if [ "${PETSC_DOWNLOADS_MUMPS}" = "ON" ]; then
+       echo "export MUMPS_DIR=${INSTALL_PATH}" >> ${CONFIG_FILE}
     fi
 }
