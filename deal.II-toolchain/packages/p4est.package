@@ -39,17 +39,12 @@ package_specific_setup() {
         exit 1
     }
 
-    function check_zlib() {
+    function check_zlib () {
         local build_dir="$1"
-        local config_file
+        local config_file=`find "$build_dir" -name "p4est_config.h" -type f -print -quit`
 
-        while IFS= read -r -d '' config_file; do
-            if grep -q "P4EST_HAVE_ZLIB *1" "$config_file"; then
-                return 0
-            fi
-        done < <(find "$build_dir" -name "p4est_config.h" -type f -print0)
-
-        return 1
+        test -n "$config_file" || bdie "p4est_config.h not found"
+        grep -q "P4EST_HAVE_ZLIB *1" "$config_file" || bdie "$MISSING_ZLIB_MESSAGE"
     }
 
     # export zlib if we installed it ourselves
