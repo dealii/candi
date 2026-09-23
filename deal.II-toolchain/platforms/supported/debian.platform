@@ -7,6 +7,7 @@
 #   openmpi-bin openmpi-common libopenmpi-dev cmake subversion git \
 #   libblas-dev liblapack-dev libblas3 liblapack3 splint tcl tcl-dev \
 #   environment-modules libsuitesparse-dev libtool libboost-all-dev \
+#   libgl1-mesa-dev libegl1-mesa-dev \
 #   qt4-dev-tools libgmp-dev
 #
 # Then reboot and run candi again.

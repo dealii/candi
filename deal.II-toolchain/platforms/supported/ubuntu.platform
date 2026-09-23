@@ -7,6 +7,7 @@
 #   build-essential autoconf automake cmake libtool gfortran python3 \
 #   libboost-all-dev zlib1g-dev \
 #   openmpi-bin openmpi-common libopenmpi-dev \
+#   libgl1-mesa-dev libegl1-mesa-dev \
 #   libblas3 libblas-dev liblapack3 liblapack-dev libsuitesparse-dev
 #
 # Then run candi again.
