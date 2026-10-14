@@ -212,14 +212,24 @@ if [ ! -z "${FC}" ]; then
       -D CMAKE_Fortran_COMPILER=${FC}"
 fi
 
+# Clang 19+ marks std::is_same with [[clang::no_specializations]], which is now a hard error [-Winvalid-specialization]
+# Downgrade to a warning only on macOS, when using Clang, and only for Trilinos 16 and 17
+# NOTE: Trilinos fixed this upstream in 17.2.1 (can remove 17 check after >= 17.2.1 upgrade)
+TRILINOS_CXX_EXTRA_FLAGS=""
+if [ "$(uname -s)" = "Darwin" ] && ${CXX:-c++} --version 2>/dev/null | grep -qi clang; then
+    if [ ${TRILINOS_MAJOR_VERSION} = "16" -o ${TRILINOS_MAJOR_VERSION} = "17" ]; then
+        TRILINOS_CXX_EXTRA_FLAGS="-Wno-invalid-specialization"
+    fi
+fi
+
 if [ ${NATIVE_OPTIMIZATIONS} = OFF ]; then
 CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3' \
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 ${TRILINOS_CXX_EXTRA_FLAGS}' \
   -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
   -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3'"
 else
 CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 -march=native' \
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 -march=native ${TRILINOS_CXX_EXTRA_FLAGS}'
   -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3 -march=native' \
   -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3 -march=native'"
 fi
