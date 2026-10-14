@@ -10,11 +10,9 @@ fi
 
 if [ ${CANDI_OPENCASCADE_LOAD_TARBALL} = ON ]; then
     # download release tarball
-    VERSION=7_7_1
-    CHECKSUM=e2a211e6e89c685802581ecfbda5ee94
-
-    # VERSION=0.18.2
-    # CHECKSUM=6dfd68e459e2c62387579888a867281f
+    #VERSION=8_0_1;CHECKSUM=855f98a9c3705a3d72233208de753b7a
+    VERSION=7_9_3;CHECKSUM=
+    #VERSION=7_7_1;CHECKSUM=e2a211e6e89c685802581ecfbda5ee94
 
     NAME=V${VERSION}
     SOURCE=https://github.com/Open-Cascade-SAS/OCCT/archive/refs/tags/
@@ -52,7 +50,8 @@ CONFOPTS="\
   -D USE_VTK=OFF \
   -D USE_OPENGL=OFF \
   -D USE_GLES2=OFF \
-  -D BUILD_MODULE_Draw=OFF"
+  -D BUILD_MODULE_Draw=OFF \
+  -D BUILD_MODULE_Visualization=OFF"
 
 package_specific_conf () {
     # Generate configuration file
