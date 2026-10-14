@@ -40,14 +40,14 @@ pipeline
       }
     }
 
-    stage ("Ubuntu-20.04")
+    stage ("Ubuntu-22.04")
     {
       options {timeout(time: 600, unit: 'MINUTES')}
       agent
       {
         dockerfile
         {
-          dir 'contrib/ubuntu2004'
+          dir 'contrib/ubuntu2204'
         }
       }
 
@@ -58,13 +58,13 @@ pipeline
 	set -x
 	mpicxx -v
 	cmake --version
-	# Ubuntu 20.04 only ships cmake 3.16 not 3.23:
+	# Ubuntu 22.04 only ships cmake 3.22 not 3.23:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
 	rm -rf $WORKSPACE/install
         ./candi.sh -j 8 -p $WORKSPACE/install
-        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
+        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2204.log
         '''
-	archiveArtifacts artifacts: 'detailed-ubuntu2004.log', fingerprint: true
+	archiveArtifacts artifacts: 'detailed-ubuntu2204.log', fingerprint: true
 
         sh '''#!/bin/bash
         cd $WORKSPACE/install/tmp/build/deal.II-* && make test
