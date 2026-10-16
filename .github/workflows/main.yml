@@ -27,6 +27,26 @@ jobs:
           ./candi.sh -j 2 --packages="once:openblas once:p4est dealii"
           cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
 
+  ubuntu24-mpich:
+    name: ubuntu 24.04 (MPICH)
+    runs-on: [ubuntu-24.04]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup
+        run: |
+          sudo apt-get install gfortran libmpich-dev mpich libblas3 libblas-dev liblapack3 liblapack-dev
+      - name: info
+        run: |
+          g++ -v
+          mpic++ -v
+          cmake --version
+      - name: build
+        run: |
+          echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> candi.cfg
+          ./candi.sh -j 2 --packages="once:opencascade once:p4est dealii"
+          cd ~/dealii-candi/tmp/build/deal.II-* && cat detailed.log
+
   ubuntu22:
     name: ubuntu 22.04
     runs-on: [ubuntu-22.04]
