@@ -60,14 +60,14 @@ pipeline
 	cmake --version
 	# Ubuntu 20.04 only ships cmake 3.16 not 3.23:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
-	rm -rf $WORKSPACE/install
-        ./candi.sh -j 8 -p $WORKSPACE/install
-        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
+	rm -rf /install
+        ./candi.sh -j 8 -p /install
+        cp /install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2004.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/install/tmp/build/deal.II-* && make test
+        cd /install/tmp/build/deal.II-* && make test
         '''
       }
     }
@@ -91,14 +91,14 @@ pipeline
 	mpicxx -v
 	cmake --version
 	rm -f local.cfg
-	rm -rf $WORKSPACE/install/
-        ./candi.sh -j 8 -p $WORKSPACE/install
-        cp $WORKSPACE/install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2404.log
+	rm -rf /install/
+        ./candi.sh -j 8 -p /install
+        cp /install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2404.log
         '''
 	archiveArtifacts artifacts: 'detailed-ubuntu2404.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd $WORKSPACE/install/tmp/build/deal.II-* && make test
+        cd /install/tmp/build/deal.II-* && make test
         '''
       }
     }
