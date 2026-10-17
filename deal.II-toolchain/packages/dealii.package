@@ -197,6 +197,28 @@ if [ ! -z "${MUMPS_DIR}" ]; then
 fi
 
 ########################################
+# Indirectly reached shared libraries
+#
+# PETSc installs MUMPS as a static archive that refers to ParMETIS. ParMETIS is
+# in the link's transitive closure but is not named on the link line, which
+# Debian and Ubuntu reject, since their binutils defaults to
+# --no-copy-dt-needed-entries:
+#     undefined reference to symbol 'ParMETIS_V3_NodeND'
+#     libparmetis.so: error adding symbols: DSO missing from command line
+# RHEL-family linkers permit it, so the same installation links there without
+# help. Recording --copy-dt-needed-entries in DEAL_II_LINKER_FLAGS restores that
+# behaviour for every project configured against this deal.II, because the flag
+# is written into deal.IIConfig.cmake.
+#
+# Probed rather than assumed: lld, mold and the macOS linker reject the option.
+if printf 'int main(){return 0;}\n' | \
+     ${CXX:-c++} -x c++ -Wl,--copy-dt-needed-entries -o /dev/null - >/dev/null 2>&1; then
+    cecho ${INFO} "deal.II: linker accepts --copy-dt-needed-entries"
+    CONFOPTS="${CONFOPTS} \
+      -D DEAL_II_LINKER_FLAGS='-Wl,--copy-dt-needed-entries'"
+fi
+
+########################################
 # P4EST
 if [[ ${PACKAGES_OFF} =~ 'p4est' ]]; then
     if [ ! -z "${P4EST_DIR}" ]; then
