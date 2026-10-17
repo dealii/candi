@@ -68,7 +68,8 @@ pipeline
 	archiveArtifacts artifacts: 'detailed-ubuntu2004.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd /install/tmp/build/deal.II-* && make test
+        cd /install/tmp/build/deal.II-* && \
+          OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 make test
         '''
       }
     }
@@ -99,7 +100,8 @@ pipeline
 	archiveArtifacts artifacts: 'detailed-ubuntu2404.log', fingerprint: true
 
         sh '''#!/bin/bash
-        cd /install/tmp/build/deal.II-* && make test
+        cd /install/tmp/build/deal.II-* && \
+          OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 make test
         '''
       }
     }
