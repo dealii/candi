@@ -60,6 +60,7 @@ pipeline
 	cmake --version
 	# Ubuntu 20.04 only ships cmake 3.16 not 3.23:
 	echo 'PACKAGES="once:cmake ${PACKAGES}"' > local.cfg
+	echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' >> local.cfg
 	rm -rf /install
         ./candi.sh -j 8 -p /install
         cp /install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2004.log
@@ -90,7 +91,7 @@ pipeline
 	set -x
 	mpicxx -v
 	cmake --version
-	rm -f local.cfg
+	echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' > local.cfg
 	rm -rf /install/
         ./candi.sh -j 8 -p /install
         cp /install/tmp/build/deal.II-*/detailed.log detailed-ubuntu2404.log
@@ -103,7 +104,7 @@ pipeline
       }
     }
 
-    stage ("OSX-M1")
+    stage ("OSX-ARM")
     {
       options {timeout(time: 600, unit: 'MINUTES')}
       agent
@@ -121,6 +122,7 @@ pipeline
         sh '''#!/bin/bash
 	set -e
 	set -x
+	echo 'DEAL_II_CONFOPTS="-D CMAKE_BUILD_TYPE=Debug"' > local.cfg
         ./candi.sh -j 8 --packages="p4est petsc trilinos sundials dealii" -p $WORKSPACE
         cp $WORKSPACE/tmp/build/deal.II-*/detailed.log detailed-osx.log
         '''
