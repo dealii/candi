@@ -189,11 +189,25 @@ if [ ! -z "${METIS_DIR}" ]; then
 fi
 
 # mumps
+# deal.II's MUMPS interface (the SparseDirectMUMPS class) is a separate feature
+# from PETSc's MUMPS support, and it additionally requires a findable ScaLAPACK.
+# Both features are requested explicitly, so that a missing dependency stops the
+# configuration rather than silently leaving DEAL_II_WITH_MUMPS off.
 if [ ! -z "${MUMPS_DIR}" ]; then
     cecho ${INFO} "deal.II: configuration with MUMPS"
     CONFOPTS="\
         ${CONFOPTS} \
+        -D DEAL_II_WITH_MUMPS:BOOL=ON \
         -D MUMPS_DIR=${MUMPS_DIR}"
+fi
+
+# scalapack
+if [ ! -z "${SCALAPACK_DIR}" ]; then
+    cecho ${INFO} "deal.II: configuration with ScaLAPACK"
+    CONFOPTS="\
+        ${CONFOPTS} \
+        -D DEAL_II_WITH_SCALAPACK:BOOL=ON \
+        -D SCALAPACK_DIR=${SCALAPACK_DIR}"
 fi
 
 ########################################
