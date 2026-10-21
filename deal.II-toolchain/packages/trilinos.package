@@ -224,14 +224,14 @@ fi
 
 if [ ${NATIVE_OPTIMIZATIONS} = OFF ]; then
 CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 ${TRILINOS_CXX_EXTRA_FLAGS}' \
-  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3' \
-  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3'"
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -O3 ${TRILINOS_CXX_EXTRA_FLAGS}' \
+  -D CMAKE_C_FLAGS:STRING='-fPIC -O3' \
+  -D CMAKE_FORTRAN_FLAGS:STRING='-O3'"
 else
 CONFOPTS="${CONFOPTS} \
-  -D CMAKE_CXX_FLAGS:STRING='-fPIC -g -O3 -march=native ${TRILINOS_CXX_EXTRA_FLAGS}'
-  -D CMAKE_C_FLAGS:STRING='-fPIC -g -O3 -march=native' \
-  -D CMAKE_FORTRAN_FLAGS:STRING='-g -O3 -march=native'"
+  -D CMAKE_CXX_FLAGS:STRING='-fPIC -O3 -march=native ${TRILINOS_CXX_EXTRA_FLAGS}'
+  -D CMAKE_C_FLAGS:STRING='-fPIC -O3 -march=native' \
+  -D CMAKE_FORTRAN_FLAGS:STRING='-O3 -march=native'"
 fi
 
 # Add ParMETIS, if present
@@ -324,12 +324,13 @@ CONFOPTS="\
   ${CONFOPTS}"
 
 if [ ${USE_64_BIT_INDICES} = ON ]; then
-    CONFOPTS="${CONFOPTS} -D Tpetra_INST_INT_LONG_LONG=ON "
+    CONFOPTS="${CONFOPTS} \
+    -D Tpetra_INST_INT_INT=OFF \
+    -D Tpetra_INST_INT_LONG_LONG=ON "
 else
-    # TODO: this does compile, but fails a lot of
-    # tests.
     CONFOPTS="${CONFOPTS} \
     -D Tpetra_INST_INT_INT=ON \
+    -D Tpetra_INST_INT_LONG_LONG=OFF \
     -D Trilinos_ENABLE_ThyraEpetraAdapters=ON \
     -D Trilinos_ENABLE_ThyraEpetraExtAdapters=ON"
 fi
