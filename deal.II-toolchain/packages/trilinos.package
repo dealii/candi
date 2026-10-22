@@ -29,7 +29,8 @@ elif [ ${TRILINOS_MAJOR_VERSION} = "17" ]; then
     PACKING=.tar.gz
 elif [ ${TRILINOS_MAJOR_VERSION} = "16" ]; then
 
-    VERSION=16-2-0;CHECKSUM=1529b29d857cac6cc4b2dc09f92cb08d
+    VERSION=16-2-2;CHECKSUM=4f69e71de9d8f60c214b9501d1697291
+    #VERSION=16-2-0;CHECKSUM=1529b29d857cac6cc4b2dc09f92cb08d
 
     # Trilinos 16.1.0 includes Kokkos 4.5.1 update that
     # fixes Trilinos "no member named 'sort_option' in 'SPADDHandle'"
