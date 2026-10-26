@@ -5,7 +5,9 @@ PACKING=.tar.gz
 CHECKSUM=794461a7285d8b9b1f2c4a8149889ea6
 BUILDCHAIN=autotools
 
-CONFOPTS="--disable-nls"
+# C source uses "bool" which became a keyword in C23, so use
+# C17 instead:
+CONFOPTS="--disable-nls CFLAGS='${CFLAGS} -std=gnu17'"
 
 INSTALL_PATH=${INSTALL_PATH}/${NAME}
 
