@@ -49,6 +49,12 @@ package_specific_patch () {
             fi
         fi
     fi
+
+    if [ ${PLATFORM_OSTYPE} == macos ] && [ ${VERSION} == "4.0.3" ]; then
+        cecho ${WARN} "applying patch for full install names on macOS"
+        patch -p0 --forward < "${ORIG_DIR}/${PROJECT}/patches/parmetis-4.0.3-macos-install-name.patch"
+        quit_if_fail "parmetis: applying the macOS install name patch failed"
+    fi
 }
 
 package_specific_register () {
