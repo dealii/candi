@@ -1,0 +1,12 @@
+--- metis/GKlib/GKlibSystem.cmake
++++ metis/GKlib/GKlibSystem.cmake
+@@ -127,3 +127,9 @@
+ # Find GKlib sources.
+ file(GLOB GKlib_sources ${GKLIB_PATH}/*.c)
+ file(GLOB GKlib_includes ${GKLIB_PATH}/*.h)
++
++# On macOS, install the libraries with their full path as install name unless
++# chosen otherwise; by default it would be only the file name.
++if(APPLE AND NOT DEFINED CMAKE_INSTALL_NAME_DIR AND NOT CMAKE_MACOSX_RPATH)
++  set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
++endif()
